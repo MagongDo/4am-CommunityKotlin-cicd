@@ -16,4 +16,6 @@ interface ChatHandler : WebSocketHandler {
 
     @Throws(Exception::class)
     override fun afterConnectionClosed(session: WebSocketSession, status: CloseStatus)
+
 }
+
