@@ -15,7 +15,7 @@ data class User(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", updatable = false)
-    val id: Long? = null,
+    val id: Long,
 
     @Column(name = "email", nullable = false, unique = true)
     var email: String,
