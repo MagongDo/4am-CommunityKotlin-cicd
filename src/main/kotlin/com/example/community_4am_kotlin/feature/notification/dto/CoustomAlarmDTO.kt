@@ -6,8 +6,8 @@ import java.time.LocalTime
 
 data class CoustomAlarmDTO(
     var id: Long? = null,
-    var message: String? = null,
-    var notificationDays: MutableSet<String>? = null,
+    var message: String,
+    var notificationDays: MutableSet<String>,
     var reserveAt: String? = null, // "HH:mm" 형식
     var status: Boolean? = null,
     var isRead: Boolean,
@@ -25,14 +25,5 @@ data class CoustomAlarmDTO(
         )
     }
 
-    fun toEntity(dto: CoustomAlarmDTO): CoustomAlarm {
-        return CoustomAlarm(
-            id = dto.id,
-            message = dto.message,
-            notificationDays = dto.notificationDays,
-            reserveAt = LocalTime.parse(dto.reserveAt),
-            status = dto.status,
-            isRead = dto.isRead
-        )
-    }
+
 }
