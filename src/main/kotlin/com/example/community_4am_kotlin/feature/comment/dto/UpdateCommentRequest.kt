@@ -4,8 +4,8 @@ import com.example.Community_4am_Kotlin.domain.article.Comment
 
 data class UpdateCommentRequest(
     val commentContent: String,
-    val commentIsHiddenval :Boolean,
-    val commentIsDeleted:Boolean
+    val commentIsHidden :Boolean?,
+    val commentIsDeleted:Boolean?
 ) {
     constructor(comment: Comment):this(
         commentContent=comment.getCommentContent(),

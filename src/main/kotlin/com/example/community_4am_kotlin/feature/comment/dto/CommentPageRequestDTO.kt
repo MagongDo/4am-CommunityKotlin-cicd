@@ -1,6 +1,5 @@
 package com.example.community_4am_kotlin.feature.comment.dto
 
-import com.nimbusds.jose.shaded.gson.annotations.SerializedName
 import jakarta.validation.constraints.Max
 import jakarta.validation.constraints.Min
 import org.springframework.data.domain.PageRequest
