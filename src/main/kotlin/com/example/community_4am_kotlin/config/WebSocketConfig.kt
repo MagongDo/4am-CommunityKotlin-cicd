@@ -18,8 +18,6 @@ import java.util.concurrent.ConcurrentHashMap
 
 @Configuration
 @EnableWebSocket // 웹소켓의 기능을 활성화하는 어노테이션
-@EnableCaching
-@EnableRedisHttpSession
 class WebSocketConfig(
     private val webSocketHandshakeInterceptor: WebSocketHandshakeInterceptor,
     @Lazy
@@ -41,11 +39,13 @@ class WebSocketConfig(
 //        registry.addHandler(notificationHandler, "/ws/notifications")
 //            .addInterceptors(sessionHandshakeInterceptor)
 //            .setAllowedOrigins("*") // CORS 설정 필요 시 조정
+
     }
 
     @Bean
     fun socketTextHandler(): WebSocketHandler = chatHandler
 
     @Bean
-    fun roomSessions(): ConcurrentHashMap<String, Map<String, WebSocketSession>> = ConcurrentHashMap()
+    fun roomSessions() : ConcurrentHashMap<String, MutableMap<String, WebSocketSession>> = ConcurrentHashMap()
+
 }

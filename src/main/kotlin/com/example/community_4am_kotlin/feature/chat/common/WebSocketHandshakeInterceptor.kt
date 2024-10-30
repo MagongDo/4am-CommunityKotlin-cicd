@@ -17,13 +17,10 @@ class WebSocketHandshakeInterceptor : HandshakeInterceptor {
         wsHandler: WebSocketHandler,
         attributes: MutableMap<String, Any>
     ): Boolean {
-        // Spring Security의 인증 정보 가져오기
-        val authentication: Authentication? = SecurityContextHolder.getContext().authentication
-
-        authentication?.let {
+        SecurityContextHolder.getContext().authentication?.let { authentication ->
             // 인증 정보를 WebSocket 세션의 속성에 추가
-            attributes["accountId"] = it.name // 사용자 이름 저장 (예: 이메일)
-            attributes["authorities"] = it.authorities // 권한 저장
+            attributes["accountId"] = authentication.name // 사용자 이메일 저장
+            attributes["authorities"] = authentication.authorities // 권한 저장
         }
 
         return true // WebSocket 연결을 허용
@@ -35,6 +32,6 @@ class WebSocketHandshakeInterceptor : HandshakeInterceptor {
         wsHandler: WebSocketHandler,
         exception: Exception?
     ) {
-        // 후처리 로직이 필요한 경우 여기에 작성
+
     }
 }

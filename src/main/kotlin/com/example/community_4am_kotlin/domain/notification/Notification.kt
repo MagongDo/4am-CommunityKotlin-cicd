@@ -19,7 +19,7 @@ data class Notification(
     var createdAt: LocalDateTime,
     var isRead: Boolean,
     var message:String,
-    var recipient:String,
+    var recipient:String?=null,
     var targetId:Long,
     var makeId:String,
     @ManyToOne(fetch = FetchType.LAZY, cascade = [(CascadeType.MERGE)])

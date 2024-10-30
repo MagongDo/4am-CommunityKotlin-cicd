@@ -12,9 +12,9 @@ data class NotificationDTO(
     val message: String,
     val recipient: String,
     val targetId: Long,
-    val userId: Long, // User의 ID만 포함
+    val userId: Long?=null, // User의 ID만 포함
     val makeId: String,
-    val userEmail: String, // 필요 시 User의 이메일 포함
+    val userEmail: String?=null, // 필요 시 User의 이메일 포함
     val dataType: String = "Notification"
 ) {
 
