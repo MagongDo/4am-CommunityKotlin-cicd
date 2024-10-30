@@ -28,19 +28,11 @@ data class InsertedFile(
     var article: Article
 ) {
 
-    fun changeArticle(article: Article) {
-        this.article = article
-    }
+    fun changeArticle(article: Article) { this.article = article }
 
-    fun changeFileName(originalFileName: String) {
-        this.originalFileName = originalFileName
-    }
+    fun changeFileName(originalFileName: String) { this.originalFileName = originalFileName }
 
-    fun changeFileType(fileType: String) {
-        this.fileType = fileType
-    }
+    fun changeFileType(fileType: String) { this.fileType = fileType }
 
-    fun changeFileData(fileData: ByteArray) {
-        this.fileData = fileData
-    }
+    fun changeFileData(fileData: ByteArray) { this.fileData = fileData }
 }

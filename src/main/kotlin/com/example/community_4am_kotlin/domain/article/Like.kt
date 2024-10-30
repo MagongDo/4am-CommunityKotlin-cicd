@@ -13,11 +13,12 @@ import java.time.LocalDateTime
 data class Like (
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private var likeid: Long,
+    private var likeId: Long?=null,
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="article_id", nullable = false)
     private var article: Article,
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="user_id", nullable = false)
     private var user: User,
@@ -26,10 +27,11 @@ data class Like (
 
     @CreatedDate
     @Column(name="created_at")
-    private var createdAt: LocalDateTime,
+    private var createdAt: LocalDateTime?=null,
     @LastModifiedDate
     @Column(name="updated_at")
-    private var updatedAt: LocalDateTime
+    private var updatedAt: LocalDateTime?=null
+
     ){
     fun changeLikedStatus(status: Boolean) {
         likedStatus = !status

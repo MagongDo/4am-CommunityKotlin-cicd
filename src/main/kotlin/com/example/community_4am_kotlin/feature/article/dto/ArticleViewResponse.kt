@@ -9,7 +9,7 @@ data class ArticleViewResponse(
     val title: String,
     val content: String,
     val author: String,
-    val createdAt: LocalDateTime,
+    val createdAt: LocalDateTime?,
     val isOwner: Boolean = false
 ) {
     constructor(article: Article) : this(

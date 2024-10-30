@@ -10,7 +10,7 @@ data class ArticleListViewResponse(
     val title: String,
     val content: String,
     val author: String,
-    val createdAt: LocalDateTime,
+    val createdAt: LocalDateTime?,
     val viewCount: Long,
     val likeCount: Long
 ) {
