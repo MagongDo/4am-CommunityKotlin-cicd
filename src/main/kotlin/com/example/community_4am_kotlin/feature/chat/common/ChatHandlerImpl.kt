@@ -19,23 +19,29 @@ class ChatHandlerImpl(
     private val messageRepository : MessageRepository
 ) : TextWebSocketHandler() ,ChatHandler {
     override fun handleTextMessage(session: WebSocketSession?, message: TextMessage?) {
+        // session과 message가 null이 아닐 때만 실행
+        session?.let { wsSession ->
+            message?.payload?.let { payload ->
+                // 방 ID 가져오기
+                val roomId = wsSession.uri?.toString()?.split("/ws/chat/")?.getOrNull(1) ?: return
 
-        // 방 Id 가져오기
-        val roomId =
-            session!!.uri.toString().split("/ws/chat/".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()[1]
-        val payload = message!!.payload
-        // JSON 파싱 및 재구성
-        val messageData: MutableMap<*, *>? = Gson().fromJson(payload, MutableMap::class.java)
+                // JSON 파싱 및 타입 명확화
+                val type = object : com.google.gson.reflect.TypeToken<MutableMap<String, Any>>() {}.type
+                val messageData: MutableMap<String, Any> = Gson().fromJson(payload, type)
 
-        val chatMessage = messageData?.get("chatMessage") as String?
-        // WebSocketSession에서 사용자 정보 가져오기
-        val sender = session.principal?.name // 사용자 이름 또는 이메일 가져오기
-        // 메시지에 sender 정보 추가
-       /* messageData?.set("sender", sender)*/
-        // 메시지 재구성 (sender 포함)
-        val formattedMessage = Gson().toJson(messageData)
-        // 메세지를 레디스로 발행하기 (레디스에 sender 정보 포함)
-        messageBrokerService.publishToChannel(roomId, formattedMessage)
+                // WebSocketSession에서 사용자 정보 가져오기
+                val sender = wsSession.principal?.name ?: "unknown"
+
+                // 메시지에 sender 정보 추가
+                messageData["sender"] = sender
+
+                // 메시지 재구성 (sender 포함)
+                val formattedMessage = Gson().toJson(messageData)
+
+                // 메시지를 Redis로 발행
+                messageBrokerService.publishToChannel(roomId, formattedMessage)
+            }
+        }
     }
 
     override fun afterConnectionEstablished(session: WebSocketSession) {
