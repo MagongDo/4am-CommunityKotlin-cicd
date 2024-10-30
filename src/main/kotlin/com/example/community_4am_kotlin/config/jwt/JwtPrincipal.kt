@@ -17,5 +17,5 @@ class JwtPrincipal:Principal, Serializable {
     override fun toString():String{
         return "JwtPrincipal{"+"+username='"+username+'\''+'}'
 
-    }
+    }// .
 }
