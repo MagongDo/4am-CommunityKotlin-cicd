@@ -55,7 +55,7 @@ class NotificationService(
                 )
 
                 notificationRepository.save(notification)
-//                commentAlarmService.addComment(recipientUser.id, articleId)
+                commentAlarmService.addComment(recipientUser.id, articleId)
                 eventPublisher.publishEvent(NotificationEvent(this, toAuthor, message, notification.alarmType))
             }
 

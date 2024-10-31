@@ -5,6 +5,7 @@ import com.example.community_4am_kotlin.domain.user.User
 import com.example.community_4am_kotlin.feature.user.dto.AddUserRequest
 import com.example.community_4am_kotlin.feature.user.repository.UserRepository
 import org.hibernate.query.sqm.tree.SqmNode.log
+import org.springframework.data.jpa.domain.AbstractPersistable_.id
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -48,14 +49,15 @@ class UserService(
             }
         }
 
-        val user = User.Builder()
-            .email(dto.email)
-            .password(encoder.encode(dto.password))
-            .nickname(dto.nickname)
-            .profileImage(profileImageBytes)
-            .profileUrl(profileUrl)
-            .role(Role.ROLE_USER)
-            .build()
+        // User 클래스가 data class로 선언되어 있어야 합니다
+        val user = User(
+            email = dto.email,
+            password = encoder.encode(dto.password),
+            nickname = dto.nickname,
+            profileImage = profileImageBytes,
+            profileUrl = profileUrl,
+            role = Role.ROLE_USER
+        )
 
         return userRepository.save(user).id!!
     }
