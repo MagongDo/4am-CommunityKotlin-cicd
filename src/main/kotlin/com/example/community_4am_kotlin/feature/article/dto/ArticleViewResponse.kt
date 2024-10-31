@@ -1,6 +1,6 @@
-package com.example.Community_4am_Kotlin.feature.article.dto
+package com.example.community_4am_Kotlin.feature.article.dto
 
-import com.example.Community_4am_Kotlin.domain.article.Article
+import com.example.community_4am_Kotlin.domain.article.Article
 import java.time.LocalDateTime
 
 // 게시글을 조회할 때 클라이언트에게 반환할 데이터를 담기 위한 DTO
@@ -17,7 +17,7 @@ data class ArticleViewResponse(
         title = article.title,
         content = article.content,
         author = article.author,
-        createdAt = article.createdDate
+        createdAt = article.createdAt
     )
 
     constructor(article: Article, currentUserName: String) : this(
@@ -25,7 +25,7 @@ data class ArticleViewResponse(
         title = article.title,
         content = article.content,
         author = article.author,
-        createdAt = article.createdDate,
+        createdAt = article.createdAt,
         isOwner = currentUserName == article.author
     )
 }

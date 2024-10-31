@@ -1,9 +1,9 @@
-package com.example.Community_4am_Kotlin.feature.notification.repository
+package com.example.community_4am_Kotlin.feature.notification.repository
 
 
-import com.example.Community_4am_Kotlin.domain.notification.Notification
-import com.example.Community_4am_Kotlin.domain.user.User
-import com.example.Community_4am_Kotlin.feature.notification.AlarmType
+import com.example.community_4am_Kotlin.domain.notification.Notification
+import com.example.community_4am_Kotlin.domain.user.User
+import com.example.community_4am_Kotlin.feature.notification.AlarmType
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Repository
 

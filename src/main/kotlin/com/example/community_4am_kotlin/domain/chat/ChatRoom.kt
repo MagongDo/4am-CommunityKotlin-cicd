@@ -1,5 +1,6 @@
-package com.example.Community_4am_Kotlin.domain.chat
+package com.example.community_4am_Kotlin.domain.chat
 
+import com.example.community_4am_Kotlin.domain.chat.ChatMessage
 import jakarta.persistence.*
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import java.time.LocalDateTime

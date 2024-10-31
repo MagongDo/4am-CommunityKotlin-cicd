@@ -1,4 +1,4 @@
-package com.example.Community_4am_Kotlin.feature.user.dto
+package com.example.community_4am_Kotlin.feature.user.dto
 
 import org.springframework.web.multipart.MultipartFile
 

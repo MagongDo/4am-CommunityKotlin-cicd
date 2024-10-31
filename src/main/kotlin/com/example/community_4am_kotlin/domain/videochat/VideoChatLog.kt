@@ -1,4 +1,4 @@
-package com.example.Community_4am_Kotlin.domain.videochat
+package com.example.community_4am_Kotlin.domain.videochat
 
 import jakarta.persistence.*
 import jakarta.transaction.Transactional

@@ -1,4 +1,4 @@
-package com.example.Community_4am_Kotlin.feature.user.util
+package com.example.community_4am_Kotlin.feature.user.util
 
 import jakarta.servlet.http.Cookie
 import jakarta.servlet.http.HttpServletRequest

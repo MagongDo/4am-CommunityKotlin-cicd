@@ -1,4 +1,4 @@
-package com.example.Community_4am_Kotlin.domain.user
+package com.example.community_4am_Kotlin.domain.user
 
 import jakarta.persistence.*
 

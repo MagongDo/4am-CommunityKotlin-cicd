@@ -1,7 +1,7 @@
-package com.example.Community_4am_Kotlin.feature.notification.dto
+package com.example.community_4am_Kotlin.feature.notification.dto
 
-import com.example.Community_4am_Kotlin.domain.notification.Notification
-import com.example.Community_4am_Kotlin.feature.notification.AlarmType
+import com.example.community_4am_Kotlin.domain.notification.Notification
+import com.example.community_4am_Kotlin.feature.notification.AlarmType
 import java.time.LocalDateTime
 
 data class NotificationDTO(

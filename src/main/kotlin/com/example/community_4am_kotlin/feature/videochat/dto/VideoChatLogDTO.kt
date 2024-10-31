@@ -1,7 +1,7 @@
-package com.example.Community_4am_Kotlin.feature.videochat.dto
+package com.example.community_4am_Kotlin.feature.videochat.dto
 
 
-import com.example.Community_4am_Kotlin.domain.videochat.VideoChatLog
+import com.example.community_4am_Kotlin.domain.videochat.VideoChatLog
 import java.time.LocalDateTime
 
 data class VideoChatLogDTO(

@@ -1,11 +1,12 @@
 package com.example.community_4am_kotlin.feature.article.service
 
-import com.example.Community_4am_Kotlin.domain.article.Article
-import com.example.Community_4am_Kotlin.feature.article.dto.*
-import com.example.Community_4am_Kotlin.feature.user.dto.UserArticlesList
+import com.example.community_4am_Kotlin.domain.article.Article
+import com.example.community_4am_Kotlin.feature.article.dto.*
+import com.example.community_4am_Kotlin.feature.user.dto.UserArticlesList
 import com.example.community_4am_kotlin.feature.article.repository.ArticleRepository
 import com.example.community_4am_kotlin.feature.comment.repository.CommentRepository
 import com.example.community_4am_kotlin.feature.file.service.FileUploadService
+import com.example.community_4am_kotlin.feature.like.service.LikeService
 import org.apache.coyote.http11.Constants.a
 import org.modelmapper.ModelMapper
 import org.springframework.data.domain.Page
@@ -23,7 +24,7 @@ class ArticleService (
     private val articleRepository: ArticleRepository,
     private val commentRepository: CommentRepository,
     private val fileUploadService: FileUploadService,
-    private val likeService:LikeService,
+    private val likeService: LikeService,
     private val modelMapper: ModelMapper
 ){
     // 글 등록 메서드: 게시글을 저장하고 첨부 파일을 처리하여 파일과 게시글을 연결
@@ -46,7 +47,7 @@ class ArticleService (
     // 특정 ID로 게시글 조회
     fun findById(id:Long):Article{
         val article=articleRepository.findById(id).orElseThrow{IllegalArgumentException("article not found")}
-        val likeCount=likeService.likeCount(id)
+        val likeCount=likeService.getLikeCount(id)
 
         article.changeLikeCount(likeCount)
         articleRepository.save(article)

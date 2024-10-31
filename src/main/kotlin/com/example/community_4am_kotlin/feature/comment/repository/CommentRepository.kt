@@ -1,6 +1,6 @@
 package com.example.community_4am_kotlin.feature.comment.repository
 
-import com.example.Community_4am_Kotlin.domain.article.Comment
+import com.example.community_4am_Kotlin.domain.article.Comment
 import com.example.community_4am_kotlin.feature.comment.dto.CommentListViewResponse
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable

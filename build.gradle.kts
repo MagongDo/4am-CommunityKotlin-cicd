@@ -81,7 +81,13 @@ kotlin {
         freeCompilerArgs.addAll("-Xjsr305=strict")
     }
 }
-
+sourceSets {
+    main {
+        java {
+            srcDirs("src/main/kotlin", "src/main/java", "build/generated/source/kapt/main")
+        }
+    }
+}
 allOpen {
     annotation("jakarta.persistence.Entity")
     annotation("jakarta.persistence.MappedSuperclass")

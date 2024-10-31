@@ -1,6 +1,6 @@
-package com.example.Community_4am_Kotlin.feature.chat.dto
+package com.example.community_4am_Kotlin.feature.chat.dto
 
-import com.example.Community_4am_Kotlin.domain.chat.ChatRoom
+import com.example.community_4am_Kotlin.domain.chat.ChatRoom
 import java.time.LocalDateTime
 
 data class CreateChatForm(

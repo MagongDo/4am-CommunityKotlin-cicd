@@ -1,6 +1,6 @@
 package com.example.community_4am_kotlin.feature.file.controller
 
-import com.example.Community_4am_Kotlin.domain.article.Article
+import com.example.community_4am_Kotlin.domain.article.Article
 import com.example.community_4am_kotlin.feature.article.service.ArticleService
 import com.example.community_4am_kotlin.feature.file.service.FileUploadService
 import org.springframework.http.ResponseEntity

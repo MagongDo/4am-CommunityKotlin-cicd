@@ -1,6 +1,6 @@
-package com.example.Community_4am_Kotlin.domain.article
+package com.example.community_4am_Kotlin.domain.article
 
-import com.example.Community_4am_Kotlin.domain.user.User
+import com.example.community_4am_Kotlin.domain.user.User
 import jakarta.persistence.*
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.LastModifiedDate

@@ -1,6 +1,6 @@
 package com.example.community_4am_kotlin.feature.article.repository
 
-import com.example.Community_4am_Kotlin.domain.article.Article
+import com.example.community_4am_Kotlin.domain.article.Article
 import com.example.community_4am_kotlin.feature.article.repository.search.ArticleSearch
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Modifying

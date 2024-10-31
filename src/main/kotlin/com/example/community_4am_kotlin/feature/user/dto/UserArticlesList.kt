@@ -1,6 +1,6 @@
-package com.example.Community_4am_Kotlin.feature.user.dto
+package com.example.community_4am_Kotlin.feature.user.dto
 
-import com.example.Community_4am_Kotlin.domain.article.Article
+import com.example.community_4am_Kotlin.domain.article.Article
 import com.fasterxml.jackson.annotation.JsonFormat
 import java.time.LocalDateTime
 
