@@ -1,10 +1,7 @@
 package com.example.community_4am_kotlin.feature.like.controller
 
 import com.example.community_4am_kotlin.feature.like.dto.LikeRequest
-import me.seunghui.springbootdeveloper.domain.Like
-import me.seunghui.springbootdeveloper.dto.Like.LikeRequest
-import me.seunghui.springbootdeveloper.notification.service.NotificationService
-import me.seunghui.springbootdeveloper.service.LikeService
+import com.example.community_4am_kotlin.feature.like.service.LikeService
 import org.apache.logging.log4j.LogManager
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity

@@ -4,7 +4,7 @@ import com.example.Community_4am_Kotlin.domain.article.Article
 import com.example.Community_4am_Kotlin.domain.article.Like
 import com.example.Community_4am_Kotlin.domain.user.User
 import com.example.Community_4am_Kotlin.feature.notification.AlarmType
-import com.example.Community_4am_Kotlin.feature.notification.repository.NotificationRepository
+import com.example.community_4am_kotlin.feature.notification.repository.NotificationRepository
 import com.example.Community_4am_Kotlin.feature.user.dto.UserLikedArticlesList
 import com.example.community_4am_kotlin.feature.user.repository.UserRepository
 import com.example.community_4am_kotlin.feature.article.repository.ArticleRepository
