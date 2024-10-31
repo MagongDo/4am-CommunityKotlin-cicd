@@ -1,17 +1,16 @@
 package com.example.community_4am_kotlin.config.oauth
 
 
-import com.example.Community_4am_Kotlin.config.jwt.TokenProvider
+import com.example.community_4am_kotlin.config.jwt.TokenProvider
+import com.example.Community_4am_Kotlin.domain.user.RefreshToken
 import com.example.Community_4am_Kotlin.feature.user.util.CookieUtil
 import com.example.community_4am_kotlin.feature.user.repository.RefreshTokenRepository
+import com.example.community_4am_kotlin.feature.user.service.UserService
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
 
 import org.hibernate.query.sqm.tree.SqmNode.log
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.Authentication
-import org.springframework.security.core.authority.SimpleGrantedAuthority
-import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken
 import org.springframework.security.oauth2.core.user.OAuth2User
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler

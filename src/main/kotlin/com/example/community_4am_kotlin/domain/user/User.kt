@@ -15,7 +15,7 @@ data class User(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", updatable = false)
-    val id: Long,
+    val id: Long?=null,
 
     @Column(name = "email", nullable = false, unique = true)
     var email: String,
@@ -92,7 +92,7 @@ data class User(
         this.profileUrl = profileUrl
     }
 
-    fun update(nickname: String): User {
+    fun update(nickname: String?): User {
         this.nickname = nickname
         return this
     }
