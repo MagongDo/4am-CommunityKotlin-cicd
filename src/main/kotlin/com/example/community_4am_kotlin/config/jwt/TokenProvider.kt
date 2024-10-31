@@ -1,6 +1,5 @@
 package com.example.community_4am_kotlin.config.jwt
 
-import com.example.Community_4am_Kotlin.config.jwt.JwtProperties
 import com.example.Community_4am_Kotlin.domain.user.User
 import io.jsonwebtoken.*
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
