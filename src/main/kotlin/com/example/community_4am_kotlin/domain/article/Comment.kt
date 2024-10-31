@@ -17,30 +17,30 @@ data class Comment (
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     var commentId: Long?=null,
 
-    private var commentAuthor: String,
-    private var commentContent: String,
+    var commentAuthor: String,
+    var commentContent: String,
 
     @CreatedDate
-    private var createdAt: LocalDateTime?=null,
+    var createdAt: LocalDateTime?=null,
     @LastModifiedDate
-    private var updatedAt: LocalDateTime?=null,
+    var updatedAt: LocalDateTime?=null,
 
     @JsonProperty("commentIsHidden")
-    private var commentIsHidden: Boolean?=false,
+    var commentIsHidden: Boolean?=false,
     @JsonProperty("commentIsDeleted")
-    private var commentIsDeleted: Boolean?=false,
+    var commentIsDeleted: Boolean?=false,
 
     @ManyToOne
     @JoinColumn(name="article_id",nullable=false)
-    private var article: Article,
+    var article: Article,
 
     @ManyToOne
     @JoinColumn(name="parent_comment_id",nullable=false)
     @JsonIgnore
-    private var parentComment: Comment,
+    var parentComment: Comment,
 
     @OneToMany(mappedBy="parentComment", cascade = [(CascadeType.MERGE)], orphanRemoval = true)
-    private var childComments: MutableList<Comment> = mutableListOf(),
+    var childComments: MutableList<Comment> = mutableListOf(),
 ){
     fun addChildComment(childComment: Comment){
         this.childComments.add(childComment)
@@ -49,7 +49,7 @@ data class Comment (
 
     //setter
     fun changeParentComment(parentComment: Comment){this.parentComment = parentComment}
-    fun changeCommentContents(commentContent: String){this.commentContent = commentContent}
+    fun changeCommentContent(commentContent: String){this.commentContent = commentContent}
     fun changeCommentIsHidden(commentIsHidden: Boolean){this.commentIsHidden = commentIsHidden}
     fun changeCommentIsDeleted(commentIsDeleted: Boolean){this.commentIsDeleted = commentIsDeleted}
     fun update(commentContent: String){this.commentContent = commentContent}
