@@ -1,7 +1,7 @@
-package com.example.community_4am_kotlin.config.jwt
+package com.example.Community_4am_Kotlin.config.jwt
 
 data class LoginRequest(
     val username: String,
-    private val password: String
+    val password: String
 )
 

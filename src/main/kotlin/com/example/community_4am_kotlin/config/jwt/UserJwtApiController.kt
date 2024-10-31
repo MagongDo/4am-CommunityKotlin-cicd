@@ -1,6 +1,7 @@
 package com.example.community_4am_kotlin.config.jwt
 
-import com.example.Community_4am_Kotlin.domain.user.RefreshToken
+import com.example.Community_4am_Kotlin.config.jwt.JwtPrincipal
+import com.example.Community_4am_Kotlin.config.jwt.LoginRequest
 import com.example.Community_4am_Kotlin.domain.user.Role
 import com.example.Community_4am_Kotlin.domain.user.User
 import com.example.Community_4am_Kotlin.feature.user.util.CookieUtil

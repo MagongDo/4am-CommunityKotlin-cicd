@@ -5,7 +5,6 @@ import com.example.Community_4am_Kotlin.feature.user.dto.Token.CreateAccessToken
 import com.example.community_4am_kotlin.feature.user.service.TokenService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
-
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RestController

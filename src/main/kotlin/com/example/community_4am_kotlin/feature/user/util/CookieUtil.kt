@@ -35,7 +35,7 @@ object CookieUtil {
 
     // 쿠키를 역직렬화해 객체로 변환
     fun <T> deserialize(cookie: Cookie?, cls: Class<T>): T {
-        val decodedBytes = Base64.getUrlDecoder().decode(cookie.value)
+        val decodedBytes = Base64.getUrlDecoder().decode(cookie!!.value)
         return cls.cast(SerializationUtils.deserialize(decodedBytes))
     }
 }

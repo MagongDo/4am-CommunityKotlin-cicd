@@ -3,8 +3,8 @@ package com.example.community_4am_kotlin.feature.user.service
 import com.example.Community_4am_Kotlin.domain.user.Role
 import com.example.Community_4am_Kotlin.domain.user.User
 import com.example.Community_4am_Kotlin.feature.user.dto.AddUserRequest
-import com.example.Community_4am_Kotlin.feature.user.repository.UserRepository
 import com.example.community_4am_kotlin.feature.article.ArticleRepository
+import com.example.community_4am_kotlin.feature.user.repository.UserRepository
 import org.hibernate.query.sqm.tree.SqmNode.log
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.stereotype.Service
@@ -16,12 +16,8 @@ import java.util.Optional
 import java.util.UUID
 
 @Service
-class UserService(private val userRepository: UserRepository) {
-
-
-
-@Service
-
+@RequiredArgsConstructor
+@Log4j2
 class UserService(
     private val userRepository: UserRepository, // 사용자 정보를 처리하는 레포지토리
     private val articleRepository: ArticleRepository,
