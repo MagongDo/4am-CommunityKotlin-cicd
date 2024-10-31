@@ -1,10 +1,9 @@
 package com.example.community_4am_kotlin.feature.chat.service
 
-import com.example.Community_4am_Kotlin.domain.chat.ChatRoom
-import com.example.Community_4am_Kotlin.feature.chat.dto.CreateChatForm
+import com.example.community_4am_kotlin.domain.chat.ChatRoom
+import com.example.community_4am_kotlin.feature.chat.dto.CreateChatForm
 import com.example.community_4am_kotlin.feature.chat.repository.ChatRoomRepository
 import com.example.community_4am_kotlin.feature.chat.repository.MessageRepository
-import org.springframework.data.jpa.domain.AbstractAuditable_.createdDate
 import org.springframework.stereotype.Service
 import java.time.LocalDateTime
 

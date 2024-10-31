@@ -1,6 +1,6 @@
 package com.example.community_4am_kotlin.feature.user.service
 
-import com.example.Community_4am_Kotlin.domain.user.User
+import com.example.community_4am_kotlin.domain.user.User
 import com.example.community_4am_kotlin.config.jwt.TokenProvider
 import org.springframework.stereotype.Service
 import java.time.Duration

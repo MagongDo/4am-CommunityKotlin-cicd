@@ -1,7 +1,7 @@
-package com.example.Community_4am_Kotlin.feature.article.dto.comment
+package com.example.community_4am_kotlin.feature.article.dto.comment
 
-import com.example.Community_4am_Kotlin.domain.article.Article
-import com.example.Community_4am_Kotlin.domain.article.Comment
+import com.example.community_4am_kotlin.domain.article.Article
+import com.example.community_4am_kotlin.domain.article.Comment
 
 data class AddCommentRequest(
     val commentContent: String = "",

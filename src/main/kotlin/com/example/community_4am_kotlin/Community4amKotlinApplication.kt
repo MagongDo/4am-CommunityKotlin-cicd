@@ -9,7 +9,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories
 
 @SpringBootApplication
 @EnableJpaAuditing
-@EnableJpaRepositories(basePackages = ["com.example.Community_4am_Kotlin.feature.notification.repository"])
+@EnableJpaRepositories
 class Community4amKotlinApplication
 inline val <reified T> T.log : Logger
     get() = LogManager.getLogger()

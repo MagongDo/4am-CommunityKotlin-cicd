@@ -1,7 +1,7 @@
 package com.example.community_4am_kotlin.feature.user.controller
 
-import com.example.Community_4am_Kotlin.feature.user.dto.Token.CreateAccessTokenRequest
-import com.example.Community_4am_Kotlin.feature.user.dto.Token.CreateAccessTokenResponse
+import com.example.community_4am_kotlin.feature.user.dto.Token.CreateAccessTokenRequest
+import com.example.community_4am_kotlin.feature.user.dto.Token.CreateAccessTokenResponse
 import com.example.community_4am_kotlin.feature.user.service.TokenService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity

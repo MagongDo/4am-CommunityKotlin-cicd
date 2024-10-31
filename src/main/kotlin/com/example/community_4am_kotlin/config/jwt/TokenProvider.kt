@@ -1,13 +1,12 @@
 package com.example.community_4am_kotlin.config.jwt
 
-import com.example.Community_4am_Kotlin.domain.user.User
+import com.example.community_4am_kotlin.domain.user.User
 import io.jsonwebtoken.*
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.Authentication
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.stereotype.Service
 import java.time.Duration
-import java.util.Collections
 import java.util.Date
 
 @Service

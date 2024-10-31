@@ -1,14 +1,13 @@
 package com.example.community_4am_kotlin.feature.user.controller
 
 
-import com.example.Community_4am_Kotlin.feature.user.dto.*
+import com.example.community_4am_kotlin.feature.user.dto.AddUserRequest
 import com.example.community_4am_kotlin.feature.user.service.UserService
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
 import org.hibernate.query.sqm.tree.SqmNode.log
 
 
-import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler
@@ -16,8 +15,6 @@ import org.springframework.stereotype.Controller
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.ResponseBody
-import java.security.Principal
 
 @Controller
 class UserApiController(

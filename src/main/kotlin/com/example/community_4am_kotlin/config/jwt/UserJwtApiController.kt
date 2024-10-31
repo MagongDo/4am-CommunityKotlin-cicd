@@ -1,10 +1,9 @@
 package com.example.community_4am_kotlin.config.jwt
 
-import com.example.Community_4am_Kotlin.config.jwt.LoginRequest
-import com.example.Community_4am_Kotlin.domain.user.Role
-import com.example.Community_4am_Kotlin.domain.user.User
-import com.example.Community_4am_Kotlin.domain.user.RefreshToken
-import com.example.Community_4am_Kotlin.feature.user.util.CookieUtil
+import com.example.community_4am_kotlin.domain.user.Role
+import com.example.community_4am_kotlin.domain.user.User
+import com.example.community_4am_kotlin.domain.user.RefreshToken
+import com.example.community_4am_kotlin.feature.user.util.CookieUtil
 import com.example.community_4am_kotlin.config.oauth.OAuth2AuthorizationRequestBasedOnCookieRepository
 import com.example.community_4am_kotlin.feature.user.repository.RefreshTokenRepository
 import com.example.community_4am_kotlin.feature.user.service.UserDetailService
@@ -26,7 +25,6 @@ import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.util.UriComponentsBuilder
 import java.io.IOException
 import java.time.Duration
-import java.util.*
 
 @RestController
 

@@ -1,9 +1,8 @@
 package com.example.community_4am_kotlin.feature.user.service
 
-import com.example.Community_4am_Kotlin.domain.user.Role
-import com.example.Community_4am_Kotlin.domain.user.User
-import com.example.Community_4am_Kotlin.feature.user.dto.AddUserRequest
-import com.example.community_4am_kotlin.feature.article.ArticleRepository
+import com.example.community_4am_kotlin.domain.user.Role
+import com.example.community_4am_kotlin.domain.user.User
+import com.example.community_4am_kotlin.feature.user.dto.AddUserRequest
 import com.example.community_4am_kotlin.feature.user.repository.UserRepository
 import org.hibernate.query.sqm.tree.SqmNode.log
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
@@ -12,7 +11,6 @@ import org.springframework.transaction.annotation.Transactional
 import java.io.File
 import java.io.IOException
 import java.nio.file.Files
-import java.util.Optional
 import java.util.UUID
 
 @Service

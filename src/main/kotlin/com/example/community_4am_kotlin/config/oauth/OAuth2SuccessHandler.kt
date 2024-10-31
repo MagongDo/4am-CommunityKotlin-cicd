@@ -2,8 +2,8 @@ package com.example.community_4am_kotlin.config.oauth
 
 
 import com.example.community_4am_kotlin.config.jwt.TokenProvider
-import com.example.Community_4am_Kotlin.domain.user.RefreshToken
-import com.example.Community_4am_Kotlin.feature.user.util.CookieUtil
+import com.example.community_4am_kotlin.domain.user.RefreshToken
+import com.example.community_4am_kotlin.feature.user.util.CookieUtil
 import com.example.community_4am_kotlin.feature.user.repository.RefreshTokenRepository
 import com.example.community_4am_kotlin.feature.user.service.UserService
 import jakarta.servlet.http.HttpServletRequest

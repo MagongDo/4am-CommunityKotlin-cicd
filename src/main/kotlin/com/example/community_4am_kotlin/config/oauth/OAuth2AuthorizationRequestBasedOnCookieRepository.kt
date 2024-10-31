@@ -1,6 +1,6 @@
 package com.example.community_4am_kotlin.config.oauth
 
-import com.example.Community_4am_Kotlin.feature.user.util.CookieUtil
+import com.example.community_4am_kotlin.feature.user.util.CookieUtil
 import jakarta.servlet.http.Cookie
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse

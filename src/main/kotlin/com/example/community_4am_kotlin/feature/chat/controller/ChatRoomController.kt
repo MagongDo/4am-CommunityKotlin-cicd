@@ -1,6 +1,6 @@
 package com.example.community_4am_kotlin.feature.chat.controller
 
-import com.example.Community_4am_Kotlin.domain.user.User
+import com.example.community_4am_kotlin.domain.user.User
 import com.example.community_4am_kotlin.feature.chat.service.ChatService
 import com.example.community_4am_kotlin.feature.user.service.UserService
 import org.springframework.stereotype.Controller

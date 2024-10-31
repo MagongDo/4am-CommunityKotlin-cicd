@@ -1,8 +1,8 @@
 package com.example.community_4am_kotlin.feature.notification.controller
 
-import com.example.Community_4am_Kotlin.domain.notification.Notification
-import com.example.Community_4am_Kotlin.feature.notification.dto.CoustomAlarmDTO
-import com.example.Community_4am_Kotlin.feature.notification.dto.NotificationDTO
+import com.example.community_4am_kotlin.domain.notification.Notification
+import com.example.community_4am_kotlin.feature.notification.dto.CoustomAlarmDTO
+import com.example.community_4am_kotlin.feature.notification.dto.NotificationDTO
 import com.example.community_4am_kotlin.feature.notification.service.CoustomAlarmService
 import com.example.community_4am_kotlin.feature.notification.service.NotificationService
 import org.modelmapper.ModelMapper

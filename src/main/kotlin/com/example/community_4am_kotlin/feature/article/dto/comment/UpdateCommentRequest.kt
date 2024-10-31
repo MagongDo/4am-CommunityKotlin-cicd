@@ -1,4 +1,4 @@
-package com.example.Community_4am_Kotlin.feature.article.dto.comment
+package com.example.community_4am_kotlin.feature.article.dto.comment
 
 data class UpdateCommentRequest(
     var commentContent:String,

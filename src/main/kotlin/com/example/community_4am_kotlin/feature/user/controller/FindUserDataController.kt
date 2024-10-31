@@ -1,9 +1,10 @@
-package com.example.Community_4am_Kotlin.feature.user.controller
+package com.example.community_4am_kotlin.feature.user.controller
 
-import com.example.Community_4am_Kotlin.domain.user.User
-import com.example.Community_4am_Kotlin.feature.user.dto.Id
-import com.example.Community_4am_Kotlin.feature.user.dto.Pw
-import com.example.Community_4am_Kotlin.feature.user.service.FindUserDataService
+
+import com.example.community_4am_kotlin.domain.user.User
+import com.example.community_4am_kotlin.feature.user.dto.Id
+import com.example.community_4am_kotlin.feature.user.dto.Pw
+import com.example.community_4am_kotlin.feature.user.service.FindUserDataService
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Controller
@@ -25,7 +26,7 @@ class FindUserDataController(
     fun findUserPassword(model: Model): String = "find-password"
 
     @PostMapping("/find-email")
-    fun findEmail(dto: Id,model:Model):String{
+    fun findEmail(dto: Id, model:Model):String{
         val user = userService.findEmailByNickname(dto.nickname)
 
         val resultMessage = if (user.email != null) {
@@ -39,8 +40,8 @@ class FindUserDataController(
     }
 
     @PostMapping("/find-password")
-    fun findPassword(dto: Pw,model:Model):String{
-        val user: User= userService.findPasswordByEmailAndNickname(dto.email,dto.nickname)
+    fun findPassword(dto: Pw, model:Model):String{
+        val user: User = userService.findPasswordByEmailAndNickname(dto.email,dto.nickname)
         userService.updatePasswordByEmailAndNickname(dto.email,dto.nickname,dto.password)
 
         val resultMessage = if (user.password != null) {

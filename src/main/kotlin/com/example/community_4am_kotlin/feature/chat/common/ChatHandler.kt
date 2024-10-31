@@ -9,7 +9,7 @@ import org.springframework.web.socket.WebSocketSession
 @Component
 interface ChatHandler : WebSocketHandler {
     @Throws(Exception::class)
-    fun handleTextMessage(session: WebSocketSession?, message: TextMessage?)
+    fun handleTextMessage(session: WebSocketSession, message: TextMessage)
 
     @Throws(Exception::class)
     override fun afterConnectionEstablished(session: WebSocketSession)

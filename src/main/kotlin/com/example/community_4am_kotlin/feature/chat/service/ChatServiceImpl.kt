@@ -1,7 +1,6 @@
 package com.example.community_4am_kotlin.feature.chat.service
 
 
-import com.example.Community_4am_Kotlin.domain.user.User
 import com.example.community_4am_kotlin.feature.user.service.UserService
 import com.nimbusds.jose.shaded.gson.Gson
 import org.springframework.stereotype.Service

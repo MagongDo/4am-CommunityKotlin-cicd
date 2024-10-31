@@ -1,6 +1,6 @@
 package com.example.community_4am_kotlin.feature.user.service
 
-import com.example.Community_4am_Kotlin.domain.user.RefreshToken
+import com.example.community_4am_kotlin.domain.user.RefreshToken
 import com.example.community_4am_kotlin.feature.user.repository.RefreshTokenRepository
 import org.springframework.stereotype.Service
 

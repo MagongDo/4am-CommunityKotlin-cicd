@@ -1,6 +1,6 @@
 package com.example.community_4am_kotlin.config
 
-import jdk.internal.org.jline.utils.Colors.s
+
 import org.apache.catalina.Context
 import org.apache.catalina.connector.Connector
 import org.apache.tomcat.util.descriptor.web.SecurityCollection
