@@ -1,6 +1,5 @@
 package com.example.community_4am_kotlin.config.jwt
 
-import com.example.Community_4am_Kotlin.config.jwt.TokenProvider
 import com.example.community_4am_kotlin.feature.user.service.UserDetailService
 import jakarta.servlet.FilterChain
 import jakarta.servlet.ServletException

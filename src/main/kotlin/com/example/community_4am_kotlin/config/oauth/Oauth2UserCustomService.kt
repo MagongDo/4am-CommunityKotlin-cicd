@@ -1,11 +1,13 @@
 package com.example.community_4am_kotlin.config.oauth
 
-import com.example.Community_4am_Kotlin.feature.user.repository.UserRepository
+
+import com.example.community_4am_kotlin.domain.user.Role
+import com.example.community_4am_kotlin.domain.user.User
+import com.example.community_4am_kotlin.feature.user.repository.UserRepository
 import org.hibernate.query.sqm.tree.SqmNode.log
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest
-import org.springframework.security.oauth2.core.OAuth2AuthenticationException
 import org.springframework.security.oauth2.core.user.OAuth2User
 import org.springframework.stereotype.Service
 import java.io.File

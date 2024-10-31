@@ -1,9 +1,9 @@
 package com.example.community_4am_kotlin.config.jwt
 
-import com.example.Community_4am_Kotlin.config.jwt.JwtPrincipal
-import com.example.Community_4am_Kotlin.config.jwt.LoginRequest
-import com.example.Community_4am_Kotlin.config.jwt.TokenProvider
-import com.example.Community_4am_Kotlin.feature.user.util.CookieUtil
+import com.example.community_4am_kotlin.domain.user.Role
+import com.example.community_4am_kotlin.domain.user.User
+import com.example.community_4am_kotlin.domain.user.RefreshToken
+import com.example.community_4am_kotlin.feature.user.util.CookieUtil
 import com.example.community_4am_kotlin.config.oauth.OAuth2AuthorizationRequestBasedOnCookieRepository
 import com.example.community_4am_kotlin.feature.user.repository.RefreshTokenRepository
 import com.example.community_4am_kotlin.feature.user.service.UserDetailService
@@ -25,7 +25,6 @@ import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.util.UriComponentsBuilder
 import java.io.IOException
 import java.time.Duration
-import java.util.*
 
 @RestController
 
@@ -52,7 +51,7 @@ class UserJwtApiController(
 
         if (BCryptPasswordEncoder().matches(loginRequest.password, user.password)) {
             val refreshToken = tokenProvider.generateToken(user, REFRESH_TOKEN_DURATION)
-            saveRefreshToken(user.id, refreshToken, user.email)
+            user.id?.let { saveRefreshToken(it, refreshToken, user.email) }
             addRefreshTokenToCookie(request, response, refreshToken)
 
             val accessToken = tokenProvider.generateToken(user, ACCESS_TOKEN_DURATION)
@@ -63,7 +62,7 @@ class UserJwtApiController(
             val authenticationToken = UsernamePasswordAuthenticationToken(
                 JwtPrincipal(user.username),
                 null,
-                listOf(SimpleGrantedAuthority(Role.ROLE_USER.authority))
+                listOf(SimpleGrantedAuthority(Role.ROLE_USER.getAuthority()))
             )
             SecurityContextHolder.getContext().authentication = authenticationToken
             log.info(" 일반 로그인시 생성 & 저장된 : 인증 정보 (유저 객체) ")
@@ -76,8 +75,9 @@ class UserJwtApiController(
 
     private fun saveRefreshToken(userId: Long, newRefreshToken: String, email: String) {
         val refreshToken = refreshTokenRepository.findByUserId(userId)
-            ?.update(newRefreshToken)
-            ?: RefreshToken(userId, newRefreshToken, email)
+            .map { it.update(newRefreshToken) }
+            .orElseGet { RefreshToken(userId = userId, refreshToken = newRefreshToken, email = email) }
+
         refreshTokenRepository.save(refreshToken)
     }
 

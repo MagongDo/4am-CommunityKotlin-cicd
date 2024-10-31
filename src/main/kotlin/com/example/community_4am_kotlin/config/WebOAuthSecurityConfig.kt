@@ -1,6 +1,6 @@
 package com.example.community_4am_kotlin.config
 
-import com.example.Community_4am_Kotlin.config.jwt.TokenProvider
+import com.example.community_4am_kotlin.config.jwt.TokenProvider
 import com.example.community_4am_kotlin.config.jwt.TokenAuthenticationFilter
 import com.example.community_4am_kotlin.config.oauth.CustomLogoutHandler
 import com.example.community_4am_kotlin.config.oauth.OAuth2AuthorizationRequestBasedOnCookieRepository
@@ -8,6 +8,7 @@ import com.example.community_4am_kotlin.config.oauth.OAuth2SuccessHandler
 import com.example.community_4am_kotlin.config.oauth.Oauth2UserCustomService
 import com.example.community_4am_kotlin.feature.user.repository.RefreshTokenRepository
 import com.example.community_4am_kotlin.feature.user.service.UserDetailService
+import com.example.community_4am_kotlin.feature.user.service.UserService
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.http.HttpStatus

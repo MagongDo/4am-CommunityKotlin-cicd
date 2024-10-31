@@ -1,6 +1,6 @@
-package com.example.Community_4am_Kotlin.config.jwt
+package com.example.community_4am_kotlin.config.jwt
 
-import com.example.Community_4am_Kotlin.domain.user.User
+import com.example.community_4am_kotlin.domain.user.User
 import io.jsonwebtoken.*
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.Authentication
@@ -51,7 +51,7 @@ class TokenProvider(
     }
 
     // 토큰 기반으로 인증 정보를 가져오는 메서드
-    fun getAuthentication(token: String): Authentication {
+    fun getAuthentication(token: String?): Authentication {
         val claims = getClaims(token)
         // 기본적으로 "ROLE_USER" 권한을 부여
         val authorities = setOf(SimpleGrantedAuthority("ROLE_USER"))
@@ -70,7 +70,7 @@ class TokenProvider(
     }
 
     // JWT 토큰에서 클레임 정보를 가져오는 메서드
-    fun getClaims(token: String): Claims {
+    fun getClaims(token: String?): Claims {
         return Jwts.parserBuilder()
             .setSigningKey(jwtProperties.secret) // 비밀키 설정
             .build()

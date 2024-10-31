@@ -1,7 +1,7 @@
-package com.example.Community_4am_Kotlin.feature.user.service
+package com.example.community_4am_kotlin.feature.user.service
 
 
-import com.example.Community_4am_Kotlin.domain.user.User
+import com.example.community_4am_kotlin.domain.user.User
 import com.example.community_4am_kotlin.feature.user.repository.UserRepository
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory

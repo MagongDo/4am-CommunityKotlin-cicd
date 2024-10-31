@@ -1,17 +1,16 @@
 package com.example.community_4am_kotlin.config.oauth
 
 
-import com.example.Community_4am_Kotlin.config.jwt.TokenProvider
-import com.example.Community_4am_Kotlin.feature.user.util.CookieUtil
+import com.example.community_4am_kotlin.config.jwt.TokenProvider
+import com.example.community_4am_kotlin.domain.user.RefreshToken
+import com.example.community_4am_kotlin.feature.user.util.CookieUtil
 import com.example.community_4am_kotlin.feature.user.repository.RefreshTokenRepository
+import com.example.community_4am_kotlin.feature.user.service.UserService
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
 
 import org.hibernate.query.sqm.tree.SqmNode.log
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.Authentication
-import org.springframework.security.core.authority.SimpleGrantedAuthority
-import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken
 import org.springframework.security.oauth2.core.user.OAuth2User
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler
@@ -44,7 +43,7 @@ class OAuth2SuccessHandler(
     ) {
         val oauthToken = authentication as OAuth2AuthenticationToken
         val oAuth2User = oauthToken.principal
-        log.info("OAuth2User 정보: {}", oAuth2User.attributes)
+        log.info("OAuth2User 정보: {}"+ oAuth2User.attributes)
 
         val email = getEmailFromOAuth2User(oAuth2User) ?: throw IllegalArgumentException("이메일을 찾을 수 없습니다.")
 
@@ -65,7 +64,7 @@ class OAuth2SuccessHandler(
     private fun saveRefreshToken(userId: Long, newRefreshToken: String, email: String) {
         val refreshToken = refreshTokenRepository.findByUserId(userId)
             .map { it.update(newRefreshToken) }
-            .orElse(RefreshToken(userId, newRefreshToken, email))
+            .orElseGet { RefreshToken(userId = userId, refreshToken = newRefreshToken, email = email) }
 
         refreshTokenRepository.save(refreshToken)
     }

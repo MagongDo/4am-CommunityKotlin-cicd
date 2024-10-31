@@ -18,7 +18,7 @@ class ChatHandlerImpl(
     private val roomSessions : ConcurrentHashMap<String, MutableMap<String, WebSocketSession>>,
     private val messageRepository : MessageRepository
 ) : TextWebSocketHandler() ,ChatHandler {
-    override fun handleTextMessage(session: WebSocketSession?, message: TextMessage?) {
+    override fun handleTextMessage(session: WebSocketSession, message: TextMessage) {
         // session과 message가 null이 아닐 때만 실행
         session?.let { wsSession ->
             message?.payload?.let { payload ->

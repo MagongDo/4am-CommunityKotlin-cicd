@@ -1,17 +1,15 @@
 package com.example.community_4am_kotlin.feature.chat.service
 
-import com.example.Community_4am_Kotlin.domain.chat.ChatMessage
+import com.example.community_4am_kotlin.domain.chat.ChatMessage
 import com.example.community_4am_kotlin.log
 import com.example.community_4am_kotlin.feature.chat.repository.ChatRoomRepository
 import com.example.community_4am_kotlin.feature.chat.repository.MessageRepository
-import org.hibernate.query.sqm.tree.SqmNode.log
 import org.springframework.data.redis.connection.Message
 import org.springframework.data.redis.connection.MessageListener
 import org.springframework.stereotype.Service
 import org.springframework.web.socket.TextMessage
 import org.springframework.web.socket.WebSocketSession
 import java.time.LocalDateTime
-import java.time.LocalTime
 import java.io.IOException
 import java.util.concurrent.ConcurrentHashMap
 

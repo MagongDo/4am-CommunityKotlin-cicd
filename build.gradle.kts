@@ -20,6 +20,7 @@ repositories {
 }
 
 dependencies {
+    implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.modelmapper:modelmapper:3.1.1")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.springframework.boot:spring-boot-starter-web")

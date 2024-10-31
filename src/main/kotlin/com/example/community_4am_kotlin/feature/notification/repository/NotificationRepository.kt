@@ -1,18 +1,28 @@
 package com.example.community_4am_kotlin.feature.notification.repository
 
 
-import com.example.Community_4am_Kotlin.domain.notification.Notification
-import com.example.Community_4am_Kotlin.domain.user.User
-import com.example.Community_4am_Kotlin.feature.notification.AlarmType
+import com.example.community_4am_kotlin.domain.notification.Notification
+import com.example.community_4am_kotlin.domain.user.User
+import com.example.community_4am_kotlin.feature.notification.AlarmType
 import org.springframework.data.jpa.repository.JpaRepository
-import org.springframework.stereotype.Repository
+import org.springframework.data.jpa.repository.Query
+import org.springframework.data.repository.query.Param
 
 interface NotificationRepository : JpaRepository<Notification, Long> {
     fun findByRecipientAndIsReadFalseOrderByCreatedAtDesc(recipient: String): MutableList<Notification>
-    fun findByRecipientAndMakeIdAndAlarmTypeIsLikeAndIsReadFalse(
-        recipient: String,
-        makeId: String,
-        alarmType: AlarmType
+    @Query(
+        """
+    SELECT n FROM Notification n
+    WHERE n.recipient = :recipient 
+      AND n.makeId = :makeId 
+      AND n.alarmType = :alarmType 
+      AND n.isRead = false
+    """
+    )
+    fun findByRecipientAndMakeIdAndAlarmTypeAndIsReadFalse(
+        @Param("recipient") recipient: String,
+        @Param("makeId") makeId: String,
+        @Param("alarmType") alarmType: AlarmType
     ): Notification?
     fun countByRecipientAndIsReadFalse(recipient: String): Long
     fun findByUser(user: User): MutableList<Notification>

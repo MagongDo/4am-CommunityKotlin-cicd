@@ -1,8 +1,8 @@
 package com.example.community_4am_kotlin.feature.notification.service
 
 
-import com.example.Community_4am_Kotlin.domain.notification.Notification
-import com.example.Community_4am_Kotlin.feature.notification.AlarmType
+import com.example.community_4am_kotlin.domain.notification.Notification
+import com.example.community_4am_kotlin.feature.notification.AlarmType
 import com.example.community_4am_kotlin.feature.article.ArticleRepository
 import com.example.community_4am_kotlin.feature.notification.event.NotificationEvent
 import com.example.community_4am_kotlin.feature.notification.repository.NotificationRepository
@@ -24,7 +24,7 @@ class NotificationService(
 ) {
 
     fun likeIsRead(recipient: String, makeId: String, alarmType: AlarmType): Boolean {
-        val notification = notificationRepository.findByRecipientAndMakeIdAndAlarmTypeIsLikeAndIsReadFalse(
+        val notification = notificationRepository.findByRecipientAndMakeIdAndAlarmTypeAndIsReadFalse(
             recipient, makeId, alarmType
         )
         return notification != null
@@ -55,7 +55,7 @@ class NotificationService(
                 )
 
                 notificationRepository.save(notification)
-                commentAlarmService.addComment(recipientUser.id, articleId)
+//                commentAlarmService.addComment(recipientUser.id, articleId)
                 eventPublisher.publishEvent(NotificationEvent(this, toAuthor, message, notification.alarmType))
             }
 

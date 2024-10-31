@@ -1,5 +1,5 @@
-package com.example.Community_4am_Kotlin.domain.user
-import com.example.Community_4am_Kotlin.domain.article.Like
+package com.example.community_4am_kotlin.domain.user
+import com.example.community_4am_kotlin.domain.article.Like
 import jakarta.persistence.*
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import org.springframework.security.core.GrantedAuthority
@@ -15,7 +15,7 @@ data class User(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", updatable = false)
-    val id: Long,
+    val id: Long?=null,
 
     @Column(name = "email", nullable = false, unique = true)
     var email: String,
@@ -92,7 +92,7 @@ data class User(
         this.profileUrl = profileUrl
     }
 
-    fun update(nickname: String): User {
+    fun update(nickname: String?): User {
         this.nickname = nickname
         return this
     }
