@@ -9,18 +9,16 @@ import java.time.LocalDateTime
 data class ChatRoom(
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "room_id", nullable = false)
-    private var id: Long?,
+    var id: Long?= null,
 
     @Column(name="room_name")
-    private var roomName:String,
+    var roomName:String,
     @Column(name="email", nullable = false)
-    private var email:String,
+    var email:String,
     @Column(name="description", nullable = false)
-    private var description:String,
+    var description:String,
     @Column( nullable = false)
-    private var createdDate: LocalDateTime,
+    var createdDate: LocalDateTime,
     @OneToMany(mappedBy="chatRoom", cascade = [(CascadeType.MERGE)],orphanRemoval = true)
-    private var message:MutableList<ChatMessage> = mutableListOf()
-){
-
-}
+    var message:MutableList<ChatMessage> = mutableListOf()
+)

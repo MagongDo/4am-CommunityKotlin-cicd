@@ -16,6 +16,11 @@ import java.util.Optional
 import java.util.UUID
 
 @Service
+class UserService(private val userRepository: UserRepository) {
+
+
+
+@Service
 
 class UserService(
     private val userRepository: UserRepository, // 사용자 정보를 처리하는 레포지토리

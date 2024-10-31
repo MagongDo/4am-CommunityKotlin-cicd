@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping
 class FindUserDataController(
     val userService: FindUserDataService
 ) {
+
     private val log: Logger = LoggerFactory.getLogger(FindUserDataService::class.java)
 
     @GetMapping("/find-username")
