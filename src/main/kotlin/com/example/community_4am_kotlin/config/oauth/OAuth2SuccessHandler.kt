@@ -64,7 +64,7 @@ class OAuth2SuccessHandler(
     private fun saveRefreshToken(userId: Long, newRefreshToken: String, email: String) {
         val refreshToken = refreshTokenRepository.findByUserId(userId)
             .map { it.update(newRefreshToken) }
-            .orElse(RefreshToken(userId, newRefreshToken, email))
+            .orElseGet { RefreshToken(userId = userId, refreshToken = newRefreshToken, email = email) }
 
         refreshTokenRepository.save(refreshToken)
     }

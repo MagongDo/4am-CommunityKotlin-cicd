@@ -16,10 +16,11 @@ import java.util.Optional
 import java.util.UUID
 
 @Service
+
 class UserService(
     private val userRepository: UserRepository, // 사용자 정보를 처리하는 레포지토리
-    private val articleRepository: ArticleRepository,
-    private val commentRepository: CommentRepository
+//    private val articleRepository: ArticleRepository,
+//    private val commentRepository: CommentRepository
 ) {
 
     // 사용자 저장 메서드 (회원가입)
@@ -49,7 +50,7 @@ class UserService(
             }
         }
 
-        val user = User.builder()
+        val user = User.Builder()
             .email(dto.email)
             .password(encoder.encode(dto.password))
             .nickname(dto.nickname)
@@ -58,7 +59,7 @@ class UserService(
             .role(Role.ROLE_USER)
             .build()
 
-        return userRepository.save(user).id
+        return userRepository.save(user).id!!
     }
 
     // ID로 사용자 조회
@@ -80,8 +81,8 @@ class UserService(
             .orElseThrow { IllegalArgumentException("No user found with email: $username") }
 
         // 사용자 이메일로 작성된 게시글과 댓글의 작성자 필드를 "탈퇴한 사용자입니다."로 변경
-        articleRepository.updateAuthorToDeleted(username)
-        commentRepository.updateCommentAuthorToDeleted(username)
+//        articleRepository.updateAuthorToDeleted(username)
+//        commentRepository.updateCommentAuthorToDeleted(username)
         userRepository.delete(user)
     }
 
