@@ -2,6 +2,7 @@ package com.example.community_4am_kotlin.feature.user.controller
 
 
 import com.example.Community_4am_Kotlin.feature.user.dto.*
+import com.example.community_4am_kotlin.feature.user.service.UserService
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
 import org.hibernate.query.sqm.tree.SqmNode.log

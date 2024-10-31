@@ -1,6 +1,7 @@
 package com.example.community_4am_kotlin.feature.user.service
 
-import com.example.Community_4am_Kotlin.feature.user.repository.UserRepository
+import com.example.Community_4am_Kotlin.domain.user.User
+import com.example.community_4am_kotlin.feature.user.repository.UserRepository
 import org.springframework.security.core.userdetails.UsernameNotFoundException
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -9,7 +10,6 @@ import java.io.IOException
 import java.util.*
 
 @Service
-@RequiredArgsConstructor
 class MyPageService(
     private val userRepository: UserRepository // UserRepository 주입
 ) {

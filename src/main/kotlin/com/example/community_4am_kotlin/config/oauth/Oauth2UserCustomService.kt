@@ -1,6 +1,8 @@
 package com.example.community_4am_kotlin.config.oauth
 
-import com.example.Community_4am_Kotlin.feature.user.repository.UserRepository
+import com.example.Community_4am_Kotlin.domain.user.Role
+import com.example.Community_4am_Kotlin.domain.user.User
+import com.example.community_4am_kotlin.feature.user.repository.UserRepository
 import org.hibernate.query.sqm.tree.SqmNode.log
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService
