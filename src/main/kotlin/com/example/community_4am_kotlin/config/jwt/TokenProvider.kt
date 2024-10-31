@@ -1,16 +1,12 @@
 package com.example.Community_4am_Kotlin.config.jwt
 
 import com.example.Community_4am_Kotlin.domain.user.User
-import io.jsonwebtoken.Claims
-import io.jsonwebtoken.ExpiredJwtException
-import io.jsonwebtoken.Jwts
-import org.springframework.stereotype.Service
-
+import io.jsonwebtoken.*
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.Authentication
 import org.springframework.security.core.authority.SimpleGrantedAuthority
+import org.springframework.stereotype.Service
 import java.time.Duration
-import java.util.Collections
 import java.util.Date
 
 @Service
@@ -37,15 +33,15 @@ class TokenProvider(
             .setSubject(user.email) // 토큰의 주체(sub)를 설정 내용 sub : 유저의 이메일
             .claim("email", user.email) // 클래임에 이메일을 포함
             .claim("id", user.id) // 클래임 id : 유저 ID
-            .signWith(SignatureAlgorithm.HS256, jwtProperties.secretKey) // 비밀키 설정
+            .signWith(SignatureAlgorithm.HS256, jwtProperties.secret) // 비밀키 설정
             .compact() // 토큰을 생성하여 문자열로 반환
     }
 
     // JWT 토큰 유효성 검증 메서드
-    fun validToken(token: String): Boolean {
+    fun validToken(token: String?): Boolean {
         return try {
             Jwts.parserBuilder()
-                .setSigningKey(jwtProperties.secretKey)
+                .setSigningKey(jwtProperties.secret) // 비밀키 설정
                 .build()
                 .parseClaimsJws(token)
             true
@@ -76,25 +72,27 @@ class TokenProvider(
     // JWT 토큰에서 클레임 정보를 가져오는 메서드
     fun getClaims(token: String): Claims {
         return Jwts.parserBuilder()
-            .setSigningKey(jwtProperties.secretKey)
+            .setSigningKey(jwtProperties.secret) // 비밀키 설정
             .build()
             .parseClaimsJws(token)
             .body
     }
 
+    // 토큰에서 이메일을 가져오는 메서드
     fun getEmail(token: String): String? {
         return parseClaims(token)["email", String::class.java]
     }
 
+    // 토큰에서 클레임 정보를 가져오는 메서드
     private fun parseClaims(accessToken: String): Claims {
         return try {
             Jwts.parserBuilder()
-                .setSigningKey(jwtProperties.secretKey)
+                .setSigningKey(jwtProperties.secret) // 비밀키 설정
                 .build()
                 .parseClaimsJws(accessToken)
                 .body
         } catch (e: ExpiredJwtException) {
-            e.claims
+            e.claims // 토큰이 만료된 경우 클레임 반환
         }
     }
 }

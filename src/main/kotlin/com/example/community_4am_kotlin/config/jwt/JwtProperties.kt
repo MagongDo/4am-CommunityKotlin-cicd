@@ -5,8 +5,7 @@ import org.springframework.stereotype.Component
 
 @Component
 @ConfigurationProperties("jwt")
-data class JwtProperties (
-    private val issuer:String="ajufresh@gmail.com",
-    private val secret:String="c3R1ZHktc3ByaW5nYm9vdC1zZWN1cmUtc2VjcmV0LWtleS0zMmNoYXJz"
-
+data class JwtProperties(
+    var issuer: String = "ajufresh@gmail.com", // issuer 기본값 설정
+    var secret: String = "c3R1ZHktc3ByaW5nYm9vdC1zZWN1cmUtc2VjcmV0LWtleS0zMmNoYXJz" // secret 기본값 설정
 )
