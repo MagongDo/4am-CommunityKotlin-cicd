@@ -23,7 +23,7 @@ data class Like (
     @JoinColumn(name="user_id", nullable = false)
     private var user: User,
 
-    private var likedStatus:Boolean,
+    var likedStatus:Boolean,
 
     @CreatedDate
     @Column(name="created_at")

@@ -40,7 +40,7 @@ data class Article(
     var createdAt: LocalDateTime ?= null,
 
     @LastModifiedDate
-    @Column(name = "updated_at")
+    @Column(name = "update_at")
     var updatedAt: LocalDateTime ?=null,
 
     @Column(name = "view_count")

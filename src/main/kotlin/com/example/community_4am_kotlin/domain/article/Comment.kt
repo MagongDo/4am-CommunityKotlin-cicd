@@ -57,7 +57,7 @@ data class Comment (
     // Getter 메서드 추가
     fun getCommentAuthor() = commentAuthor
     fun getCommentContent() = commentContent
-    fun getCreatedDate() = createdDate
+    fun getCreatedDate() = createdAt
     fun getArticle() = article
     fun getParentComment() = parentComment
     fun getCommentIsHidden()= commentIsHidden

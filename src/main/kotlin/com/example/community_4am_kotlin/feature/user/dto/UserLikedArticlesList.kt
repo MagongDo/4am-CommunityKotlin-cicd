@@ -4,9 +4,9 @@ import com.fasterxml.jackson.annotation.JsonFormat
 import java.time.LocalDateTime
 
 data class UserLikedArticlesList(
-    var id : Long,
+    var id : Long? = null,
     var title: String,
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
-    var createdAt: LocalDateTime,
+    var createdAt: LocalDateTime? = null,
     var viewCount: Long
 )
