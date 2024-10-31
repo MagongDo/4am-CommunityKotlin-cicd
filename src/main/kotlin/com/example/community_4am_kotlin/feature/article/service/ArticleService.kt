@@ -7,7 +7,6 @@ import com.example.community_4am_kotlin.feature.article.repository.ArticleReposi
 import com.example.community_4am_kotlin.feature.comment.repository.CommentRepository
 import com.example.community_4am_kotlin.feature.file.service.FileUploadService
 import com.example.community_4am_kotlin.feature.like.service.LikeService
-import org.apache.coyote.http11.Constants.a
 import org.modelmapper.ModelMapper
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable

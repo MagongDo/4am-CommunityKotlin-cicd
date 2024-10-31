@@ -16,7 +16,7 @@ class FileUploadService(
     private val fileRepository: FileRepository,
     private val modelMapper: ModelMapper
 ) {
-    fun uploadFiles(files: MutableList<MultipartFile>, article: Article): List<InsertedFile> {
+    fun uploadFiles(files: List<MultipartFile>, article: Article): List<InsertedFile> {
         val uploadedFiles: MutableList<InsertedFile> = mutableListOf<InsertedFile>()
 
         for (file in files) {
