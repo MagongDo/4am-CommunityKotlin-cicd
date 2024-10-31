@@ -2,7 +2,7 @@ package com.example.Community_4am_Kotlin.feature.user.service
 
 
 import com.example.Community_4am_Kotlin.domain.user.User
-import com.example.Community_4am_Kotlin.feature.user.repository.UserRepository
+import com.example.community_4am_kotlin.feature.user.repository.UserRepository
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.security.core.userdetails.UsernameNotFoundException

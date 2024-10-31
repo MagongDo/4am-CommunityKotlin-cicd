@@ -6,7 +6,7 @@ import com.example.Community_4am_Kotlin.domain.user.User
 import com.example.Community_4am_Kotlin.feature.notification.AlarmType
 import com.example.Community_4am_Kotlin.feature.notification.repository.NotificationRepository
 import com.example.Community_4am_Kotlin.feature.user.dto.UserLikedArticlesList
-import com.example.Community_4am_Kotlin.feature.user.repository.UserRepository
+import com.example.community_4am_kotlin.feature.user.repository.UserRepository
 import com.example.community_4am_kotlin.feature.article.repository.ArticleRepository
 import com.example.community_4am_kotlin.feature.like.repository.LikeRepository
 import org.apache.logging.log4j.LogManager
@@ -66,11 +66,18 @@ class LikeService(
             existingLike.likedStatus
         } else {
             // 새로운 좋아요 생성
-            val newLike: Like = Like.builder()
-                .article(article)
-                .user(user)
-                .likedStatus(true)
-                .build()
+//            val newLike: Like = Like.builder()
+//                .article(article)
+//                .user(user)
+//                .likedStatus(true)
+//                .build()
+            val newLike: Like = Like(
+                article = article,
+                user = user,
+                likedStatus = true,
+            )
+
+
             likeRepository.save(newLike) // 좋아요 추가
 
             notificationService.sendLikeNotification(articleId, userName) // 알림 전송
