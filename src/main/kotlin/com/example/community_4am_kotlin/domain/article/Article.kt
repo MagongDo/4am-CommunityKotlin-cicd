@@ -36,12 +36,12 @@ data class Article(
     var author: String,
 
     @CreatedDate
-    @Column(name = "created_date")
-    var createdDate: LocalDateTime ?= null,
+    @Column(name = "created_at")
+    var createdAt: LocalDateTime ?= null,
 
     @LastModifiedDate
-    @Column(name = "updated_date")
-    var updatedDate: LocalDateTime ?=null,
+    @Column(name = "update_at")
+    var updatedAt: LocalDateTime ?=null,
 
     @Column(name = "view_count")
     var viewCount: Long = 0L,
