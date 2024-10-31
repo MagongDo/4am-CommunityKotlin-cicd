@@ -14,9 +14,6 @@ class Community4amKotlinApplication
 inline val <reified T> T.log : Logger
     get() = LogManager.getLogger()
 
-inline val <reified T> T.log: Logger
-    get() = LogManager.getLogger()
-
 fun main(args: Array<String>) {
     runApplication<Community4amKotlinApplication>(*args)
 }
