@@ -20,14 +20,16 @@ class CommentAlarmService(
 ) {
 
     // 댓글 작성
-    fun addComment(userId: Long, articleId: Long) {
-        val user: User = userRepository.findById(userId)
-            .orElseThrow { RuntimeException("사용자 없음") }
+    fun addComment(userId: Long?, articleId: Long) {
+        val user: User? = userId?.let {
+            userRepository.findById(it)
+                .orElseThrow { RuntimeException("사용자 없음") }
+        }
         val article: Article = articleRepository.findById(articleId)
             .orElseThrow { RuntimeException("게시물 없음") }
 
         val commentAlarm = CommentAlarm().apply {
-            this.userId = user.id
+            this.userId = user?.id
             this.articleId = article.id
             this.alarmType = AlarmType.COMMENT
         }

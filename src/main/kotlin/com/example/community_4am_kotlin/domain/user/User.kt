@@ -48,7 +48,7 @@ data class User(
 
 
 
-        class Builder {
+   /*     class Builder {
             private var id: Long? = null
             private var email: String? = null
             private var password: String? = null
@@ -77,7 +77,7 @@ data class User(
                 profileUrl,
                 likes
             )
-        }
+        }*/
 
 
 
