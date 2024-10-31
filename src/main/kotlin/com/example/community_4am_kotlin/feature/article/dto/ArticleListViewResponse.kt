@@ -19,7 +19,7 @@ data class ArticleListViewResponse(
         title = article.title,
         content = article.content,
         author = article.author,
-        createdAt = article.createdDate,
+        createdAt = article.createdAt,
         viewCount = article.viewCount,
         likeCount = article.likeCount
     )

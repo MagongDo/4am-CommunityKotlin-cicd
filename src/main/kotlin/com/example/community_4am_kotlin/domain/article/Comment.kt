@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty
 import jakarta.persistence.*
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.LastModifiedDate
+import org.springframework.data.jpa.domain.AbstractAuditable_.createdDate
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import java.time.LocalDateTime
 
@@ -20,9 +21,9 @@ data class Comment (
     private var commentContent: String,
 
     @CreatedDate
-    private var createdDate: LocalDateTime?=null,
+    private var createdAt: LocalDateTime?=null,
     @LastModifiedDate
-    private var modifiedDate: LocalDateTime?=null,
+    private var updatedAt: LocalDateTime?=null,
 
     @JsonProperty("commentIsHidden")
     private var commentIsHidden: Boolean?=false,
