@@ -6,8 +6,7 @@ import jakarta.persistence.*
 data class RefreshToken (
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     var id: Long?=null,
-    @Column(name="user_id", nullable = false)
-    private var userId: Long,
+    @Column(name="user_id", nullable = false) var userId: Long,
     @Column(name="refresh_token", nullable = false,length=1000)
     private var refreshToken: String,
     @Column(name="email", length=255)

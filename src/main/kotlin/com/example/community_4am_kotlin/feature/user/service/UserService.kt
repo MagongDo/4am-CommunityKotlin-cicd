@@ -16,8 +16,6 @@ import java.util.Optional
 import java.util.UUID
 
 @Service
-@RequiredArgsConstructor
-@Log4j2
 class UserService(
     private val userRepository: UserRepository, // 사용자 정보를 처리하는 레포지토리
     private val articleRepository: ArticleRepository,
