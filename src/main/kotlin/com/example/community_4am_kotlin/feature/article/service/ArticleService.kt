@@ -27,7 +27,7 @@ class ArticleService (
     private val modelMapper: ModelMapper
 ){
     // 글 등록 메서드: 게시글을 저장하고 첨부 파일을 처리하여 파일과 게시글을 연결
-    fun save(request: AddArticleRequest,userName:String, files:MutableList<MultipartFile>) : Article {
+    fun save(request: AddArticleRequest, userName:String, files: MutableList<MultipartFile>?) : Article {
         val savedArticle=modelMapper.map(request,Article::class.java).apply { author=userName }
         articleRepository.save(savedArticle)
         files?.takeIf { it.isNotEmpty() }?.let {
