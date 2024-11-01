@@ -1,5 +1,6 @@
 package com.example.community_4am_kotlin.feature.videochat.handler
 
+import com.example.community_4am_kotlin.config.jwt.TokenProvider
 import com.example.community_4am_kotlin.domain.videochat.VideoChatLog
 import com.example.community_4am_kotlin.feature.videochat.dto.VideoChatLogDTO
 import com.example.community_4am_kotlin.feature.videochat.service.RedisService
@@ -22,7 +23,7 @@ import java.util.concurrent.CopyOnWriteArrayList
 class RandomVideoChatHandler(
     private val redisService: RedisService,
     private val videoChatLogService: VideoChatLogService,
-//    private val tokenProvider: TokenProvider
+    private val tokenProvider: TokenProvider
 ) : TextWebSocketHandler() {
 
     companion object {
@@ -173,12 +174,24 @@ class RandomVideoChatHandler(
             // 디버깅 코드: 유저 둘이 같은 방에 들어가 있는지 확인
             verifyUsersInSameRoom(roomId, user1, user2)
 
+            // user1에 대한 로그 생성
             videoChatLogService.videoChatStartTimeLog(
                 VideoChatLogDTO(
                     VideoChatLog(
                         videoChatId = roomId,
                         userId = user1Id,
                         otherUserId = user2Id
+                    )
+                )
+            )
+
+            // user2에 대한 로그 생성
+            videoChatLogService.videoChatStartTimeLog(
+                VideoChatLogDTO(
+                    VideoChatLog(
+                        videoChatId = roomId,
+                        userId = user2Id,
+                        otherUserId = user1Id
                     )
                 )
             )
@@ -258,7 +271,7 @@ class RandomVideoChatHandler(
             val builder = UriComponentsBuilder.fromUri(uri)
             val accessToken: String? = builder.build().queryParams.getFirst("accessToken")
             if (accessToken != null) {
-//                userId = tokenProvider.getUserId(accessToken) // 여기 강민님 돌아오면 수정해야함 241030
+                userId = tokenProvider.getUserId(accessToken)!! // 여기 강민님 돌아오면 수정해야함 241030
                 session.attributes["userId"] = userId
             }
         }

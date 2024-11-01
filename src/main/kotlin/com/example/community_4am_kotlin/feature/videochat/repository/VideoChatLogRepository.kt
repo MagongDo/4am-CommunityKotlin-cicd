@@ -6,4 +6,7 @@ import org.springframework.stereotype.Repository
 
 @Repository
 interface  VideoChatLogRepository: JpaRepository<VideoChatLog, String> {
+
+    fun findAllByVideoChatId(roomId: String): List<VideoChatLog>
+
 }

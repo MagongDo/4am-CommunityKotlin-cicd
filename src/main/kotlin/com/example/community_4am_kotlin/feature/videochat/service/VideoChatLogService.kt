@@ -32,11 +32,13 @@ class VideoChatLogService(
      * @param videoChatId 화상채팅 방 ID
      */
     fun videoChatEndTimeLog(videoChatId: String) {
-        val videoChatLog = videoChatLogRepository.findById(videoChatId)
-            .orElseThrow { IllegalArgumentException("해당 ID의 로그를 찾을 수 없습니다: $videoChatId") }
+        val videoChatLogs = videoChatLogRepository.findAllByVideoChatId(videoChatId)
+            .ifEmpty { IllegalArgumentException("해당 ID의 로그를 찾을 수 없습니다: $videoChatId") }
 
-        videoChatLog.videoChatEndAt = LocalDateTime.now()
-        videoChatLogRepository.save(videoChatLog)
-        log.info("화상채팅 종료 로그 저장됨: $videoChatLog")
+
+
+//        videoChatLog.videoChatEndAt = LocalDateTime.now()
+//        videoChatLogRepository.save(videoChatLog)
+//        log.info("화상채팅 종료 로그 저장됨: $videoChatLog")
     }
 }

@@ -1,4 +1,4 @@
-package com.example.community_4am_Kotlin.feature.article.dto
+package com.example.community_4am_kotlin.feature.article.dto
 
 import io.swagger.v3.oas.annotations.media.Schema
 import jakarta.validation.constraints.Max

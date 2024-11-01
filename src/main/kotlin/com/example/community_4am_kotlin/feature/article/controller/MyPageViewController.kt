@@ -3,6 +3,7 @@ package com.example.community_4am_kotlin.feature.article.controller
 import com.example.community_4am_kotlin.feature.article.service.ArticleService
 import com.example.community_4am_kotlin.feature.comment.service.CommentService
 import com.example.community_4am_kotlin.feature.like.service.LikeService
+import com.example.community_4am_kotlin.feature.user.service.UserService
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Controller
 import org.springframework.ui.Model

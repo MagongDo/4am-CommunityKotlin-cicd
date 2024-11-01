@@ -1,8 +1,6 @@
-package com.example.community_4am_Kotlin.domain.article
+package com.example.community_4am_kotlin.domain.article
 
 
-import com.example.community_4am_Kotlin.domain.article.InsertedFile
-import com.example.community_4am_Kotlin.domain.article.Like
 import jakarta.persistence.*
 import org.hibernate.annotations.BatchSize
 import org.springframework.data.annotation.CreatedDate

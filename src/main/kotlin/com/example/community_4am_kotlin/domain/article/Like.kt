@@ -1,5 +1,6 @@
-package com.example.community_4am_Kotlin.domain.article
+package com.example.community_4am_kotlin.domain.article
 
+import com.example.community_4am_kotlin.domain.article.Article
 import com.example.community_4am_kotlin.domain.user.User
 import jakarta.persistence.*
 import org.springframework.data.annotation.CreatedDate

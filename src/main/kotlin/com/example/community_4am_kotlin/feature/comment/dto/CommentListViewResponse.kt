@@ -1,6 +1,6 @@
 package com.example.community_4am_kotlin.feature.comment.dto
 
-import com.example.community_4am_Kotlin.domain.article.Comment
+import com.example.community_4am_kotlin.domain.article.Comment
 import com.fasterxml.jackson.annotation.JsonFormat
 import java.time.LocalDateTime
 

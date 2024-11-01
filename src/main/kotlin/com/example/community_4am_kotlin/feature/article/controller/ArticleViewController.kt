@@ -1,11 +1,12 @@
 package com.example.community_4am_kotlin.feature.article.controller
 
-import com.example.community_4am_Kotlin.feature.article.dto.ArticleViewResponse
-import com.example.community_4am_Kotlin.feature.article.dto.PageRequestDTO
+import com.example.community_4am_kotlin.feature.article.dto.ArticleViewResponse
+import com.example.community_4am_kotlin.feature.article.dto.PageRequestDTO
 import com.example.community_4am_kotlin.feature.article.service.ArticleService
 import com.example.community_4am_kotlin.feature.comment.dto.CommentPageRequestDTO
 import com.example.community_4am_kotlin.feature.comment.service.CommentService
 import com.example.community_4am_kotlin.feature.like.service.LikeService
+import com.example.community_4am_kotlin.feature.user.service.UserService
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Controller
 import org.springframework.ui.Model
@@ -17,13 +18,13 @@ import org.springframework.web.bind.annotation.RequestParam
 @Controller
 class ArticleViewController(
     private val articleService: ArticleService,
-    private val userService:UserService,
+    private val userService: UserService,
     private val commentService: CommentService,
     private val likeService: LikeService
 ) {
     // 게시글 목록을 페이지 네이션과 함께 가져오기
     @GetMapping("/articles")
-    fun getArticles(@ModelAttribute pageRequestDTO: PageRequestDTO,model: Model):String{
+    fun getArticles(@ModelAttribute pageRequestDTO: PageRequestDTO, model: Model):String{
         // 페이지 요청 정보에 맞는 게시글 리스트 가져오기 (페이지네이션 적용)
         val articleListPage=articleService.getList(pageRequestDTO)
         // 현재 페이지의 게시글 목록을 모델에 추가
@@ -52,10 +53,10 @@ class ArticleViewController(
         val isArticleOwner=article.author==currentUserName
 
         val articleUser=userService.findByEmail(article.author)
-        val currentUserImage=userService.findByEmail(currentUserName).profileImageAsBase64
+        val currentUserImage=userService.findByEmail(currentUserName).getProfileImageAsBase64()
 
         model.addAttribute("article",article)
-        model.addAttribute("profileImage",articleUser.profileImageAsBase64)
+        model.addAttribute("profileImage",articleUser.getProfileImageAsBase64())
         model.addAttribute("isArticleOwner", isArticleOwner)
         model.addAttribute("currentUserName", currentUserName)
         model.addAttribute("currentUserImage", currentUserImage)

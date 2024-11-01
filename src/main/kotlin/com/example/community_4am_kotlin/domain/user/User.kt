@@ -1,5 +1,5 @@
 package com.example.community_4am_kotlin.domain.user
-import com.example.community_4am_Kotlin.domain.article.Like
+import com.example.community_4am_kotlin.domain.article.Like
 import jakarta.persistence.*
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import org.springframework.security.core.GrantedAuthority

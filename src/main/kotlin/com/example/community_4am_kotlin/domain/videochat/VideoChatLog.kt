@@ -14,6 +14,8 @@ import java.time.LocalDateTime
 data class VideoChatLog (
 
     @Id
+    var id: Long? = null,
+
     var videoChatId: String,
     var userId:Long,
     var otherUserId:Long,
@@ -23,4 +25,5 @@ data class VideoChatLog (
 
     var videoChatEndAt: LocalDateTime? = null,
     ){
+
 }

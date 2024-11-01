@@ -1,7 +1,7 @@
 package com.example.community_4am_kotlin.feature.file.controller
 
-import com.example.community_4am_Kotlin.domain.article.Article
-import com.example.community_4am_Kotlin.domain.article.InsertedFile
+import com.example.community_4am_kotlin.domain.article.Article
+import com.example.community_4am_kotlin.domain.article.InsertedFile
 import com.example.community_4am_kotlin.feature.article.service.ArticleService
 import com.example.community_4am_kotlin.feature.file.service.FileUploadService
 import com.example.community_4am_kotlin.feature.like.controller.LikeApiController
@@ -53,7 +53,7 @@ class FileUploadApiController(
     fun getFile(@RequestParam articleId:Long,@RequestParam uuidFileName:String):ResponseEntity<ByteArray> {
         return try{
             // articleId와 uuidFileName으로 InsertedFile 조회
-            val insertedFile:InsertedFile=fileUploadService.getFileByArticleIdAndUuidFileName(articleId,uuidFileName)?:return ResponseEntity.notFound().build()
+            val insertedFile: InsertedFile =fileUploadService.getFileByArticleIdAndUuidFileName(articleId,uuidFileName)?:return ResponseEntity.notFound().build()
             // 파일 데이터
             val fileData:ByteArray=insertedFile.fileData
             // MIME 타입 설정

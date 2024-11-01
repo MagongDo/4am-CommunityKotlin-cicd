@@ -1,7 +1,7 @@
 package com.example.community_4am_kotlin.feature.like.service
 
-import com.example.community_4am_Kotlin.domain.article.Article
-import com.example.community_4am_Kotlin.domain.article.Like
+import com.example.community_4am_kotlin.domain.article.Article
+import com.example.community_4am_kotlin.domain.article.Like
 import com.example.community_4am_Kotlin.domain.user.User
 import com.example.community_4am_Kotlin.feature.notification.AlarmType
 import com.example.community_4am_Kotlin.feature.notification.repository.NotificationRepository
