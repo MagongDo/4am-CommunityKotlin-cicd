@@ -3,6 +3,7 @@ package com.example.community_4am_kotlin.feature.chat.common
 import com.example.community_4am_kotlin.feature.chat.repository.MessageRepository
 import com.example.community_4am_kotlin.feature.chat.service.ChatService
 import com.example.community_4am_kotlin.feature.chat.service.MessageBrokerService
+import com.example.community_4am_kotlin.log
 import com.nimbusds.jose.shaded.gson.Gson
 import org.springframework.stereotype.Component
 import org.springframework.web.socket.CloseStatus
@@ -31,7 +32,7 @@ class ChatHandlerImpl(
 
                 // WebSocketSession에서 사용자 정보 가져오기
                 val sender = wsSession.principal?.name ?: "unknown"
-
+                log.info("sender", sender)
                 // 메시지에 sender 정보 추가
                 messageData["sender"] = sender
 

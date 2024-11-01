@@ -2,6 +2,7 @@ package com.example.community_4am_kotlin.feature.chat.service
 
 
 import com.example.community_4am_kotlin.feature.user.service.UserService
+import com.example.community_4am_kotlin.log
 import com.nimbusds.jose.shaded.gson.Gson
 import org.springframework.stereotype.Service
 import org.springframework.web.socket.TextMessage
@@ -29,6 +30,7 @@ class ChatServiceImpl(
         val user = userService.findByEmail(accountId)
         val nickname = user.nickname
         val sessionId = session.id
+        log.info("nickname : $nickname")
 
         // 세션 정보 저장
         roomSessions.computeIfAbsent(roomId) { ConcurrentHashMap() }[sessionId] = session
