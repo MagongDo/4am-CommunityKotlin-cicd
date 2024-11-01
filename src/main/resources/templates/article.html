@@ -27,6 +27,11 @@
             <span class="badge badge-danger" id="notification-count">0</span>
         </div>
 
+        <div class="friend-icon position-relative" id="friend-icon">
+            <i class="fas fa-user icon"></i>
+            <span class="badge badge-danger" id="friend-request-count">0</span>
+        </div>
+
         <!-- 알람 설정 아이콘 -->
         <div class="custom-alarm-icon" id="custom-alarm-icon">
             <i class="fas fa-clock icon"></i>
@@ -53,6 +58,32 @@
         <h6 id="comment-like-section" class="notification-section-title d-none">댓글 및 좋아요</h6>
         <ul id="comment-like-list" class="notification-list">
             <!-- 댓글 및 좋아요 알림 항목이 동적으로 추가됩니다. -->
+        </ul>
+    </div>
+    <!-- 친구 목록 팝업 -->
+    <div id="friend-list-popup" class="friend-list-popup d-none">
+        <div class="friend-list-header">
+            <h5>친구 목록</h5>
+            <button type="button" id="search-friend-btn" class="btn btn-light">
+                <i class="fas fa-search"></i> <!-- 돋보기 아이콘 -->
+            </button>
+            <button type="button" id="close-friend-list-btn">&times;</button>
+        </div>
+        <ul id="friend-list" class="notification-list">
+            <!-- 친구 목록이 동적으로 추가됩니다. -->
+        </ul>
+    </div>
+
+    <!-- 친구 찾기 팝업 -->
+    <div id="friend-search-popup" class="friend-search-popup d-none">
+        <div class="friend-search-header">
+            <h5>친구 찾기</h5>
+            <button type="button" id="close-friend-search-btn" class="close-friend-search-btn">&times;</button>
+        </div>
+        <input type="text" id="friend-search-input" class="form-control" placeholder="이메일로 친구 검색">
+        <button type="button" id="search-friend-submit" class="btn btn-primary mt-2">검색</button>
+        <ul id="friend-search-result" class="search-result-list">
+            <!-- 검색 결과가 동적으로 추가됩니다. -->
         </ul>
     </div>
 

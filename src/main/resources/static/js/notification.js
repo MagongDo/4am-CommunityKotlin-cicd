@@ -20,6 +20,17 @@ document.addEventListener('DOMContentLoaded', () => {
     const addCustomAlarmBtn = document.getElementById('add-custom-alarm-btn');
     const body = document.querySelector('body');
     const currentUserId = body.getAttribute('data-user-id');
+    const friendIcon = document.getElementById('friend-icon');
+    const friendListPopup = document.getElementById('friend-list-popup');
+    const friendList = document.getElementById('friend-list');
+    const friendRequestCount = document.getElementById('friend-request-count');
+    const closeFriendListBtn = document.getElementById('close-friend-list-btn');
+    const searchFriendBtn = document.getElementById('search-friend-btn');
+    const friendSearchPopup = document.getElementById('friend-search-popup');
+    const closeFriendSearchBtn = document.getElementById('close-friend-search-btn');
+    const friendSearchInput = document.getElementById('friend-search-input');
+    const friendSearchResult = document.getElementById('friend-search-result');
+    const searchFriendSubmit = document.getElementById('search-friend-submit');
 
 
     // WebSocket 연결
@@ -31,6 +42,10 @@ document.addEventListener('DOMContentLoaded', () => {
             fetchUnreadNotificationCount();  // 새 알림이 올 때마다 읽지 않은 알림 수 갱신
         }
     };
+    friendIcon.addEventListener('click', () => {
+        friendListPopup.classList.toggle('d-none');
+        loadFriendList();
+    });
 
     socket.onopen = function () {
         console.log('WebSocket 연결이 열렸습니다.');
@@ -89,6 +104,25 @@ document.addEventListener('DOMContentLoaded', () => {
         editCustomAlarmPopup.classList.add('d-none'); // 다른 팝업 닫기
         setAlarmBtn.textContent = '알람 설정';
         setAlarmBtn.onclick = createCustomAlarm; // 알람 설정 모드로 변경
+    });
+    friendIcon.addEventListener('click', () => {
+        friendListPopup.classList.toggle('d-none');
+        loadFriendList();
+    });
+
+    // 친구 목록 닫기 버튼
+    closeFriendListBtn.addEventListener('click', () => {
+        friendListPopup.classList.add('d-none');
+    });
+
+    // 돋보기 아이콘 클릭 시 친구 찾기 팝업 열기
+    searchFriendBtn.addEventListener('click', () => {
+        friendSearchPopup.classList.toggle('d-none');
+    });
+
+    // 친구 찾기 팝업 닫기 버튼
+    closeFriendSearchBtn.addEventListener('click', () => {
+        friendSearchPopup.classList.add('d-none');
     });
 
     function fetchUnreadNotificationCount() {
@@ -477,4 +511,83 @@ document.addEventListener('DOMContentLoaded', () => {
             customAlarmList.appendChild(li);
         }
     }
+    function loadFriendList() {
+        fetch('/api/friends/list')
+            .then(response => response.json())
+            .then(data => {
+                friendList.innerHTML = ''; // 기존 목록 초기화
+                data.forEach(friend => {
+                    const li = document.createElement('li');
+                    li.classList.add('friend-item');
+                    li.textContent = `${friend.name} - ${friend.status === 'ONLINE' ? '🟢' : '🔴'}`;
+                    friendList.appendChild(li);
+                });
+            })
+            .catch(error => console.error('Error loading friend list:', error));
+    }
+    searchFriendSubmit.addEventListener('click', () => {
+        const email = friendSearchInput.value;
+        if (email) {
+            fetch(`/api/friends/search?email=${encodeURIComponent(email)}`)
+                .then(response => response.json())
+                .then(data => {
+                    friendSearchResult.innerHTML = ''; // 기존 검색 결과 초기화
+                    data.forEach(user => {
+                        const li = document.createElement('li');
+                        li.textContent = user.name;
+                        friendSearchResult.appendChild(li);
+                    });
+                })
+                .catch(error => console.error('Error searching friends:', error));
+        } });
+    // 친구 요청 수락/거절 처리 함수
+    function handleFriendRequest(notificationId, isAccepted) {
+        const action = isAccepted ? 'accept' : 'reject';
+        fetch(`/api/friends/requests/${notificationId}/${action}`, {
+            method: 'PUT',
+            credentials: 'include',
+        })
+            .then(response => {
+                if (response.ok) {
+                    alert(isAccepted ? '친구 요청을 수락했습니다.' : '친구 요청을 거절했습니다.');
+                    loadFriendRequests();
+                } else {
+                    alert('친구 요청 처리에 실패했습니다.');
+                }
+            })
+            .catch(error => console.error('Error handling friend request:', error));
+    }
+
+    // 친구 요청 알림 처리
+    function loadFriendRequests() {
+        fetch('/api/notifications?type=FRIEND')
+            .then(response => response.json())
+            .then(data => {
+                friendRequestCount.textContent = data.length;
+                friendList.innerHTML = '';  // 초기화
+
+                data.forEach(notification => {
+                    const li = document.createElement('li');
+                    li.textContent = notification.message;
+
+                    const acceptBtn = document.createElement('button');
+                    acceptBtn.textContent = '수락';
+                    acceptBtn.classList.add('btn', 'btn-success', 'btn-sm');
+                    acceptBtn.onclick = () => handleFriendRequest(notification.id, true);
+
+                    const rejectBtn = document.createElement('button');
+                    rejectBtn.textContent = '거절';
+                    rejectBtn.classList.add('btn', 'btn-danger', 'btn-sm');
+                    rejectBtn.onclick = () => handleFriendRequest(notification.id, false);
+
+                    li.appendChild(acceptBtn);
+                    li.appendChild(rejectBtn);
+                    friendList.appendChild(li);
+                });
+            })
+            .catch(error => console.error('Error loading friend requests:', error));
+    }
+
+    // 페이지 로드 시 친구 요청 목록 로드
+    loadFriendRequests();
 });

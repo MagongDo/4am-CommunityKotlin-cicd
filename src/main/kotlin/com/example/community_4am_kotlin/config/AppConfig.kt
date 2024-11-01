@@ -1,3 +1,4 @@
+/*
 package com.example.community_4am_kotlin.config
 
 import org.modelmapper.ModelMapper
@@ -10,4 +11,4 @@ class AppConfig {
     fun modelMapper(): ModelMapper {
         return ModelMapper()
     }
-}
+}*/

@@ -1,4 +1,4 @@
-package com.example.community_4am_Kotlin.config
+package com.example.community_4am_kotlin.config
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.springframework.http.MediaType

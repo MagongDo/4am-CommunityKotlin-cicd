@@ -16,8 +16,8 @@ data class Comment (
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     var commentId: Long?=null,
 
-    var commentAuthor: String,
-    var commentContent: String,
+    var commentAuthor: String?=null,
+    var commentContent: String?=null,
 
     @CreatedDate
     var createdAt: LocalDateTime?=null,
@@ -48,17 +48,17 @@ data class Comment (
 
     //setter
     fun changeParentComment(parentComment: Comment){this.parentComment = parentComment}
-    fun changeCommentContent(commentContent: String){this.commentContent = commentContent}
+    fun changeCommentContent(commentContent: String?){this.commentContent = commentContent}
     fun changeCommentIsHidden(commentIsHidden: Boolean){this.commentIsHidden = commentIsHidden}
     fun changeCommentIsDeleted(commentIsDeleted: Boolean){this.commentIsDeleted = commentIsDeleted}
     fun update(commentContent: String){this.commentContent = commentContent}
 
     // Getter 메서드 추가
-    fun getCommentAuthor() = commentAuthor
-    fun getCommentContent() = commentContent
-    fun getCreatedDate() = createdAt
-    fun getArticle() = article
-    fun getParentComment() = parentComment
-    fun getCommentIsHidden()= commentIsHidden
-    fun getCommentIsDeleted()= commentIsDeleted
+    fun getCommentAuthors() = commentAuthor
+    fun getCommentContents() = commentContent
+    fun getCreatedDates() = createdAt
+    fun getArticles() = article
+    fun getParentComments() = parentComment
+    fun getCommentIsHiddens()= commentIsHidden
+    fun getCommentIsDeleteds()= commentIsDeleted
 }

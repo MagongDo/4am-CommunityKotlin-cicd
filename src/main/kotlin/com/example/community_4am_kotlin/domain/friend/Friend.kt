@@ -8,7 +8,7 @@ import jakarta.persistence.*
 data class Friend(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    var id: Long = 0,
+    var id: Long? = 0,
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
@@ -19,7 +19,7 @@ data class Friend(
     var friend: User,
 
     @Enumerated(EnumType.STRING)
-    var status: FriendStatus = FriendStatus.PENDING // 친구 상태 (예: 요청, 수락, 거절 등)
+    var status: FriendStatus, // 친구 상태 (예: 요청, 수락, 거절 등)
 
     // 다른 속성 추가 가능, 예: 요청 날짜 등
 )

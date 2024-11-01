@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping
 @RequestMapping("/mypage")
 class MyPageViewController(
     private val articleService: ArticleService,
-    private val userService:UserService,
+    private val userService: UserService,
     private val commentService: CommentService,
     private val likeService: LikeService
 ) {

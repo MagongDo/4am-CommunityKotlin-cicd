@@ -1,6 +1,6 @@
 package com.example.community_4am_kotlin.feature.notification.dto
 
-import com.example.community_4am_Kotlin.feature.notification.AlarmType
+import com.example.community_4am_kotlin.feature.notification.AlarmType
 import com.example.community_4am_kotlin.domain.notification.Notification
 import java.time.LocalDateTime
 

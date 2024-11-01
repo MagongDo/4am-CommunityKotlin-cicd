@@ -1,25 +1,28 @@
 package com.example.community_4am_kotlin.feature.user.service
 
+import com.example.community_4am_kotlin.feature.user.dto.AddUserRequest
 import com.example.community_4am_kotlin.domain.user.Role
 import com.example.community_4am_kotlin.domain.user.User
-import com.example.community_4am_kotlin.feature.user.dto.AddUserRequest
+import com.example.community_4am_kotlin.domain.user.enums.UserStatus
+import com.example.community_4am_kotlin.feature.article.repository.ArticleRepository
+import com.example.community_4am_kotlin.feature.comment.repository.CommentRepository
 import com.example.community_4am_kotlin.feature.user.repository.UserRepository
 import org.hibernate.query.sqm.tree.SqmNode.log
-import org.springframework.data.jpa.domain.AbstractPersistable_.id
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.io.File
 import java.io.IOException
 import java.nio.file.Files
+import java.time.LocalDateTime
 import java.util.UUID
 
 @Service
 
 class UserService(
     private val userRepository: UserRepository, // 사용자 정보를 처리하는 레포지토리
-//    private val articleRepository: ArticleRepository,
-//    private val commentRepository: CommentRepository
+    private val articleRepository: ArticleRepository,
+    private val commentRepository: CommentRepository
 ) {
 
     // 사용자 저장 메서드 (회원가입)
@@ -56,7 +59,9 @@ class UserService(
             nickname = dto.nickname,
             profileImage = profileImageBytes,
             profileUrl = profileUrl,
-            role = Role.ROLE_USER
+            role = Role.ROLE_USER,
+            lastActiveTime = LocalDateTime.now()
+
         )
 
         return userRepository.save(user).id!!
@@ -105,5 +110,22 @@ class UserService(
     fun findByUsername(username: String): User {
         val user = userRepository.findByEmail(username)
         return user.orElseThrow { IllegalArgumentException("No user found with email: $username") }
+    }
+
+    fun searchUsersByEmailStartingWith(email: String): List<User> {
+        return userRepository.findByEmailStartingWith(email)
+    }
+
+    fun updateLastActiveTime(userId: Long?) {
+        val user = userId?.let { userRepository.findById(it).orElseThrow { IllegalArgumentException("사용자를 찾을 수 없습니다.") } }
+        user?.lastActiveTime = LocalDateTime.now()
+        user?.status = UserStatus.ONLINE // 활동 시 상태를 ONLINE으로 업데이트
+        user?.let { userRepository.save(it) }
+    }
+
+    fun findUserIdByEmail(email: String): Long? {
+        val user = userRepository.findByEmail(email)
+            .orElseThrow { IllegalArgumentException("해당 이메일을 가진 사용자를 찾을 수 없습니다.") }
+        return user.id
     }
 }

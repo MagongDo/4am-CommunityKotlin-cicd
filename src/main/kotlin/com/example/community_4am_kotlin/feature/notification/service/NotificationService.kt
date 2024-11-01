@@ -1,9 +1,12 @@
 package com.example.community_4am_kotlin.feature.notification.service
 
 
-import com.example.community_4am_kotlin.domain.notification.Notification
+import com.example.community_4am_kotlin.domain.friend.Friend
+import com.example.community_4am_kotlin.domain.friend.FriendStatus
 import com.example.community_4am_kotlin.feature.notification.AlarmType
-import com.example.community_4am_kotlin.feature.article.ArticleRepository
+import com.example.community_4am_kotlin.domain.notification.Notification
+import com.example.community_4am_kotlin.feature.friend.repository.FriendRepository
+import com.example.community_4am_kotlin.feature.article.repository.ArticleRepository
 import com.example.community_4am_kotlin.feature.notification.event.NotificationEvent
 import com.example.community_4am_kotlin.feature.notification.repository.NotificationRepository
 import com.example.community_4am_kotlin.feature.user.repository.UserRepository
@@ -20,7 +23,8 @@ class NotificationService(
     private val articleRepository: ArticleRepository,
     private val userRepository: UserRepository,
     private val eventPublisher: ApplicationEventPublisher,
-    private val commentAlarmService: CommentAlarmService
+    private val commentAlarmService: CommentAlarmService,
+    private val friendRepository: FriendRepository
 ) {
 
     fun likeIsRead(recipient: String, makeId: String, alarmType: AlarmType): Boolean {
@@ -28,6 +32,39 @@ class NotificationService(
             recipient, makeId, alarmType
         )
         return notification != null
+    }
+
+    // 친구 신청 알람 생성 및 전송
+    fun sendFriendNotification(friendId: String, fromAuthor: String) {
+        try {
+            val targetId = userRepository.findByEmail(friendId)
+                .orElseThrow() { IllegalArgumentException("사용자를 찾을 수 없습니다.") }
+            val recipientUser = userRepository.findByEmail(fromAuthor)
+                .orElseThrow() { IllegalArgumentException("사용자를 찾을 수 없습니다.") }
+            val friend = Friend(
+                user = recipientUser,
+                friend = targetId,
+                status = FriendStatus.PENDING
+            )
+            friendRepository.save(friend)
+
+            val message = "$fromAuthor 님이 회원님에게 친구요청을 하였습니다."
+            val notification = Notification(
+                alarmType = AlarmType.FRIEND,
+                message = message,
+                recipient = friendId,
+                isRead = false,
+                makeId = fromAuthor,
+                targetId = targetId.id,
+                user = recipientUser,
+                createdAt = LocalDateTime.now()
+            )
+            notificationRepository.save(notification)
+            eventPublisher.publishEvent(NotificationEvent(this, friendId, message, notification.alarmType))
+        } catch (e: Exception) {
+            println("알림 전송 중 오류 발생: ${e.message}")
+        }
+
     }
 
     // 게시글에 좋아요를 누른 경우 알림 생성 및 전송

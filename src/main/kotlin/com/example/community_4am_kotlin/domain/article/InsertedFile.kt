@@ -34,5 +34,5 @@ data class InsertedFile(
     fun changeFileType(fileType: String) { this.fileType = fileType }
     fun changeFileData(fileData: ByteArray) { this.fileData = fileData }
 
-    fun getOriginalFileName(): String? { return originalFileName }
+    fun getOriginalFileNames(): String? { return originalFileName }
 }

@@ -6,6 +6,7 @@ import com.example.community_4am_kotlin.feature.comment.dto.CommentResponse
 import com.example.community_4am_kotlin.feature.comment.dto.UpdateCommentRequest
 import com.example.community_4am_kotlin.feature.comment.service.CommentService
 import com.example.community_4am_kotlin.feature.like.service.LikeService
+import com.example.community_4am_kotlin.feature.notification.service.NotificationService
 import org.apache.logging.log4j.LogManager
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType

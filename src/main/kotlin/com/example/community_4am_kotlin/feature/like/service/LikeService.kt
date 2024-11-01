@@ -2,13 +2,14 @@ package com.example.community_4am_kotlin.feature.like.service
 
 import com.example.community_4am_kotlin.domain.article.Article
 import com.example.community_4am_kotlin.domain.article.Like
-import com.example.community_4am_Kotlin.domain.user.User
-import com.example.community_4am_Kotlin.feature.notification.AlarmType
-import com.example.community_4am_Kotlin.feature.notification.repository.NotificationRepository
-import com.example.community_4am_Kotlin.feature.user.dto.UserLikedArticlesList
+import com.example.community_4am_kotlin.feature.notification.AlarmType
+import com.example.community_4am_kotlin.domain.user.User
 import com.example.community_4am_kotlin.feature.user.repository.UserRepository
 import com.example.community_4am_kotlin.feature.article.repository.ArticleRepository
 import com.example.community_4am_kotlin.feature.like.repository.LikeRepository
+import com.example.community_4am_kotlin.feature.notification.repository.NotificationRepository
+import com.example.community_4am_kotlin.feature.notification.service.NotificationService
+import com.example.community_4am_kotlin.feature.user.dto.UserLikedArticlesList
 import org.apache.logging.log4j.LogManager
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -84,12 +85,16 @@ class LikeService(
 
         // Article 엔티티에서 필요한 데이터를 가공하여 DTO로 변환
         return articles.map { article ->
-            UserLikedArticlesList(
-                id = article.id,
-                title = article.title,
-                createdAt = article.createdAt,
-                viewCount = article.viewCount
-            )
+            article.id?.let {
+                article.createdAt?.let { it1 ->
+                    UserLikedArticlesList(
+                        id = it,
+                        title = article.title,
+                        createdAt = it1,
+                        viewCount = article.viewCount
+                    )
+                }
+            }!!
         }
     }
 

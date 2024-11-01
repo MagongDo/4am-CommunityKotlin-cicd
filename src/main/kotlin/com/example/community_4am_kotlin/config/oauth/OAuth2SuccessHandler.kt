@@ -43,12 +43,10 @@ class OAuth2SuccessHandler(
     ) {
         val oauthToken = authentication as OAuth2AuthenticationToken
         val oAuth2User = oauthToken.principal
-        log.info("OAuth2User 정보: {}"+ oAuth2User.attributes)
 
         val email = getEmailFromOAuth2User(oAuth2User) ?: throw IllegalArgumentException("이메일을 찾을 수 없습니다.")
 
         val user = userService.findByEmail(email)
-        log.info("여기까지감2")
 
         val refreshToken = tokenProvider.generateToken(user, REFRESH_TOKEN_DURATION)
         saveRefreshToken(user.id!!, refreshToken, user.email)
