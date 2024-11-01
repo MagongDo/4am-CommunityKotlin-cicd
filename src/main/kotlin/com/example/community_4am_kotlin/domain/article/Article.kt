@@ -1,9 +1,8 @@
-package com.example.community_4am_kotlin.domain.article
+package com.example.community_4am_Kotlin.domain.article
 
 
-import com.example.community_4am_kotlin.domain.article.Comment
-import com.example.community_4am_kotlin.domain.article.InsertedFile
-import com.example.community_4am_kotlin.domain.article.Like
+import com.example.community_4am_Kotlin.domain.article.InsertedFile
+import com.example.community_4am_Kotlin.domain.article.Like
 import jakarta.persistence.*
 import org.hibernate.annotations.BatchSize
 import org.springframework.data.annotation.CreatedDate
@@ -39,12 +38,12 @@ data class Article(
     var author: String,
 
     @CreatedDate
-    @Column(name = "created_date")
-    var createdDate: LocalDateTime = LocalDateTime.now(),
+    @Column(name = "created_at")
+    var createdAt: LocalDateTime ?= null,
 
     @LastModifiedDate
-    @Column(name = "updated_date")
-    var updatedDate: LocalDateTime = LocalDateTime.now(),
+    @Column(name = "update_at")
+    var updatedAt: LocalDateTime ?=null,
 
     @Column(name = "view_count")
     var viewCount: Long = 0L,
@@ -52,19 +51,12 @@ data class Article(
     @Column(name = "like_count")
     var likeCount: Long = 0L
 ) {
-    fun addFiles(files: MutableList<InsertedFile>) {
-        if (files != null) {
-            for (file: InsertedFile in files) {
-                file.changeArticle(this)
-                this.files.add(file)
-            }
-        }
-    }
 
-    fun Article(author: String, title: String, content: String) {
-        this.author = author
-        this.title = title
-        this.content = content
+    fun addFiles(files: List<InsertedFile>?) {
+        files?.forEach { file ->
+            file.changeArticle(this)
+            this.files.add(file)
+        }
     }
 
     fun update(title: String, content: String) {
@@ -72,23 +64,13 @@ data class Article(
         this.content = content
     }
 
-    fun changeAuthor(author: String) {
-        this.author = author
-    }
+    fun changeAuthor(author: String) { this.author = author }
 
-    fun changeTitle(title: String) {
-        this.title = title
-    }
+    fun changeTitle(title: String) { this.title = title }
 
-    fun changeContent(content: String) {
-        this.content = content
-    }
+    fun changeContent(content: String) { this.content = content }
 
-    fun isIncrementViewCount() {
-        this.viewCount++
-    }
+    fun isIncrementViewCount() { this.viewCount++ }
 
-    fun changeLikeCount(likeCount: Long) {
-        this.likeCount++
-    }
+    fun changeLikeCount(likeCount: Long) { this.likeCount=likeCount }
 }

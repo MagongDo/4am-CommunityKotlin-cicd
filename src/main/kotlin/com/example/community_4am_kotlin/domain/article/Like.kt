@@ -1,4 +1,4 @@
-package com.example.community_4am_kotlin.domain.article
+package com.example.community_4am_Kotlin.domain.article
 
 import com.example.community_4am_kotlin.domain.user.User
 import jakarta.persistence.*
@@ -8,28 +8,30 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import java.time.LocalDateTime
 
 @Entity
-@Table(name = "user_like")
+@Table(name = "like")
 @EntityListeners(AuditingEntityListener::class)
 data class Like (
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    var likeid: Long?=null,
+    private var likeId: Long?=null,
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="article_id", nullable = false)
-     var article: Article,
+    private var article: Article,
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="user_id", nullable = false)
-     var user: User,
+    private var user: User,
 
     var likedStatus:Boolean,
 
     @CreatedDate
     @Column(name="created_at")
-     var createdAt: LocalDateTime,
+    private var createdAt: LocalDateTime?=null,
     @LastModifiedDate
     @Column(name="updated_at")
-     var updatedAt: LocalDateTime
+    private var updatedAt: LocalDateTime?=null
+
     ){
     fun changeLikedStatus(status: Boolean) {
         likedStatus = !status

@@ -1,4 +1,4 @@
-package com.example.community_4am_kotlin.feature.notification
+package com.example.community_4am_Kotlin.feature.notification
 
 enum class AlarmType {
     COUSTOM,
