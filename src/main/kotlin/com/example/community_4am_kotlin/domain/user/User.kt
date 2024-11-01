@@ -1,5 +1,5 @@
-package com.example.Community_4am_Kotlin.domain.user
-import com.example.Community_4am_Kotlin.domain.article.Like
+package com.example.community_4am_kotlin.domain.user
+import com.example.community_4am_kotlin.domain.article.Like
 import jakarta.persistence.*
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import org.springframework.security.core.GrantedAuthority
@@ -15,7 +15,7 @@ data class User(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", updatable = false)
-    val id: Long? = null,
+    val id: Long?=null,
 
     @Column(name = "email", nullable = false, unique = true)
     var email: String,
@@ -39,9 +39,49 @@ data class User(
 
     @OneToMany(mappedBy = "user", cascade = [CascadeType.ALL], orphanRemoval = true)
     var likes: MutableList<Like> = mutableListOf()
+
+
+
+
+
 ) : UserDetails {
 
-    fun getProfileImageAsBase64(): String? {
+
+
+   /*     class Builder {
+            private var id: Long? = null
+            private var email: String? = null
+            private var password: String? = null
+            private var role: Role? = null
+            private var nickname: String? = null
+            private var profileImage: ByteArray? = null
+            private var profileUrl: String? = null
+            private var likes: MutableList<Like> = mutableListOf()
+
+            fun id(id: Long) = apply { this.id = id }
+            fun email(email: String) = apply { this.email = email }
+            fun password(password: String) = apply { this.password = password }
+            fun role(role: Role) = apply { this.role = role }
+            fun nickname(nickname: String?) = apply { this.nickname = nickname }
+            fun profileImage(profileImage: ByteArray?) = apply { this.profileImage = profileImage }
+            fun profileUrl(profileUrl: String?) = apply { this.profileUrl = profileUrl }
+            fun likes(likes: MutableList<Like>) = apply { this.likes = likes }
+
+            fun build() = User(
+                id ?: throw IllegalArgumentException("Id must be provided"),
+                email ?: throw IllegalArgumentException("Email must be provided"),
+                password ?: throw IllegalArgumentException("Password must be provided"),
+                role ?: throw IllegalArgumentException("Role must be provided"),
+                nickname,
+                profileImage,
+                profileUrl,
+                likes
+            )
+        }*/
+
+
+
+        fun getProfileImageAsBase64(): String? {
         return profileImage?.let {
             "data:image/png;base64," + Base64.getEncoder().encodeToString(it)
         }
@@ -52,7 +92,7 @@ data class User(
         this.profileUrl = profileUrl
     }
 
-    fun update(nickname: String): User {
+    fun update(nickname: String?): User {
         this.nickname = nickname
         return this
     }
@@ -80,4 +120,6 @@ data class User(
     override fun isCredentialsNonExpired(): Boolean = true
 
     override fun isEnabled(): Boolean = true
+
+
 }

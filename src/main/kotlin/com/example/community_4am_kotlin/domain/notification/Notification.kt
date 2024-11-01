@@ -1,7 +1,7 @@
-package com.example.Community_4am_Kotlin.domain.notification
+package com.example.community_4am_kotlin.domain.notification
 
-import com.example.Community_4am_Kotlin.domain.user.User
-import com.example.Community_4am_Kotlin.feature.notification.AlarmType
+import com.example.community_4am_kotlin.domain.user.User
+import com.example.community_4am_kotlin.feature.notification.AlarmType
 import jakarta.persistence.*
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
@@ -19,8 +19,8 @@ data class Notification(
     var createdAt: LocalDateTime,
     var isRead: Boolean,
     var message:String,
-    var recipient:String,
-    var targetId:Long,
+    var recipient:String?=null,
+    var targetId:Long?=null,
     var makeId:String,
     @ManyToOne(fetch = FetchType.LAZY, cascade = [(CascadeType.MERGE)])
     @JoinColumn(name="user_id",nullable=false)

@@ -1,6 +1,6 @@
-package com.example.Community_4am_Kotlin.feature.article.dto
+package com.example.community_4am_kotlin.feature.article.dto
 
-import com.example.Community_4am_Kotlin.domain.article.Article
+import com.example.community_4am_kotlin.domain.article.Article
 
 
 // 클라이언트로 전달할 게시글 데이터를 담는 DTO

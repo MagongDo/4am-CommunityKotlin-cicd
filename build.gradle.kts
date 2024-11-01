@@ -20,6 +20,8 @@ repositories {
 }
 
 dependencies {
+    implementation("org.jetbrains.kotlin:kotlin-reflect")
+    implementation("org.modelmapper:modelmapper:3.1.1")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-thymeleaf")
@@ -39,7 +41,7 @@ dependencies {
     implementation("javax.xml.bind:jaxb-api:2.3.1")
     runtimeOnly("io.jsonwebtoken:jjwt-impl:0.12.6")
     runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.12.6")
-
+    implementation("com.google.code.gson:gson:2.8.9")
     implementation("com.zaxxer:HikariCP:5.1.0")
     implementation("mysql:mysql-connector-java:8.0.33")
     testImplementation("org.springframework.boot:spring-boot-starter-test")

@@ -1,4 +1,4 @@
-package com.example.community_4am_kotlin.feature.like.dto
+package com.example.community_4am_kotlin.feature.article.dto
 
 data class LikeRequest(
     var userId: Long,
