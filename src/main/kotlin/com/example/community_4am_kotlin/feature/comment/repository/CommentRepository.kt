@@ -32,7 +32,7 @@ interface CommentRepository: JpaRepository<Comment, Long> {
                 "WHERE c.article.id = :articleId " +
                 "AND (c.commentId = :commentId OR c.parentComment.commentId = :commentId) " +
                 "ORDER BY c.commentId ASC")
-    fun finsParentAndChildCommnetsByArticleId(@Param("articleId") articleId:Long,@Param("commentId") commentId:Long): List<Comment>
+    fun findParentAndChildCommentsByArticleId(@Param("articleId") articleId:Long,@Param("commentId") commentId:Long): List<Comment>
 
      @Query("SELECT COUNT(c) FROM Comment c WHERE c.article.id = :articleId AND c.commentIsHidden = false AND c.commentIsDeleted = false")
      fun countCommentsByArticleId(@Param("articleId") articleId:Long):Long
