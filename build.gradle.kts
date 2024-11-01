@@ -4,13 +4,9 @@ plugins {
     id("org.springframework.boot") version "3.3.5"
     id("io.spring.dependency-management") version "1.1.6"
     kotlin("plugin.jpa") version "1.9.25"
-    kotlin("kapt") version "1.9.25"// KAPT 플러그인 추가
-    id("java") // 여기에 java 플러그인 추가
 }
-
 group = "com.example"
 version = "0.0.1-SNAPSHOT"
-
 java {
     toolchain {
         languageVersion = JavaLanguageVersion.of(17)
@@ -68,14 +64,6 @@ dependencies {
     annotationProcessor("com.querydsl:querydsl-apt:5.1.0:jakarta")
 
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
-
-    //코틀린 추가
-    implementation("com.querydsl:querydsl-jpa:5.1.0:jakarta")
-    kapt("com.querydsl:querydsl-apt:5.1.0:jakarta")
-    kapt("jakarta.annotation:jakarta.annotation-api")
-    kapt("jakarta.persistence:jakarta.persistence-api")
-    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.3.0")
-    implementation("org.modelmapper:modelmapper:3.1.1")
 }
 
 kotlin {
@@ -83,13 +71,7 @@ kotlin {
         freeCompilerArgs.addAll("-Xjsr305=strict")
     }
 }
-sourceSets {
-    main {
-        java {
-            srcDirs("src/main/kotlin", "src/main/java", "build/generated/source/kapt/main")
-        }
-    }
-}
+
 allOpen {
     annotation("jakarta.persistence.Entity")
     annotation("jakarta.persistence.MappedSuperclass")

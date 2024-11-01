@@ -1,7 +1,7 @@
 package com.example.community_4am_kotlin.feature.user.controller
 
 
-import com.example.community_4am_kotlin.feature.user.dto.AddUserRequest
+import com.example.community_4am_Kotlin.feature.user.dto.AddUserRequest
 import com.example.community_4am_kotlin.feature.user.service.UserService
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse

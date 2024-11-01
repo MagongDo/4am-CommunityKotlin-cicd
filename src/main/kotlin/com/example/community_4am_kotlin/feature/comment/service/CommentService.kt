@@ -1,11 +1,11 @@
 package com.example.community_4am_kotlin.feature.comment.service
 
 import com.example.community_4am_Kotlin.domain.article.Comment
-import com.example.community_4am_Kotlin.feature.user.dto.UserCommentsList
 import com.example.community_4am_kotlin.feature.article.repository.ArticleRepository
 import com.example.community_4am_kotlin.feature.comment.dto.*
 import com.example.community_4am_kotlin.feature.comment.repository.CommentRepository
 import com.example.community_4am_kotlin.feature.like.service.LikeService
+import com.example.community_4am_kotlin.feature.user.dto.UserCommentsList
 import org.apache.logging.log4j.LogManager
 import org.modelmapper.ModelMapper
 import org.springframework.data.domain.Page

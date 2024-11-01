@@ -6,6 +6,7 @@ import com.example.community_4am_kotlin.feature.article.service.ArticleService
 import com.example.community_4am_kotlin.feature.comment.dto.CommentPageRequestDTO
 import com.example.community_4am_kotlin.feature.comment.service.CommentService
 import com.example.community_4am_kotlin.feature.like.service.LikeService
+import com.example.community_4am_kotlin.feature.user.service.UserService
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Controller
 import org.springframework.ui.Model
@@ -17,7 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam
 @Controller
 class ArticleViewController(
     private val articleService: ArticleService,
-    private val userService:UserService,
+    private val userService: UserService,
     private val commentService: CommentService,
     private val likeService: LikeService
 ) {
@@ -52,10 +53,10 @@ class ArticleViewController(
         val isArticleOwner=article.author==currentUserName
 
         val articleUser=userService.findByEmail(article.author)
-        val currentUserImage=userService.findByEmail(currentUserName).profileImageAsBase64
+        val currentUserImage=userService.findByEmail(currentUserName).getProfileImageAsBase64()
 
         model.addAttribute("article",article)
-        model.addAttribute("profileImage",articleUser.profileImageAsBase64)
+        model.addAttribute("profileImage",articleUser.getProfileImageAsBase64())
         model.addAttribute("isArticleOwner", isArticleOwner)
         model.addAttribute("currentUserName", currentUserName)
         model.addAttribute("currentUserImage", currentUserImage)

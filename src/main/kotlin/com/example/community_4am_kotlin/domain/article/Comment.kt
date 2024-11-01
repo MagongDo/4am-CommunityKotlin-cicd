@@ -17,8 +17,8 @@ data class Comment (
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     var commentId: Long?=null,
 
-    var commentAuthor: String,
-    var commentContent: String,
+    var commentAuthor: String?=null,
+    var commentContent: String?=null,
 
     @CreatedDate
     var createdAt: LocalDateTime?=null,

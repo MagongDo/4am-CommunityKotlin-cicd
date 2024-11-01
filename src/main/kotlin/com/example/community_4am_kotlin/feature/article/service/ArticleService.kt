@@ -2,11 +2,11 @@ package com.example.community_4am_kotlin.feature.article.service
 
 import com.example.community_4am_Kotlin.domain.article.Article
 import com.example.community_4am_Kotlin.feature.article.dto.*
-import com.example.community_4am_Kotlin.feature.user.dto.UserArticlesList
 import com.example.community_4am_kotlin.feature.article.repository.ArticleRepository
 import com.example.community_4am_kotlin.feature.comment.repository.CommentRepository
 import com.example.community_4am_kotlin.feature.file.service.FileUploadService
 import com.example.community_4am_kotlin.feature.like.service.LikeService
+import com.example.community_4am_kotlin.feature.user.dto.UserArticlesList
 import org.modelmapper.ModelMapper
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
@@ -91,7 +91,10 @@ class ArticleService (
     //사용자가 작성한 목록 조회
     fun getUserAllArticles(userName:String):List<UserArticlesList>{
         val articles=articleRepository.findUserArticles(userName)
-        return articles.map { UserArticlesList(it.id,it.title,it.createdAt,it.viewCount) }
+        return articles.map { it.id?.let { it1 -> it.createdAt?.let { it2 ->
+            UserArticlesList(it1,it.title,
+                it2,it.viewCount)
+        } }!! }
     }
 
     // 게시글의 작성자를 확인하여 권한 검증

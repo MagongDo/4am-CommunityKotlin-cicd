@@ -1,9 +1,9 @@
 package com.example.community_4am_kotlin.feature.notification.service
 
 
+import com.example.community_4am_Kotlin.feature.notification.AlarmType
 import com.example.community_4am_kotlin.domain.notification.Notification
-import com.example.community_4am_kotlin.feature.notification.AlarmType
-import com.example.community_4am_kotlin.feature.article.ArticleRepository
+import com.example.community_4am_kotlin.feature.article.repository.ArticleRepository
 import com.example.community_4am_kotlin.feature.notification.event.NotificationEvent
 import com.example.community_4am_kotlin.feature.notification.repository.NotificationRepository
 import com.example.community_4am_kotlin.feature.user.repository.UserRepository

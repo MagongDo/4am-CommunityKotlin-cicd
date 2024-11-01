@@ -1,7 +1,7 @@
 package com.example.community_4am_kotlin.feature.notification.event
 
 
-import com.example.community_4am_kotlin.feature.notification.AlarmType
+import com.example.community_4am_Kotlin.feature.notification.AlarmType
 import org.springframework.context.ApplicationEvent
 
 class NotificationEvent(

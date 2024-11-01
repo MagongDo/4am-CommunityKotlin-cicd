@@ -1,11 +1,10 @@
 package com.example.community_4am_kotlin.feature.user.service
 
+import com.example.community_4am_Kotlin.feature.user.dto.AddUserRequest
 import com.example.community_4am_kotlin.domain.user.Role
 import com.example.community_4am_kotlin.domain.user.User
-import com.example.community_4am_kotlin.feature.user.dto.AddUserRequest
 import com.example.community_4am_kotlin.feature.user.repository.UserRepository
 import org.hibernate.query.sqm.tree.SqmNode.log
-import org.springframework.data.jpa.domain.AbstractPersistable_.id
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
