@@ -1,7 +1,7 @@
 package com.example.community_4am_kotlin.domain.notification
 
+import com.example.community_4am_Kotlin.feature.notification.AlarmType
 import com.example.community_4am_kotlin.domain.user.User
-import com.example.community_4am_kotlin.feature.notification.AlarmType
 import jakarta.persistence.*
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
