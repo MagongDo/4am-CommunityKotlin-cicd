@@ -22,9 +22,11 @@ class RedisSubscriber(
 ) : MessageListener {
 
     override fun onMessage(message: Message, pattern: ByteArray?) {
-        val channel = pattern?.toString() ?: return
-        val content = message.body.toString()
+        val channel = pattern?.let { String(it, Charsets.UTF_8) } ?: return
+        val content = String(message.body, Charsets.UTF_8) // 메시지 본문을 UTF-8로 변환
 
+
+        log.info("channel: $channel, content: $content")
         roomSessions[channel]?.values?.forEach { session ->
             try {
                 session.sendMessage(TextMessage(content))
