@@ -1,6 +1,6 @@
 package com.example.community_4am_kotlin.feature.comment.service
 
-import com.example.community_4am_Kotlin.domain.article.Comment
+import com.example.community_4am_kotlin.domain.article.Comment
 import com.example.community_4am_kotlin.feature.article.repository.ArticleRepository
 import com.example.community_4am_kotlin.feature.comment.dto.*
 import com.example.community_4am_kotlin.feature.comment.repository.CommentRepository
@@ -26,13 +26,13 @@ class CommentService(
     private val logger = LogManager.getLogger(LikeService::class.java)
 
     //게시글에 맞는 한개 댓글 생성
-    fun saveComment(request:AddCommentRequest,articleId:Long,userName:String):Comment {
+    fun saveComment(request:AddCommentRequest,articleId:Long,userName:String): Comment {
         val article=articleRepository.findById(articleId).orElseThrow { IllegalArgumentException("Article not found") }
         val parentComment=request.parentConmmentId?.let{
             commentRepository.findById(it).orElseThrow { IllegalArgumentException("Parent comment not found") }
         }
 
-        val savedComment=modelMapper.map(request,Comment::class.java).apply {
+        val savedComment=modelMapper.map(request, Comment::class.java).apply {
             this.article=article
             this.commentAuthor=userName
             this.parentComment?.let { parentComment }

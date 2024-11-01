@@ -1,4 +1,4 @@
-package com.example.community_4am_Kotlin.domain.article
+package com.example.community_4am_kotlin.domain.article
 
 import com.example.community_4am_kotlin.domain.user.User
 import jakarta.persistence.*
@@ -8,7 +8,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import java.time.LocalDateTime
 
 @Entity
-@Table(name = "like")
+@Table(name = "likes")
 @EntityListeners(AuditingEntityListener::class)
 data class Like (
     @Id

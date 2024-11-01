@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service
 import java.io.File
 import java.io.IOException
 import java.nio.file.Files
+import java.time.LocalDateTime
 
 @Service
 class Oauth2UserCustomService(
@@ -69,11 +70,11 @@ class Oauth2UserCustomService(
                     nickname = name,
                     profileImage = profileImageBytes,
                     profileUrl = profileUrl,
-                    role = Role.ROLE_USER
+                    role = Role.ROLE_USER,
+                    lastActiveTime = LocalDateTime.now()
                 )
             }
 
-        log.info("여기까지감3")
         return userRepository.save(user)
     }
 }

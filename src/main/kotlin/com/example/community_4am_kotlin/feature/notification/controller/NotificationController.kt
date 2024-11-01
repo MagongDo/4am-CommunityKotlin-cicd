@@ -76,7 +76,6 @@ class NotificationController (
     @PutMapping("/custom/{id}")
     fun updateCustomAlarm(@PathVariable id: Long, @RequestBody coustomAlarmDTO: CoustomAlarmDTO): ResponseEntity<Void> {
         coustomAlarmService.updateCustomAlarm(id, coustomAlarmDTO)
-        println("찍히나?: $coustomAlarmDTO")
         return ResponseEntity.ok().build()
     }
 

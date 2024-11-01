@@ -65,8 +65,6 @@ class UserJwtApiController(
                 listOf(SimpleGrantedAuthority(Role.ROLE_USER.getAuthority()))
             )
             SecurityContextHolder.getContext().authentication = authenticationToken
-            log.info(" 일반 로그인시 생성 & 저장된 : 인증 정보 (유저 객체) ")
-            log.info("내용 : ${SecurityContextHolder.getContext().authentication}")
 
             return ResponseEntity.status(HttpStatus.OK).body(user)
         }

@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Modifying
 import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.query.Param
+import java.time.LocalDateTime
 import java.util.*
 
 interface UserRepository : JpaRepository<User, Long>  {
@@ -16,4 +17,8 @@ interface UserRepository : JpaRepository<User, Long>  {
     @Modifying
     @Query("UPDATE User u SET u.profileImage = :profileImage WHERE u.email = :email")
     fun updateProfileImage(@Param("email") email: String, @Param("profileImage") profileImage: ByteArray)
+
+    fun findByEmailStartingWith(email: String): List<User>
+    @Query("SELECT u FROM User u WHERE u.lastActiveTime < :inactiveSince")
+    fun findInactiveUsersSince(inactiveSince: LocalDateTime): List<User>
 }

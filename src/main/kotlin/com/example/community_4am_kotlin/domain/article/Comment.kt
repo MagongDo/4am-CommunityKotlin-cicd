@@ -1,11 +1,10 @@
-package com.example.community_4am_Kotlin.domain.article
+package com.example.community_4am_kotlin.domain.article
 
 import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonProperty
 import jakarta.persistence.*
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.LastModifiedDate
-import org.springframework.data.jpa.domain.AbstractAuditable_.createdDate
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import java.time.LocalDateTime
 
@@ -49,17 +48,17 @@ data class Comment (
 
     //setter
     fun changeParentComment(parentComment: Comment){this.parentComment = parentComment}
-    fun changeCommentContent(commentContent: String){this.commentContent = commentContent}
+    fun changeCommentContent(commentContent: String?){this.commentContent = commentContent}
     fun changeCommentIsHidden(commentIsHidden: Boolean){this.commentIsHidden = commentIsHidden}
     fun changeCommentIsDeleted(commentIsDeleted: Boolean){this.commentIsDeleted = commentIsDeleted}
     fun update(commentContent: String){this.commentContent = commentContent}
 
     // Getter 메서드 추가
-    fun getCommentAuthor() = commentAuthor
-    fun getCommentContent() = commentContent
-    fun getCreatedDate() = createdAt
-    fun getArticle() = article
-    fun getParentComment() = parentComment
-    fun getCommentIsHidden()= commentIsHidden
-    fun getCommentIsDeleted()= commentIsDeleted
+    fun getCommentAuthors() = commentAuthor
+    fun getCommentContents() = commentContent
+    fun getCreatedDates() = createdAt
+    fun getArticles() = article
+    fun getParentComments() = parentComment
+    fun getCommentIsHiddens()= commentIsHidden
+    fun getCommentIsDeleteds()= commentIsDeleted
 }

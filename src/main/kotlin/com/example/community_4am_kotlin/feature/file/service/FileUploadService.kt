@@ -1,7 +1,7 @@
 package com.example.community_4am_kotlin.feature.file.service
 
-import com.example.community_4am_Kotlin.domain.article.Article
-import com.example.community_4am_Kotlin.domain.article.InsertedFile
+import com.example.community_4am_kotlin.domain.article.Article
+import com.example.community_4am_kotlin.domain.article.InsertedFile
 import com.example.community_4am_kotlin.feature.file.repository.FileRepository
 import org.modelmapper.ModelMapper
 import org.springframework.stereotype.Service
@@ -40,7 +40,7 @@ class FileUploadService(
         return uploadedFiles
     }
 
-    fun getFileByArticleIdAndUuidFileName(articleId:Long,uuidFileName:String):InsertedFile{
+    fun getFileByArticleIdAndUuidFileName(articleId:Long,uuidFileName:String): InsertedFile {
         return fileRepository.findByArticleIdAndUuidFileName(articleId,uuidFileName)
             ?:throw IllegalArgumentException("File not found")
 
