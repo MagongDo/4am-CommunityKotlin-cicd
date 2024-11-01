@@ -3,10 +3,14 @@ package com.example.community_4am_kotlin.repository
 import com.example.community_4am_kotlin.feature.videochat.repository.VideoChatLogRepository
 import com.example.community_4am_kotlin.log
 import org.junit.jupiter.api.Test
-import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
 
-@SpringBootTest
-class VCRepository (
+
+@DataJpaTest
+//@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
+class VCRepository @Autowired constructor(
     private val videoChatLogRepository: VideoChatLogRepository
 ){
 

@@ -5,8 +5,8 @@ import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Repository
 
 @Repository
-interface  VideoChatLogRepository: JpaRepository<VideoChatLog, String> {
+interface  VideoChatLogRepository: JpaRepository<VideoChatLog, Long > {
 
-    fun findAllByVideoChatId(roomId: String): List<VideoChatLog>
+    fun findAllByVideoChatId(videoChatId: String): List<VideoChatLog>
 
 }
