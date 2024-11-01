@@ -1,4 +1,4 @@
-package com.example.community_4am_Kotlin.feature.user.dto
+package com.example.community_4am_kotlin.feature.user.dto
 
 import com.fasterxml.jackson.annotation.JsonFormat
 import java.time.LocalDateTime

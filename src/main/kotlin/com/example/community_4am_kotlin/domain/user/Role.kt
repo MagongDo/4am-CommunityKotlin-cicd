@@ -1,4 +1,4 @@
-package com.example.community_4am_Kotlin.domain.user
+package com.example.community_4am_kotlin.domain.user
 
 enum class Role(val description: String) {
 

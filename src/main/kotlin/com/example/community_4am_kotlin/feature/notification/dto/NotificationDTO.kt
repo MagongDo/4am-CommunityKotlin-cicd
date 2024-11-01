@@ -1,7 +1,7 @@
-package com.example.community_4am_Kotlin.feature.notification.dto
+package com.example.community_4am_kotlin.feature.notification.dto
 
-import com.example.community_4am_Kotlin.domain.notification.Notification
-import com.example.community_4am_Kotlin.feature.notification.AlarmType
+import com.example.community_4am_kotlin.domain.notification.Notification
+import com.example.community_4am_kotlin.feature.notification.AlarmType
 import java.time.LocalDateTime
 
 data class NotificationDTO(
@@ -12,9 +12,9 @@ data class NotificationDTO(
     val message: String,
     val recipient: String,
     val targetId: Long,
-    val userId: Long, // User의 ID만 포함
+    val userId: Long?=null, // User의 ID만 포함
     val makeId: String,
-    val userEmail: String, // 필요 시 User의 이메일 포함
+    val userEmail: String?=null, // 필요 시 User의 이메일 포함
     val dataType: String = "Notification"
 ) {
 
