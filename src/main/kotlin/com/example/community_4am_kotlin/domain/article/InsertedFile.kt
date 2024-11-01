@@ -1,4 +1,4 @@
-package com.example.community_4am_Kotlin.domain.article
+package com.example.community_4am_kotlin.domain.article
 
 import com.fasterxml.jackson.annotation.JsonIgnore
 import jakarta.persistence.*
@@ -33,5 +33,5 @@ data class InsertedFile(
     fun changeFileType(fileType: String) { this.fileType = fileType }
     fun changeFileData(fileData: ByteArray) { this.fileData = fileData }
 
-    fun getOriginalFileName(): String? { return originalFileName }
+    fun getOriginalFileNames(): String? { return originalFileName }
 }

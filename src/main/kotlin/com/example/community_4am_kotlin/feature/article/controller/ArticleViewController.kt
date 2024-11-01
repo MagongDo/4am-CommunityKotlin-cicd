@@ -1,7 +1,7 @@
 package com.example.community_4am_kotlin.feature.article.controller
 
-import com.example.community_4am_Kotlin.feature.article.dto.ArticleViewResponse
-import com.example.community_4am_Kotlin.feature.article.dto.PageRequestDTO
+import com.example.community_4am_kotlin.feature.article.dto.ArticleViewResponse
+import com.example.community_4am_kotlin.feature.article.dto.PageRequestDTO
 import com.example.community_4am_kotlin.feature.article.service.ArticleService
 import com.example.community_4am_kotlin.feature.comment.dto.CommentPageRequestDTO
 import com.example.community_4am_kotlin.feature.comment.service.CommentService
@@ -24,7 +24,7 @@ class ArticleViewController(
 ) {
     // 게시글 목록을 페이지 네이션과 함께 가져오기
     @GetMapping("/articles")
-    fun getArticles(@ModelAttribute pageRequestDTO: PageRequestDTO,model: Model):String{
+    fun getArticles(@ModelAttribute pageRequestDTO: PageRequestDTO, model: Model):String{
         // 페이지 요청 정보에 맞는 게시글 리스트 가져오기 (페이지네이션 적용)
         val articleListPage=articleService.getList(pageRequestDTO)
         // 현재 페이지의 게시글 목록을 모델에 추가

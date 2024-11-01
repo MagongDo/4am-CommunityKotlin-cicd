@@ -1,8 +1,8 @@
 package com.example.community_4am_kotlin.feature.notification.service
 
 
-import com.example.community_4am_Kotlin.domain.article.Article
-import com.example.community_4am_Kotlin.feature.notification.AlarmType
+import com.example.community_4am_kotlin.domain.article.Article
+import com.example.community_4am_kotlin.feature.notification.AlarmType
 import com.example.community_4am_kotlin.domain.notification.CommentAlarm
 import com.example.community_4am_kotlin.domain.user.User
 import com.example.community_4am_kotlin.feature.notification.repository.CommentAlarmRepository

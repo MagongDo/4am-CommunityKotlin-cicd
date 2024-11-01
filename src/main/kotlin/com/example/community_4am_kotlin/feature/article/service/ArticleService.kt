@@ -1,7 +1,7 @@
 package com.example.community_4am_kotlin.feature.article.service
 
-import com.example.community_4am_Kotlin.domain.article.Article
-import com.example.community_4am_Kotlin.feature.article.dto.*
+import com.example.community_4am_kotlin.domain.article.Article
+import com.example.community_4am_kotlin.feature.article.dto.*
 import com.example.community_4am_kotlin.feature.article.repository.ArticleRepository
 import com.example.community_4am_kotlin.feature.comment.repository.CommentRepository
 import com.example.community_4am_kotlin.feature.file.service.FileUploadService
@@ -28,7 +28,7 @@ class ArticleService (
 ){
     // 글 등록 메서드: 게시글을 저장하고 첨부 파일을 처리하여 파일과 게시글을 연결
     fun save(request: AddArticleRequest, userName:String, files: MutableList<MultipartFile>?) : Article {
-        val savedArticle=modelMapper.map(request,Article::class.java).apply { author=userName }
+        val savedArticle=modelMapper.map(request, Article::class.java).apply { author=userName }
         articleRepository.save(savedArticle)
         files?.takeIf { it.isNotEmpty() }?.let {
             val insertedFiles = fileUploadService.uploadFiles(it, savedArticle)
@@ -44,7 +44,7 @@ class ArticleService (
     }
 
     // 특정 ID로 게시글 조회
-    fun findById(id:Long):Article{
+    fun findById(id:Long): Article {
         val article=articleRepository.findById(id).orElseThrow{IllegalArgumentException("article not found")}
         val likeCount=likeService.getLikeCount(id)
 
@@ -62,7 +62,7 @@ class ArticleService (
     }
 
     // 게시글 수정 메서드: 내용과 파일을 수정 가능
-    fun update(id:Long,request: UpdateArticleRequest,files:MutableList<MultipartFile>):Article{
+    fun update(id:Long, request: UpdateArticleRequest, files:MutableList<MultipartFile>): Article {
         val savedArticle=articleRepository.findById(id).orElseThrow{IllegalArgumentException("article not found")}
         authorizeArticleAuthor(savedArticle)
         savedArticle.update(request.title,request.content)
@@ -75,7 +75,7 @@ class ArticleService (
         return savedArticle
     }
 
-    fun getIncreaseViewCount(id:Long):Article{
+    fun getIncreaseViewCount(id:Long): Article {
         val article=articleRepository.findById(id).orElseThrow{IllegalArgumentException("not found: $id ")}
         article.isIncrementViewCount()
         return articleRepository.save(article)

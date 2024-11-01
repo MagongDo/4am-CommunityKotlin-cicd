@@ -1,6 +1,6 @@
 package com.example.community_4am_kotlin.feature.like.controller
 
-import com.example.community_4am_kotlin.feature.article.dto.LikeRequest
+import com.example.community_4am_kotlin.feature.like.dto.LikeRequest
 import com.example.community_4am_kotlin.feature.like.service.LikeService
 import com.example.community_4am_kotlin.feature.notification.service.NotificationService
 import org.apache.logging.log4j.LogManager

@@ -1,9 +1,9 @@
 package com.example.community_4am_kotlin.feature.article.controller
 
-import com.example.community_4am_Kotlin.domain.article.Article
-import com.example.community_4am_Kotlin.feature.article.dto.AddArticleRequest
-import com.example.community_4am_Kotlin.feature.article.dto.ArticleResponse
-import com.example.community_4am_Kotlin.feature.article.dto.UpdateArticleRequest
+import com.example.community_4am_kotlin.domain.article.Article
+import com.example.community_4am_kotlin.feature.article.dto.AddArticleRequest
+import com.example.community_4am_kotlin.feature.article.dto.ArticleResponse
+import com.example.community_4am_kotlin.feature.article.dto.UpdateArticleRequest
 import com.example.community_4am_kotlin.feature.article.service.ArticleService
 import com.example.community_4am_kotlin.feature.file.service.FileUploadService
 import com.example.community_4am_kotlin.feature.like.service.LikeService

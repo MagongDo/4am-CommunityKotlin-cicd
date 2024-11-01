@@ -1,11 +1,14 @@
 package com.example.community_4am_kotlin.domain.user
-import com.example.community_4am_Kotlin.domain.article.Like
+import com.example.community_4am_kotlin.domain.friend.Friend
+import com.example.community_4am_kotlin.domain.user.enums.UserStatus
+import com.example.community_4am_kotlin.domain.article.Like
 import jakarta.persistence.*
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.transaction.annotation.Transactional
+import java.time.LocalDateTime
 import java.util.Base64
 
 @Entity
@@ -38,8 +41,14 @@ data class User(
     var profileUrl: String? = null,
 
     @OneToMany(mappedBy = "user", cascade = [CascadeType.ALL], orphanRemoval = true)
-    var likes: MutableList<Like> = mutableListOf()
+    var likes: MutableList<Like> = mutableListOf(),
 
+    @OneToMany(mappedBy = "user", cascade = [CascadeType.ALL], orphanRemoval = true)
+    val friends: MutableList<Friend> = mutableListOf(),
+    var lastActiveTime: LocalDateTime,
+
+    @Enumerated(EnumType.STRING)
+    var status: UserStatus = UserStatus.OFFLINE
 
 
 

@@ -195,4 +195,31 @@
     margin-left: 10px;
 }
 
+.friend-list-popup {
+    position: absolute;
+    top: 60px;
+    right: 20px;
+    width: 300px;
+    max-height: 400px;
+    overflow-y: auto;
+    background-color: white;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+}
+
+.friend-list-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.friend-list-popup li {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+}
+
 /* 추가적인 커스텀 스타일이 필요하면 여기에 추가 */
