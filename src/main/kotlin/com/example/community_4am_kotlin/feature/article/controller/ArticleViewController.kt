@@ -70,7 +70,7 @@ class ArticleViewController(
 
     // 새 게시글 작성 또는 수정 페이지로 이동
     @GetMapping("/new-article")
-    fun newArticle(@RequestParam(required = false) id:Long, model: Model):String{
+    fun newArticle(@RequestParam(required = false) id:Long?, model: Model):String{
         if (id == null) {
             // ID가 없으면 빈 게시글 객체를 모델에 추가 (새 글 작성)
             model.addAttribute("article", ArticleViewResponse())

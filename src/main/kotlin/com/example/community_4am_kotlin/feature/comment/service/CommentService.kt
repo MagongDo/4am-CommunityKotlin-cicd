@@ -32,12 +32,13 @@ class CommentService(
             commentRepository.findById(it).orElseThrow { IllegalArgumentException("Parent comment not found") }
         }
 
-        val savedComment=modelMapper.map(request, Comment::class.java).apply {
-            this.article=article
-            this.commentAuthor=userName
-            this.parentComment?.let { parentComment }
+        val savedComment = modelMapper.map(request, Comment::class.java).apply {
+            this.article = article
+            this.commentAuthor = userName
+            if (parentComment != null) {
+                this.parentComment = parentComment
+            } // this.parentComment?.let { parentComment }에서 수정
         }
-
         return commentRepository.save(savedComment)
     }
 
@@ -62,7 +63,7 @@ class CommentService(
 
     //게시글에 맞는 한개 댓글과 대댓글 조회
     fun getReComments(articleId:Long,commentId:Long): List<CommentResponse>{
-        val comments=commentRepository.finsParentAndChildCommnetsByArticleId(articleId,commentId)
+        val comments=commentRepository.findParentAndChildCommentsByArticleId(articleId,commentId)
         return comments.map {CommentResponse(it)}
     }
 
