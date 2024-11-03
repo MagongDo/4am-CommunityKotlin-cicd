@@ -26,7 +26,10 @@ data class InsertedFile(
     @ManyToOne
     @JoinColumn(name = "article_id", nullable = false)
     @JsonIgnore
-    var article: Article
+    var article: Article,
+
+    @Column(nullable = false)
+    var isTemporary:Boolean = true
 ) {
 
     fun changeArticle(article: Article) { this.article = article }

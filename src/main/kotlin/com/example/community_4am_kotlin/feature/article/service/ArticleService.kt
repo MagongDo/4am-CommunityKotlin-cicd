@@ -25,15 +25,31 @@ class ArticleService (
     private val likeService: LikeService,
 ){
     // 글 등록 메서드: 게시글을 저장하고 첨부 파일을 처리하여 파일과 게시글을 연결
-    fun save(request: AddArticleRequest, userName:String, files: MutableList<MultipartFile>?) : Article {
-        val savedArticle=articleRepository.save(request.toEntity(userName))
-        articleRepository.save(savedArticle)
+//    fun save(request: AddArticleRequest, userName:String, files: MutableList<MultipartFile>?) : Article {
+//        val savedArticle=articleRepository.save(request.toEntity(userName))
+//        articleRepository.save(savedArticle)
+//        files?.takeIf { it.isNotEmpty() }?.let {
+//            val insertedFiles = fileUploadService.uploadFiles(it, savedArticle)
+//            savedArticle.addFiles(insertedFiles)
+//        }
+//        return savedArticle
+//    }
+
+    fun save(request: AddArticleRequest, userName: String, files: MutableList<MultipartFile>?): Article {
+        // 1. 우선 Article을 저장하여 ID 확보
+        var savedArticle = articleRepository.save(request.toEntity(userName))
+
+        // 2. 파일이 있을 경우 처리
         files?.takeIf { it.isNotEmpty() }?.let {
             val insertedFiles = fileUploadService.uploadFiles(it, savedArticle)
             savedArticle.addFiles(insertedFiles)
         }
+
+        // 3. 최종적으로 모든 변경사항 반영 및 저장
+        savedArticle = articleRepository.save(savedArticle)
         return savedArticle
     }
+
 
     // 모든 게시글 조회
     fun getArticle():List<ArticleResponse>{
@@ -60,21 +76,51 @@ class ArticleService (
     }
 
     // 게시글 수정 메서드: 내용과 파일을 수정 가능
+
+//    fun update(id: Long, request: UpdateArticleRequest, files: MutableList<MultipartFile>?): Article {
+//        val savedArticle = articleRepository.findById(id).orElseThrow { IllegalArgumentException("article not found") }
+//        authorizeArticleAuthor(savedArticle)
+//        // 제목과 내용 수정
+//        savedArticle.update(request.title, request.content)
+//
+//        // 파일이 존재하는 경우에만 추가
+//        files?.takeIf { it.isNotEmpty() }?.let {
+//            val insertedFiles = fileUploadService.uploadFiles(it, savedArticle)
+//            savedArticle.addFiles(insertedFiles)
+//        }
+//
+//        // 수정된 Article 저장 및 반환
+//        return articleRepository.save(savedArticle)
+//    }
+//---------------------------------------
+    // 글 수정 시 임시로 파일 업로드
+    @Transactional
     fun update(id: Long, request: UpdateArticleRequest, files: MutableList<MultipartFile>?): Article {
-        val savedArticle = articleRepository.findById(id).orElseThrow { IllegalArgumentException("article not found") }
+        val savedArticle = articleRepository.findById(id).orElseThrow { IllegalArgumentException("Article not found") }
         authorizeArticleAuthor(savedArticle)
-        // 제목과 내용 수정
         savedArticle.update(request.title, request.content)
 
-        // 파일이 존재하는 경우에만 추가
+        // 파일이 존재하면 임시로 업로드
         files?.takeIf { it.isNotEmpty() }?.let {
-            val insertedFiles = fileUploadService.uploadFiles(it, savedArticle)
-            savedArticle.addFiles(insertedFiles)
+            fileUploadService.uploadFilesTemporarily(it, savedArticle)
         }
-
-        // 수정된 Article 저장 및 반환
         return articleRepository.save(savedArticle)
     }
+
+    // 글 수정 완료 시 임시 파일 반영
+    @Transactional
+    fun finalizeEdit(articleId: Long) {
+        val article = articleRepository.findById(articleId).orElseThrow { IllegalArgumentException("Article not found") }
+        fileUploadService.confirmTemporaryFiles(article) // 임시 파일을 확정
+    }
+
+    // 글 수정 취소 시 임시 파일 삭제
+    @Transactional
+    fun cancelEdit(articleId: Long) {
+        val article = articleRepository.findById(articleId).orElseThrow { IllegalArgumentException("Article not found") }
+        fileUploadService.deleteTemporaryFiles(article) // 임시 파일 삭제
+    }
+//    ----------------------------
 
     fun getIncreaseViewCount(id:Long): Article {
         val article=articleRepository.findById(id).orElseThrow{IllegalArgumentException("not found: $id ")}

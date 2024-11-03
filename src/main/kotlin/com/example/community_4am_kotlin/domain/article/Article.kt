@@ -20,7 +20,7 @@ data class Article(
 
     @Column(name = "title")
     var title: String,
-    @Column(name = "content")
+    @Column(columnDefinition = "LONGTEXT")
     var content: String,
 
     @OneToMany(mappedBy = "article", cascade = [CascadeType.ALL], orphanRemoval = true, fetch = FetchType.LAZY)

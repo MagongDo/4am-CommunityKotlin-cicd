@@ -10,7 +10,6 @@ import java.io.IOException
 import java.util.*
 
 @Service
-@Transactional
 class FileUploadService(
     private val fileRepository: FileRepository,
 ) {
@@ -45,6 +44,38 @@ class FileUploadService(
             ?:throw IllegalArgumentException("File not found")
 
     }
+
+    //----------------------------
+    //글 등록전 임시파일 생성
+    // 파일 임시 업로드
+    @Transactional
+    fun uploadFilesTemporarily(files: List<MultipartFile>, article: Article) {
+        files.forEach { file ->
+            val insertedFile = InsertedFile(
+                uuidFileName = UUID.randomUUID().toString() + "_" + file.originalFilename,
+                originalFileName = file.originalFilename ?: "unknown_filename",
+                fileType = file.contentType ?: "unknown/type",
+                fileData = file.bytes,
+                article = article,
+                isTemporary = true  // 임시 플래그 설정
+            )
+            fileRepository.save(insertedFile)
+        }
+    }
+
+    // 임시 파일 확정
+    @Transactional
+    fun confirmTemporaryFiles(article: Article) {
+        val temporaryFiles = fileRepository.findByArticleAndIsTemporary(article, true)
+        temporaryFiles.forEach { it.isTemporary = false }  // isTemporary 값을 false로 설정
+        fileRepository.saveAll(temporaryFiles)  // 변경 사항 저장
+    }
+
+    // 임시 파일 삭제
+    @Transactional
+    fun deleteTemporaryFiles(article: Article) {
+        fileRepository.deleteByArticleAndIsTemporary(article)
+    }
+//--------------------------------
+
 }
-
-
