@@ -245,7 +245,7 @@
                         <div id="comment-form-section" class="mt-4" th:if="${article.author != '탈퇴한 사용자입니다.' && !#lists.contains(comments, '탈퇴한 사용자입니다.')}">
                             <h6>댓글 작성</h6>
                             <div class="d-flex align-items-center mb-2">
-                                <img th:src="${currrentUserImage}" alt="Profile Image" class="profile-image" style="margin: 0px" />
+                                <img th:src="${currentUserImage}" alt="Profile Image" class="profile-image" style="margin: 0px" />
                                 <h6 class="text-muted ml-2" th:text="${currentUserName}"></h6>
                             </div>
 

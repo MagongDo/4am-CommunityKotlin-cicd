@@ -1,6 +1,7 @@
 package com.example.community_4am_kotlin.domain.article
 
 import com.fasterxml.jackson.annotation.JsonIgnore
+import com.fasterxml.jackson.annotation.JsonProperty
 import jakarta.persistence.*
 
 @Entity
@@ -34,4 +35,8 @@ data class InsertedFile(
     fun changeFileData(fileData: ByteArray) { this.fileData = fileData }
 
     fun getOriginalFileNames(): String? { return originalFileName }
+
+    override fun toString(): String {
+        return "InsertedFile(id=$id, uuidFileName='$uuidFileName', originalFileName='$originalFileName', fileType='$fileType')"
+    }
 }

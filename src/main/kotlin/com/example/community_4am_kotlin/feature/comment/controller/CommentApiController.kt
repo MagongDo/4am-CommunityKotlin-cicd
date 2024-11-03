@@ -36,6 +36,7 @@ class CommentApiController(
         }catch(e:IOException){
             logger.error("댓글 알림 전송 실패: ${e.message}", e)
         }
+        logger.info("---------savedComment : $savedComment")
         return ResponseEntity.status(HttpStatus.CREATED).body(savedComment)
     }
 

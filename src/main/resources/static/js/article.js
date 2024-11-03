@@ -119,6 +119,7 @@ if (createButton) {
             }
         }
 
+
         function success() {
             alert('등록 완료되었습니다.');
             location.replace('/articles');

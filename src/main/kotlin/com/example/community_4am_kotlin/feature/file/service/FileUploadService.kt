@@ -3,7 +3,6 @@ package com.example.community_4am_kotlin.feature.file.service
 import com.example.community_4am_kotlin.domain.article.Article
 import com.example.community_4am_kotlin.domain.article.InsertedFile
 import com.example.community_4am_kotlin.feature.file.repository.FileRepository
-import org.modelmapper.ModelMapper
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.multipart.MultipartFile
@@ -14,8 +13,9 @@ import java.util.*
 @Transactional
 class FileUploadService(
     private val fileRepository: FileRepository,
-    private val modelMapper: ModelMapper
 ) {
+
+    @Transactional
     fun uploadFiles(files: List<MultipartFile>, article: Article): List<InsertedFile> {
         val uploadedFiles: MutableList<InsertedFile> = mutableListOf<InsertedFile>()
 

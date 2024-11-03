@@ -7,7 +7,6 @@ import com.example.community_4am_kotlin.feature.comment.repository.CommentReposi
 import com.example.community_4am_kotlin.feature.file.service.FileUploadService
 import com.example.community_4am_kotlin.feature.like.service.LikeService
 import com.example.community_4am_kotlin.feature.user.dto.UserArticlesList
-import org.modelmapper.ModelMapper
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Sort
@@ -24,11 +23,10 @@ class ArticleService (
     private val commentRepository: CommentRepository,
     private val fileUploadService: FileUploadService,
     private val likeService: LikeService,
-    private val modelMapper: ModelMapper
 ){
     // 글 등록 메서드: 게시글을 저장하고 첨부 파일을 처리하여 파일과 게시글을 연결
     fun save(request: AddArticleRequest, userName:String, files: MutableList<MultipartFile>?) : Article {
-        val savedArticle=modelMapper.map(request, Article::class.java).apply { author=userName }
+        val savedArticle=articleRepository.save(request.toEntity(userName))
         articleRepository.save(savedArticle)
         files?.takeIf { it.isNotEmpty() }?.let {
             val insertedFiles = fileUploadService.uploadFiles(it, savedArticle)
@@ -62,17 +60,20 @@ class ArticleService (
     }
 
     // 게시글 수정 메서드: 내용과 파일을 수정 가능
-    fun update(id:Long, request: UpdateArticleRequest, files:MutableList<MultipartFile>): Article {
-        val savedArticle=articleRepository.findById(id).orElseThrow{IllegalArgumentException("article not found")}
+    fun update(id: Long, request: UpdateArticleRequest, files: MutableList<MultipartFile>?): Article {
+        val savedArticle = articleRepository.findById(id).orElseThrow { IllegalArgumentException("article not found") }
         authorizeArticleAuthor(savedArticle)
-        savedArticle.update(request.title,request.content)
+        // 제목과 내용 수정
+        savedArticle.update(request.title, request.content)
 
+        // 파일이 존재하는 경우에만 추가
         files?.takeIf { it.isNotEmpty() }?.let {
             val insertedFiles = fileUploadService.uploadFiles(it, savedArticle)
             savedArticle.addFiles(insertedFiles)
         }
 
-        return savedArticle
+        // 수정된 Article 저장 및 반환
+        return articleRepository.save(savedArticle)
     }
 
     fun getIncreaseViewCount(id:Long): Article {

@@ -1,6 +1,7 @@
 package com.example.community_4am_kotlin.domain.article
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore
 import jakarta.persistence.*
 import org.hibernate.annotations.BatchSize
 import org.springframework.data.annotation.CreatedDate
@@ -24,6 +25,7 @@ data class Article(
 
     @OneToMany(mappedBy = "article", cascade = [CascadeType.ALL], orphanRemoval = true, fetch = FetchType.LAZY)
     @BatchSize(size = 100)
+//    @JsonIgnore
     var files: MutableList<InsertedFile> = mutableListOf(),
 
     @OneToMany(mappedBy = "article", cascade = [CascadeType.ALL], orphanRemoval = true)
@@ -71,4 +73,8 @@ data class Article(
     fun isIncrementViewCount() { this.viewCount++ }
 
     fun changeLikeCount(likeCount: Long) { this.likeCount=likeCount }
+
+    override fun toString(): String {
+        return "Article(id=$id, title='$title')"
+    }
 }

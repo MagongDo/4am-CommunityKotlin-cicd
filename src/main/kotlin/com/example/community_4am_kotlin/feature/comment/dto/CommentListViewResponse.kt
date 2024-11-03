@@ -16,10 +16,10 @@ data class CommentListViewResponse (
 ){
     constructor(comment: Comment): this(
         commentId=comment.commentId,
-        commentAuthor=comment.getCommentAuthors(),
-        commentContent=comment.getCommentContents(),
-        commentCreatedAt=comment.getCreatedDates(),
-        articleId=comment.getArticles().id!!,
-        parentCommentId=comment.getParentComments()?.commentId
+        commentAuthor=comment.commentAuthor,
+        commentContent=comment.commentContent,
+        commentCreatedAt=comment.createdAt,
+        articleId=comment.article.id!!,
+        parentCommentId=comment.parentComment?.commentId
     )
 }
