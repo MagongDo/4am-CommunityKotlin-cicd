@@ -33,34 +33,36 @@ class NotificationService(
         )
         return notification != null
     }
-
+    fun getUnreadFriendNotificationsCount(recipient: String): Long {
+        return notificationRepository.countByRecipientAndAlarmTypeAndIsReadFalse(recipient, AlarmType.FRIEND)
+    }
     // 친구 신청 알람 생성 및 전송
-    fun sendFriendNotification(friendId: String, fromAuthor: String) {
+    fun sendFriendNotification(friendEmail: String, fromEmail: String) {
         try {
-            val targetId = userRepository.findByEmail(friendId)
-                .orElseThrow() { IllegalArgumentException("사용자를 찾을 수 없습니다.") }
-            val recipientUser = userRepository.findByEmail(fromAuthor)
-                .orElseThrow() { IllegalArgumentException("사용자를 찾을 수 없습니다.") }
+            val recipientUser = userRepository.findByEmail(friendEmail)
+                .orElseThrow { IllegalArgumentException("사용자를 찾을 수 없습니다.") }
+            val senderUser = userRepository.findByEmail(fromEmail)
+                .orElseThrow { IllegalArgumentException("사용자를 찾을 수 없습니다.") }
             val friend = Friend(
-                user = recipientUser,
-                friend = targetId,
+                user = senderUser,
+                friend = recipientUser,
                 status = FriendStatus.PENDING
             )
             friendRepository.save(friend)
 
-            val message = "$fromAuthor 님이 회원님에게 친구요청을 하였습니다."
+            val message = "$fromEmail 님이 회원님에게 친구 요청을 보냈습니다."
             val notification = Notification(
                 alarmType = AlarmType.FRIEND,
                 message = message,
-                recipient = friendId,
+                recipient = friendEmail,
                 isRead = false,
-                makeId = fromAuthor,
-                targetId = targetId.id,
-                user = recipientUser,
+                makeId = fromEmail,
+                targetId = senderUser.id,
+                user = recipientUser, // 여기서 받는 사람을 설정합니다.
                 createdAt = LocalDateTime.now()
             )
             notificationRepository.save(notification)
-            eventPublisher.publishEvent(NotificationEvent(this, friendId, message, notification.alarmType))
+            eventPublisher.publishEvent(NotificationEvent(this, notification.recipient, message, notification.alarmType))
         } catch (e: Exception) {
             println("알림 전송 중 오류 발생: ${e.message}")
         }
@@ -148,7 +150,8 @@ class NotificationService(
 
     // 사용자별 읽지 않은 알림 수 카운트
     fun getUnreadNotificationsCount(recipient: String): Long {
-        return notificationRepository.countByRecipientAndIsReadFalse(recipient)
+        val excludedTypes = listOf(AlarmType.FRIEND)
+        return notificationRepository.countByRecipientAndIsReadFalseAndAlarmTypeNotIn(recipient, excludedTypes)
     }
 
     // 알림 생성

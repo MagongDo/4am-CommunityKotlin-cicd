@@ -31,6 +31,6 @@ data class CoustomAlarm(
     var notificationDays: MutableSet<String>, // Set<String>으로 설정
 
     @CreatedDate
-    val createdAt: LocalDateTime
+    val createdAt: LocalDateTime?=null
 )
 

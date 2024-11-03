@@ -35,4 +35,6 @@ interface FriendRepository : JpaRepository<Friend, Long> {
   // 친구 목록 조회 (수락된 친구만, 온라인 우선 정렬)
   @Query("SELECT f.friend FROM Friend f WHERE f.user.id = :userId AND f.status = 'ACCEPTED' ORDER BY f.friend.status DESC")
   fun findFriendsByUserId(@Param("userId") userId: Long?): List<User>
+
+
 }

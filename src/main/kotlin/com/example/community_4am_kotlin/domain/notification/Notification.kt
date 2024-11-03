@@ -1,7 +1,7 @@
 package com.example.community_4am_kotlin.domain.notification
 
-import com.example.community_4am_kotlin.feature.notification.AlarmType
 import com.example.community_4am_kotlin.domain.user.User
+import com.example.community_4am_kotlin.feature.notification.AlarmType
 import jakarta.persistence.*
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
@@ -14,9 +14,10 @@ data class Notification(
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     var id: Long? = null,
+    @Enumerated(EnumType.STRING)
     var alarmType: AlarmType,
     @CreatedDate
-    var createdAt: LocalDateTime,
+    var createdAt: LocalDateTime?=null,
     var isRead: Boolean,
     var message:String,
     var recipient:String?=null,
