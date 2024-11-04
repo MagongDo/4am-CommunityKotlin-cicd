@@ -28,7 +28,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const searchBtn = document.getElementById('search-btn');
     const performSearchBtn = document.getElementById('perform-search-btn'); // 검색 버튼
     const searchInput = document.getElementById('search-input');
-    const sendRequestBtn = document.getElementById('send-request-btn');
+
     const closeFriendPopupBtn = document.getElementById('close-friend-popup');
     const closeSearchPopupBtn = document.getElementById('close-search-popup');
     const searchResults = document.getElementById('search-results'); // 검색 결과 영역
@@ -677,10 +677,9 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    async function sendFriendRequest() {
-        const email = searchInput.value.trim();
+    async function sendFriendRequest(email, buttonElement) {
         if (!email) {
-            alert('이메일을 입력하세요.');
+            alert('이메일이 필요합니다.');
             return;
         }
 
@@ -692,9 +691,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (response.ok) {
                 alert("친구 신청이 전송되었습니다.");
-                // 추가적인 로직이 필요하다면 여기에 작성
-                searchInput.value = ''; // 입력 필드 초기화
-                searchResults.innerHTML = ''; // 검색 결과 초기화
+                buttonElement.disabled = true; // 버튼 비활성화
+                buttonElement.textContent = "신청 완료"; // 버튼 텍스트 변경
             } else if (response.status === 401) {
                 const errorText = await response.text();
                 alert(`친구 신청 실패: ${errorText || '로그인이 필요합니다.'}`);
@@ -771,24 +769,23 @@ document.addEventListener('DOMContentLoaded', () => {
             // 사용자 이름 추가 (name 필드 사용)
             const userName = document.createElement("span");
             userName.className = "friend-name";
-            userName.textContent = user.name;
+            userName.textContent = user.name; // 여기에 이메일이 표시되고 있는 것 같음
 
             userItem.appendChild(userName);
 
-            // 친구 신청 버튼 추가 (필요 시)
-            if (!user.isFriend) {
-                const addFriendBtn = document.createElement("button");
-                addFriendBtn.className = "btn btn-sm btn-primary";
-                addFriendBtn.textContent = "친구 신청";
-                addFriendBtn.addEventListener('click', () => sendFriendRequest(user.name, addFriendBtn)); // user.email 대신 user.name 사용
-                userItem.appendChild(addFriendBtn);
-            }
+            // 친구 신청 버튼 추가
+            const addFriendBtn = document.createElement("button");
+            addFriendBtn.className = "btn btn-sm btn-primary";
+            addFriendBtn.textContent = "친구 신청";
 
+            // 이벤트 리스너 등록: 클릭 시 해당 사용자의 이메일을 user.name으로 전달
+            addFriendBtn.addEventListener('click', () => sendFriendRequest(user.name, addFriendBtn));
+
+            userItem.appendChild(addFriendBtn);
             searchResults.appendChild(userItem);
         });
     }
-
-    sendRequestBtn.addEventListener('click', sendFriendRequest);
+    // sendRequestBtn.addEventListener('click', sendFriendRequest);
 
 // 페이지 로드 시 친구 목록 및 알림 로드
     loadFriendList();
