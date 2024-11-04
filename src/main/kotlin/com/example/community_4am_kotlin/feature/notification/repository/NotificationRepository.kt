@@ -24,6 +24,22 @@ interface NotificationRepository : JpaRepository<Notification, Long> {
         @Param("makeId") makeId: String,
         @Param("alarmType") alarmType: AlarmType
     ): Notification?
-    fun countByRecipientAndIsReadFalse(recipient: String): Long
+    @Query("""
+    SELECT COUNT(n) FROM Notification n 
+    WHERE n.recipient = :recipient 
+      AND n.isRead = false 
+      AND n.alarmType NOT IN (:excludedTypes)
+""")
+    fun countByRecipientAndIsReadFalseAndAlarmTypeNotIn(
+        @Param("recipient") recipient: String,
+        @Param("excludedTypes") excludedTypes: List<AlarmType>
+    ): Long
     fun findByUser(user: User): MutableList<Notification>
+
+    fun findByUserAndAlarmTypeAndIsReadFalse(targetUser: User, type: AlarmType): List<Notification>
+
+    fun countByRecipientAndAlarmTypeAndIsReadFalse(
+        recipient: String,
+        alarmType: AlarmType = AlarmType.FRIEND
+    ): Long
 }
