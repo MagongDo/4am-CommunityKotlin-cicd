@@ -36,5 +36,7 @@ interface FriendRepository : JpaRepository<Friend, Long> {
   @Query("SELECT f.friend FROM Friend f WHERE f.user.id = :userId AND f.status = 'ACCEPTED' ORDER BY f.friend.status DESC")
   fun findFriendsByUserId(@Param("userId") userId: Long?): List<User>
 
+  fun findByUserId(@Param("userId") userId: Long?): List<Friend>
+
 
 }

@@ -78,10 +78,16 @@
             <h5>사용자 검색</h5>
             <button type="button" id="close-search-popup" class="close-notification-btn">&times;</button>
         </div>
-        <input type="text" id="search-input" placeholder="이메일로 사용자 검색" class="form-control">
-        <button type="button" id="send-request-btn" class="btn btn-primary mt-2">친구 신청</button>
+        <div class="input-group mt-3">
+            <input type="text" id="search-input" placeholder="이메일로 사용자 검색" class="form-control">
+            <div class="input-group-append">
+                <button type="button" id="perform-search-btn" class="btn btn-primary">검색</button>
+            </div>
+        </div>
         <!-- 검색 결과 표시 -->
-        <div id="search-results" class="mt-3"></div>
+        <div id="search-results" class="mt-3">
+            <!-- 검색 결과 항목이 동적으로 추가됩니다. -->
+        </div>
     </div>
 
     <div id="notification-list-popup" class="notification-list-popup d-none">

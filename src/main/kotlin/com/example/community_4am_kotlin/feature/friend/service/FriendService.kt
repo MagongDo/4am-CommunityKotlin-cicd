@@ -65,6 +65,10 @@ class FriendService (
         val friends = friendRepository.findFriendsByUserId(userId)
         return friends.sortedByDescending { it.status == UserStatus.ONLINE }
     }
+    fun getFriendEmail(userId:Long?):List<Friend>
+    {
+        return friendRepository.findByUserId(userId)
+    }
 
  fun deleteFriend(userId:String,friendId: Long){
 
@@ -97,4 +101,5 @@ class FriendService (
             )
         }
     }
+
 }

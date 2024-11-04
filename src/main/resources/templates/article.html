@@ -8,11 +8,12 @@
     <!-- Font Awesome 최신 버전 한 번만 포함 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="..." crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="stylesheet" href="/css/notification.css">
+
 </head>
 <body data-user-id="${#authentication.name}">
 <div class="p-5 mb-5 bg-light header-section">
     <div class="text-center">
-        <a  href="/" style="color: rgb(33, 37, 41);text-decoration: none">
+        <a href="/" style="color: rgb(33, 37, 41);text-decoration: none">
             <h1 class="mb-3">경로당, 함께하소</h1>
         </a>
         <h4 class="mb-3">작은 화면 속 우리들의 소통공간</h4>
@@ -33,7 +34,7 @@
             <span id="friend-notification-count" class="badge badge-danger">0</span>
         </div>
         <!-- 알람 설정 아이콘 -->
-        <div class="custom-alarm-icon" id="custom-alarm-icon">
+        <div class="custom-alarm-icon position-relative" id="custom-alarm-icon">
             <i class="fas fa-clock icon"></i>
         </div>
         <button type="button" class="btn btn-secondary my-page-btn" id="my-page-btn"
@@ -41,6 +42,7 @@
         <button type="button" class="btn btn-secondary logout-btn" id="logout-btn">로그아웃</button>
     </div>
 </div>
+
 
 <div class="wrapper">
     <!-- 친구 목록 팝업 -->
@@ -76,10 +78,16 @@
             <h5>사용자 검색</h5>
             <button type="button" id="close-search-popup" class="close-notification-btn">&times;</button>
         </div>
-        <input type="text" id="search-input" placeholder="이메일로 사용자 검색" class="form-control">
-        <button type="button" id="send-request-btn" class="btn btn-primary mt-2">친구 신청</button>
+        <div class="input-group mt-3">
+            <input type="text" id="search-input" placeholder="이메일로 사용자 검색" class="form-control">
+            <div class="input-group-append">
+                <button type="button" id="perform-search-btn" class="btn btn-primary">검색</button>
+            </div>
+        </div>
         <!-- 검색 결과 표시 -->
-        <div id="search-results" class="mt-3"></div>
+        <div id="search-results" class="mt-3">
+            <!-- 검색 결과 항목이 동적으로 추가됩니다. -->
+        </div>
     </div>
 
     <div id="notification-list-popup" class="notification-list-popup d-none">
@@ -257,7 +265,7 @@
                     <div id="comment-form-section" class="mt-4" th:if="${article.author != '탈퇴한 사용자입니다.' && !#lists.contains(comments, '탈퇴한 사용자입니다.')}">
                         <h6>댓글 작성</h6>
                         <div class="d-flex align-items-center mb-2">
-                            <img th:src="${currrentUserImage}" alt="Profile Image" class="profile-image" style="margin: 0px" />
+                            <img th:src="${currentUserImage}" alt="Profile Image" class="profile-image" style="margin: 0px" />
                             <h6 class="text-muted ml-2" th:text="${currentUserName}"></h6>
                         </div>
 
@@ -284,7 +292,6 @@
     <a class="text-dark" href="/">경로당 홈페이지</a>
 </footer>
 
-</div>
 <script>
     const currentUserName = '[[${currentUserName}]]';   // 기본값 'anonymous'로 설정
     console.log(currentUserName);
@@ -294,7 +301,6 @@
 <script src="/js/like.js"></script>
 <script src="/js/token.js"></script>
 <script src="/js/notification.js"></script>
-
-
+<script src="/js/friendSearch.js"></script> <!-- 새로 추가한 JS 파일 -->
 </body>
 </html>

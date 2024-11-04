@@ -292,3 +292,53 @@
     }
 }
 
+/* 검색 결과 스타일 */
+#search-results .list-group-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#search-results .status-dot {
+    width: 10px;
+    height: 10px;
+    margin-right: 8px;
+}
+/* 친구 목록 항목 스타일 */
+.friend-list-popup .friend-item {
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+}
+
+.friend-list-popup .friend-item:last-child {
+    border-bottom: none;
+}
+
+
+
+.friend-list-popup.d-none, .notification-list-popup.d-none, .custom-alarm-list-popup.d-none, .custom-alarm-popup.d-none, .edit-custom-alarm-popup.d-none, #search-popup.d-none {
+    display: none;
+}
+
+/* 추가: 검색 결과 리스트 그룹 스타일 */
+#search-results .list-group-item {
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+}
+
+#search-results .list-group-item:last-child {
+    border-bottom: none;
+}
+
+/* 버튼 간 간격 조정 */
+.friend-item button, #search-results button {
+    margin-left: 10px;
+}
+.friend-list-popup,
+.notification-list-popup,
+.custom-alarm-list-popup,
+.custom-alarm-popup,
+.edit-custom-alarm-popup,
+#search-popup {
+    z-index: 1050; /* Bootstrap의 모달보다 높게 설정 */
+}
