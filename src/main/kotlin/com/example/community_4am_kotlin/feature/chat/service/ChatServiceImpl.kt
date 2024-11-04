@@ -1,10 +1,12 @@
 package com.example.community_4am_kotlin.feature.chat.service
 
 
+import com.example.community_4am_kotlin.feature.chat.common.WebSocketSessionManager
 import com.example.community_4am_kotlin.feature.user.service.UserService
 import com.example.community_4am_kotlin.log
 import com.nimbusds.jose.shaded.gson.Gson
 import org.springframework.stereotype.Service
+import org.springframework.web.socket.CloseStatus
 import org.springframework.web.socket.TextMessage
 import org.springframework.web.socket.WebSocketSession
 import java.io.IOException
@@ -12,6 +14,7 @@ import java.util.concurrent.ConcurrentHashMap
 
 @Service
 class ChatServiceImpl(
+    private val sessionManager: WebSocketSessionManager,
     private val messageBrokerService: MessageBrokerService,
     private val userService : UserService,
     private val roomSessions: ConcurrentHashMap<String, MutableMap<String, WebSocketSession>>
@@ -32,16 +35,23 @@ class ChatServiceImpl(
         val sessionId = session.id
         log.info("nickname : $nickname")
 
+        //중복 세션이 있는지 확인하기
+        val redisSession = sessionManager.getSessionIfExists(accountId,roomId)
+        if(redisSession != null) {
+            session.close(CloseStatus.NORMAL)
+            return
+        }
         // 세션 정보 저장
         roomSessions.computeIfAbsent(roomId) { ConcurrentHashMap() }[sessionId] = session
+        sessionManager.cacheSession(accountId,roomId,sessionId)
 
         // 환영 메시지 전송
         val welcomeMessage = "${nickname}님이 입장했습니다. 모두 환영해주세요"
         messageBrokerService.publishToChannel(roomId, welcomeMessage)
     }
 
-    override fun handleUserDisconnection(session: WebSocketSession, roomId: String, email: String) {
-        val nickname = userService.findByEmail(email).nickname ?: "사용자를 알 수 없음"
+    override fun handleUserDisconnection(session: WebSocketSession, roomId: String, accountId: String) {
+        val nickname = userService.findByEmail(accountId).nickname ?: "사용자를 알 수 없음"
 
         // 퇴장 메시지 생성
         val messageJson = mapOf(
@@ -54,6 +64,7 @@ class ChatServiceImpl(
 
         // 세션 정보 제거
         roomSessions[roomId]?.remove(session.id)
+        sessionManager.deleteSession(accountId,roomId)
 
     }
 
