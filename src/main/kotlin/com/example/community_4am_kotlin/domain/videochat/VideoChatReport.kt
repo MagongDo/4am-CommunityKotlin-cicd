@@ -15,12 +15,11 @@ data class VideoChatReport (
     val reportId: Long = 0,
 
     var videoChatId: String? = null,
-    var reporterId: String? = null,
-    var reportedId: String? = null,
-    var reportVideoChatCreatAt: LocalDateTime? = null,
-    var reportVideoChatEndAt: LocalDateTime? = null,
-    var reportDetails: String? = null
-
+    var reporterId: Long? = null,
+    var reportedId: Long? = null,
+    var reportType: String? = null,
+    var reportDetails: String? = null,
+    var reportTimestamp: LocalDateTime? = null
 
     ){
 
