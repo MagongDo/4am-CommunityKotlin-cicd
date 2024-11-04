@@ -61,11 +61,15 @@ class FriendService (
             friendId = notification.targetId // recipient의 ID 사용
         )
     }
-
-    // 정렬된 친구 목록 가져오기 (온라인 상태인 친구가 우선)
     fun getSortedFriendList(userId: Long?): List<User> {
-        return friendRepository.findFriendsByUserId(userId)
+        val friends = friendRepository.findFriendsByUserId(userId)
+        return friends.sortedByDescending { it.status == UserStatus.ONLINE }
     }
+    fun getFriendEmail(userId:Long?):List<Friend>
+    {
+        return friendRepository.findByUserId(userId)
+    }
+
  fun deleteFriend(userId:String,friendId: Long){
 
          val recipientUser = userRepository.findByEmail(userId)
@@ -97,4 +101,5 @@ class FriendService (
             )
         }
     }
+
 }

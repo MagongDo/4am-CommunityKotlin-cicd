@@ -225,3 +225,120 @@
     font-size: 12px;
 }
 /* 추가적인 커스텀 스타일이 필요하면 여기에 추가 */
+
+/* 친구 아이템 전체 스타일 */
+.friend-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+/* 상태 점 스타일 */
+.status-dot {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    margin-right: 10px;
+    transition: background-color 0.3s ease;
+    position: relative;
+}
+
+.status-dot::after {
+    content: attr(title);
+    position: absolute;
+    bottom: 125%; /* 점 위에 표시 */
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #333;
+    color: #fff;
+    padding: 3px 6px;
+    border-radius: 4px;
+    white-space: nowrap;
+    opacity: 0;
+    transition: opacity 0.3s;
+    pointer-events: none;
+    font-size: 12px;
+}
+
+.status-dot:hover::after {
+    opacity: 1;
+}
+
+/* 온라인 상태 점 (초록색) */
+.status-dot.online {
+    background-color: green;
+}
+
+/* 오프라인 상태 점 (빨간색) */
+.status-dot.offline {
+    background-color: red;
+}
+
+/* 친구 이름 스타일 */
+.friend-name {
+    font-size: 16px;
+}
+
+/* 반응형 디자인 */
+@media (max-width: 600px) {
+    .friend-item {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .status-dot {
+        margin-bottom: 5px;
+    }
+}
+
+/* 검색 결과 스타일 */
+#search-results .list-group-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#search-results .status-dot {
+    width: 10px;
+    height: 10px;
+    margin-right: 8px;
+}
+/* 친구 목록 항목 스타일 */
+.friend-list-popup .friend-item {
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+}
+
+.friend-list-popup .friend-item:last-child {
+    border-bottom: none;
+}
+
+
+
+.friend-list-popup.d-none, .notification-list-popup.d-none, .custom-alarm-list-popup.d-none, .custom-alarm-popup.d-none, .edit-custom-alarm-popup.d-none, #search-popup.d-none {
+    display: none;
+}
+
+/* 추가: 검색 결과 리스트 그룹 스타일 */
+#search-results .list-group-item {
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+}
+
+#search-results .list-group-item:last-child {
+    border-bottom: none;
+}
+
+/* 버튼 간 간격 조정 */
+.friend-item button, #search-results button {
+    margin-left: 10px;
+}
+.friend-list-popup,
+.notification-list-popup,
+.custom-alarm-list-popup,
+.custom-alarm-popup,
+.edit-custom-alarm-popup,
+#search-popup {
+    z-index: 1050; /* Bootstrap의 모달보다 높게 설정 */
+}

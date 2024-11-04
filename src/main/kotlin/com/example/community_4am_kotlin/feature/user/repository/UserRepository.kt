@@ -1,6 +1,7 @@
 package com.example.community_4am_kotlin.feature.user.repository
 
 import com.example.community_4am_kotlin.domain.user.User
+import com.example.community_4am_kotlin.domain.user.enums.UserStatus
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Modifying
 import org.springframework.data.jpa.repository.Query
@@ -19,6 +20,6 @@ interface UserRepository : JpaRepository<User, Long>  {
     fun updateProfileImage(@Param("email") email: String, @Param("profileImage") profileImage: ByteArray)
 
     fun findByEmailStartingWith(email: String): List<User>
-    @Query("SELECT u FROM User u WHERE u.lastActiveTime < :inactiveSince")
-    fun findInactiveUsersSince(inactiveSince: LocalDateTime): List<User>
+    @Query("SELECT u FROM User u WHERE u.lastActiveTime < :inactiveThreshold AND u.status = com.example.community_4am_kotlin.domain.user.enums.UserStatus.ONLINE")
+    fun findInactiveUsersSince(@Param("inactiveThreshold") inactiveThreshold: LocalDateTime): List<User>
 }

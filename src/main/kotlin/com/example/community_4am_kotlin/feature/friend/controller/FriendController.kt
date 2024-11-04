@@ -93,14 +93,34 @@ class FriendController(
     }
 
     // 이메일로 친구 검색
-    @GetMapping("/friends/search")
+    @GetMapping("/search")
     fun searchFriendByEmail(
-        @RequestParam email: String
+        @RequestParam email: String,
+        principal: Principal
     ): ResponseEntity<Any> {
         return try {
+            // 현재 로그인한 사용자의 정보
+            val currentUser = userService.findByEmail(principal.name)
+
+            // 검색 결과 가져오기 (이메일 접두사로 시작하는 사용자)
             val friends = userService.searchUsersByEmailStartingWith(email)
+
+            // 현재 사용자의 친구 목록 가져오기
+            val currentUserFriends = friendService.getFriendEmail(currentUser.id).map { it.friend.email }
+
             if (friends.isNotEmpty()) {
-                ResponseEntity.ok(friends)
+                // 본인과 친구 목록에 포함된 사용자를 제외하고 DTO로 변환하여 반환
+                val friendDtos = friends.filter { user ->
+                    user.email != principal.name && !currentUserFriends.contains(user.email)
+                }.map { user ->
+                    FriendDTO(
+                        id = user.id,
+                        name = user.email, // 이름이 없으면 이메일로 대체
+                        status = user.status
+                    )
+                }
+
+                ResponseEntity.ok(friendDtos)
             } else {
                 ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body(mapOf("message" to "친구를 찾을 수 없습니다."))
@@ -133,6 +153,7 @@ class FriendController(
                 .body(mapOf("message" to "친구 요청 전송 중 오류가 발생했습니다."))
         }
     }
+
     @GetMapping("/requests")
     fun getFriendRequests(authentication: Authentication?): ResponseEntity<Any> {
         if (authentication == null || !authentication.isAuthenticated) {

@@ -45,6 +45,7 @@ data class User(
 
     @OneToMany(mappedBy = "user", cascade = [CascadeType.ALL], orphanRemoval = true)
     val friends: MutableList<Friend> = mutableListOf(),
+
     var lastActiveTime: LocalDateTime,
 
     @Enumerated(EnumType.STRING)
