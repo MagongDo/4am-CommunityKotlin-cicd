@@ -24,6 +24,7 @@ class ArticleService (
     private val fileUploadService: FileUploadService,
     private val likeService: LikeService,
 ){
+
     // 글 등록 메서드: 게시글을 저장하고 첨부 파일을 처리하여 파일과 게시글을 연결
 //    fun save(request: AddArticleRequest, userName:String, files: MutableList<MultipartFile>?) : Article {
 //        val savedArticle=articleRepository.save(request.toEntity(userName))
@@ -93,12 +94,29 @@ class ArticleService (
 //        return articleRepository.save(savedArticle)
 //    }
 //---------------------------------------
+
     // 글 수정 시 임시로 파일 업로드
     @Transactional
     fun update(id: Long, request: UpdateArticleRequest, files: MutableList<MultipartFile>?): Article {
         val savedArticle = articleRepository.findById(id).orElseThrow { IllegalArgumentException("Article not found") }
         authorizeArticleAuthor(savedArticle)
         savedArticle.update(request.title, request.content)
+
+        //----------- content에서 삭제 된 파일 db에서도 삭제하는 블록-------
+        // 현재 content에서 사용 중인 파일명 추출
+        val currentUuidFileNames = extractUuidFileNames(request.content)
+
+        // 데이터베이스에 저장된 파일 중 content에 사용되지 않고 영구 저장된 파일만 삭제
+        val filesToDelete = savedArticle.files.filter {
+            it.uuidFileName !in currentUuidFileNames && !it.isTemporary
+        }
+
+        if (filesToDelete.isNotEmpty()) {
+            // 필요 없는 파일 삭제
+            fileUploadService.deleteFiles(filesToDelete)
+            savedArticle.files.removeAll(filesToDelete)
+        }
+        //------------------------------------------------------
 
         // 파일이 존재하면 임시로 업로드
         files?.takeIf { it.isNotEmpty() }?.let {
@@ -143,6 +161,15 @@ class ArticleService (
                 it2,it.viewCount)
         } }!! }
     }
+
+    //content에서 사용 중인 파일명 추출g
+    fun extractUuidFileNames(content: String): List<String> {
+        val regex = Regex("uuidFileName=([\\w-]+)")  // uuidFileName에 해당하는 값을 추출하는 정규식
+        return regex.findAll(content)
+            .map { it.groupValues[1] } // uuidFileName만 추출
+            .toList()
+    }
+
 
     // 게시글의 작성자를 확인하여 권한 검증
     fun authorizeArticleAuthor(article: Article) {

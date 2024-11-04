@@ -45,6 +45,11 @@ class FileUploadService(
 
     }
 
+    @Transactional
+    fun deleteFiles(files: List<InsertedFile>){
+        files.forEach { fileRepository.delete(it) }
+    }
+
     //----------------------------
     //글 등록전 임시파일 생성
     // 파일 임시 업로드

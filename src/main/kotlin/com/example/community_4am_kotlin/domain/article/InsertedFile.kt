@@ -1,7 +1,6 @@
 package com.example.community_4am_kotlin.domain.article
 
 import com.fasterxml.jackson.annotation.JsonIgnore
-import com.fasterxml.jackson.annotation.JsonProperty
 import jakarta.persistence.*
 
 @Entity
