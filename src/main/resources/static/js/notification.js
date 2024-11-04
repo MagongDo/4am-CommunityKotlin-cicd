@@ -520,14 +520,31 @@ document.addEventListener('DOMContentLoaded', () => {
         const friendListDiv = document.getElementById("friend-list");
         friendListDiv.innerHTML = "";
 
-        friends.sort((a, b) => b.online - a.online); // 온라인 상태에 따라 정렬
+        // 온라인 상태에 따라 정렬: 온라인이 먼저 오도록
+        friends.sort((a, b) => {
+            if (a.status === "ONLINE" && b.status !== "ONLINE") return -1;
+            if (a.status !== "ONLINE" && b.status === "ONLINE") return 1;
+            return 0;
+        });
 
         friends.forEach(friend => {
             const friendItem = document.createElement("div");
             friendItem.className = "friend-item";
-            friendItem.innerHTML = `
-                <span>${friend.name} ${friend.online ? "(온라인)" : "(오프라인)"}</span>
-            `;
+
+            // 상태를 나타내는 점 추가
+            const statusDot = document.createElement("span");
+            statusDot.className = friend.status === "ONLINE" ? "status-dot online" : "status-dot offline";
+            statusDot.title = friend.status === "ONLINE" ? "온라인" : "오프라인"; // 툴팁 추가
+
+            // 친구 이름 추가
+            const friendName = document.createElement("span");
+            friendName.className = "friend-name";
+            friendName.textContent = friend.name;
+
+            // 상태 점과 친구 이름을 친구 아이템에 추가
+            friendItem.appendChild(statusDot);
+            friendItem.appendChild(friendName);
+
             friendListDiv.appendChild(friendItem);
         });
     }
