@@ -4,6 +4,8 @@ import com.example.community_4am_kotlin.domain.chat.ChatMessage
 import com.example.community_4am_kotlin.log
 import com.example.community_4am_kotlin.feature.chat.repository.ChatRoomRepository
 import com.example.community_4am_kotlin.feature.chat.repository.MessageRepository
+import com.google.gson.Gson
+import com.google.gson.JsonObject
 import org.springframework.data.redis.connection.Message
 import org.springframework.data.redis.connection.MessageListener
 import org.springframework.stereotype.Service
@@ -11,29 +13,32 @@ import org.springframework.web.socket.TextMessage
 import org.springframework.web.socket.WebSocketSession
 import java.time.LocalDateTime
 import java.io.IOException
+import java.security.Principal
 import java.util.concurrent.ConcurrentHashMap
+import kotlin.math.log
 
 @Service
 class RedisSubscriber(
-    private val roomSessions : ConcurrentHashMap<String, MutableMap<String, WebSocketSession>>,
+    private val roomSessions: ConcurrentHashMap<String, MutableMap<String, WebSocketSession>>,
     private val messageRepository: MessageRepository,
-    private val chatRoomRepository: ChatRoomRepository
+    private val chatRoomRepository: ChatRoomRepository,
+    private val gson: Gson
 
 ) : MessageListener {
 
     override fun onMessage(message: Message, pattern: ByteArray?) {
-        val channel = pattern?.let { String(it, Charsets.UTF_8) } ?: return
-        val content = String(message.body, Charsets.UTF_8) // 메시지 본문을 UTF-8로 변환
+        val roomId = pattern?.let { String(it, Charsets.UTF_8) } ?: return
+        val content = String(message.body, Charsets.UTF_8)
+        log.info("roomId: $roomId, content: $content")
 
 
-        log.info("channel: $channel, content: $content")
-        roomSessions[channel]?.values?.forEach { session ->
+        roomSessions[roomId]?.values?.forEach { session ->
             try {
-                session.sendMessage(TextMessage(content))
-
                 val accountId = session.attributes["accountId"] as String?
-                accountId?.let { saveMessage(channel, it, content) }
-
+                session.sendMessage(TextMessage(content))
+                log.info("보낸 메세지 ${content}")
+                // 메시지 저장
+                accountId?.let { saveMessage(roomId, it, content) }
                 log.info("메세지가 저장되었습니다")
             } catch (e: IOException) {
                 e.printStackTrace()

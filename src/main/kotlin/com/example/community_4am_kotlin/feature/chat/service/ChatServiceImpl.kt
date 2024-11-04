@@ -5,6 +5,7 @@ import com.example.community_4am_kotlin.feature.chat.common.WebSocketSessionMana
 import com.example.community_4am_kotlin.feature.user.service.UserService
 import com.example.community_4am_kotlin.log
 import com.nimbusds.jose.shaded.gson.Gson
+import com.nimbusds.jose.shaded.gson.JsonObject
 import org.springframework.stereotype.Service
 import org.springframework.web.socket.CloseStatus
 import org.springframework.web.socket.TextMessage
@@ -46,8 +47,17 @@ class ChatServiceImpl(
         sessionManager.cacheSession(accountId,roomId,sessionId)
 
         // 환영 메시지 전송
-        val welcomeMessage = "${nickname}님이 입장했습니다. 모두 환영해주세요"
-        messageBrokerService.publishToChannel(roomId, welcomeMessage)
+ /*       val welcomeMessage = "${nickname}님이 입장했습니다. 모두 환영해주세요"*/
+       //전체적으로 동일한 Json 전달방식을 사용하기 위함
+        // 환영 메시지를 JSON 객체로 구성
+       val welcomeMessageData = mapOf(
+           "type" to "message",
+           "roomId" to roomId,
+           "message" to "${nickname}님 환영합니다.",
+           "sender" to "시스템"
+       ).let { Gson().toJson(it) }
+
+        messageBrokerService.publishToChannel(roomId, welcomeMessageData)
     }
 
     override fun handleUserDisconnection(session: WebSocketSession, roomId: String, accountId: String) {
@@ -55,8 +65,10 @@ class ChatServiceImpl(
 
         // 퇴장 메시지 생성
         val messageJson = mapOf(
-            "sender" to nickname,
-            "chatMessage" to "$nickname 님이 퇴장하셨습니다."
+            "type" to "message",
+            "roomId" to roomId,
+            "message" to "${nickname}님이 퇴장하셨습니다.",
+            "sender" to "시스템"
         ).let { Gson().toJson(it) } // JSON 변환
 
         // 메시지 전송
@@ -67,7 +79,6 @@ class ChatServiceImpl(
         sessionManager.deleteSession(accountId,roomId)
 
     }
-
     override fun memberListUpdated(
         roomId: String,
         roomSessions: ConcurrentHashMap<String, MutableMap<String, WebSocketSession>>
@@ -82,8 +93,11 @@ class ChatServiceImpl(
                 username?.let { userService.findByEmail(it).nickname }
             }
 
-            // 멤버 목록을 JSON 형식으로 변환
-            val memberListJson = Gson().toJson(memberList)
+            // 멤버 목록을 JSON 객체로 생성
+            val memberListJson = mapOf(
+                "type" to "memberList",       // 클라이언트가 데이터 유형을 구분할 수 있도록 "type" 필드 추가
+                "members" to memberList        // 멤버 리스트 추가
+            ).let { Gson().toJson(it) }
 
             // 각 세션에 멤버 목록을 전송
             sessionsInRoom.values.forEach { session ->
@@ -94,7 +108,8 @@ class ChatServiceImpl(
                 }
             }
         }
-        }
+    }
+
 
 
     override fun getUserCount(roomId: String): Int = if (roomSessions.containsKey(roomId)) roomSessions[roomId]!!.size else 0;
