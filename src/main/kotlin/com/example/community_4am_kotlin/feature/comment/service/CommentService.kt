@@ -7,7 +7,6 @@ import com.example.community_4am_kotlin.feature.comment.repository.CommentReposi
 import com.example.community_4am_kotlin.feature.like.service.LikeService
 import com.example.community_4am_kotlin.feature.user.dto.UserCommentsList
 import org.apache.logging.log4j.LogManager
-import org.modelmapper.ModelMapper
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Sort
@@ -20,7 +19,6 @@ import org.springframework.transaction.annotation.Transactional
 class CommentService(
     private val commentRepository: CommentRepository,
     private val articleRepository: ArticleRepository,
-    private val modelMapper: ModelMapper
 ) {
 
     private val logger = LogManager.getLogger(LikeService::class.java)
@@ -28,17 +26,11 @@ class CommentService(
     //게시글에 맞는 한개 댓글 생성
     fun saveComment(request:AddCommentRequest,articleId:Long,userName:String): Comment {
         val article=articleRepository.findById(articleId).orElseThrow { IllegalArgumentException("Article not found") }
-        val parentComment=request.parentConmmentId?.let{
+        val parentComment=request.parentCommentId?.let{
             commentRepository.findById(it).orElseThrow { IllegalArgumentException("Parent comment not found") }
         }
 
-        val savedComment = modelMapper.map(request, Comment::class.java).apply {
-            this.article = article
-            this.commentAuthor = userName
-            if (parentComment != null) {
-                this.parentComment = parentComment
-            } // this.parentComment?.let { parentComment }에서 수정
-        }
+        val savedComment = commentRepository.save(request.toEntity(userName, article, parentComment));
         return commentRepository.save(savedComment)
     }
 

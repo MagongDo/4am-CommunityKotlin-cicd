@@ -8,8 +8,8 @@ data class UpdateCommentRequest(
     val commentIsDeleted:Boolean?
 ) {
     constructor(comment: Comment):this(
-        commentContent=comment.getCommentContents(),
-        commentIsDeleted=comment.getCommentIsDeleteds(),
-        commentIsHidden=comment.getCommentIsHiddens()
+        commentContent=comment.commentContent,
+        commentIsDeleted=comment.commentIsDeleted,
+        commentIsHidden=comment.commentIsHidden
     )
 }
