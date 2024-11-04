@@ -116,8 +116,8 @@ class UserService(
         return userRepository.findByEmailStartingWith(email)
     }
 
-    fun updateLastActiveTime(userId: Long?) {
-        val user = userId?.let { userRepository.findById(it).orElseThrow { IllegalArgumentException("사용자를 찾을 수 없습니다.") } }
+    fun updateLastActiveTime(userId: String?) {
+        val user = userId?.let { userRepository.findByEmail(it).orElseThrow { IllegalArgumentException("사용자를 찾을 수 없습니다.") } }
         user?.lastActiveTime = LocalDateTime.now()
         user?.status = UserStatus.ONLINE // 활동 시 상태를 ONLINE으로 업데이트
         user?.let { userRepository.save(it) }

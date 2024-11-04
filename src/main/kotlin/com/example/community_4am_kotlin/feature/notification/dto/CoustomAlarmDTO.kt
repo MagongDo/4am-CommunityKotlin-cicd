@@ -1,15 +1,15 @@
-package com.example.community_4am_kotlin.feature.notification.dto
 
+package com.example.community_4am_kotlin.feature.notification.dto
 
 import com.example.community_4am_kotlin.domain.notification.CoustomAlarm
 
 data class CoustomAlarmDTO(
     var id: Long? = null,
-    var message: String,
-    var notificationDays: MutableSet<String>,
+    var message: String = "",
+    var notificationDays: MutableSet<String> = mutableSetOf(),
     var reserveAt: String? = null, // "HH:mm" 형식
     var status: Boolean? = null,
-    var isRead: Boolean,
+    var isRead: Boolean = false,
     var dataType: String = "CoustomAlarm"
 ) {
     fun toDTO(alarm: CoustomAlarm): CoustomAlarmDTO {
@@ -23,6 +23,4 @@ data class CoustomAlarmDTO(
             isRead = alarm.isRead
         )
     }
-
-
 }
