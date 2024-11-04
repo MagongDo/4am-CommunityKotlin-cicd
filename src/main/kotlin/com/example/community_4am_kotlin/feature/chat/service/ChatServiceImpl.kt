@@ -5,7 +5,6 @@ import com.example.community_4am_kotlin.feature.chat.common.WebSocketSessionMana
 import com.example.community_4am_kotlin.feature.user.service.UserService
 import com.example.community_4am_kotlin.log
 import com.nimbusds.jose.shaded.gson.Gson
-import jdk.internal.org.jline.utils.Colors.s
 import org.springframework.stereotype.Service
 import org.springframework.web.socket.CloseStatus
 import org.springframework.web.socket.TextMessage

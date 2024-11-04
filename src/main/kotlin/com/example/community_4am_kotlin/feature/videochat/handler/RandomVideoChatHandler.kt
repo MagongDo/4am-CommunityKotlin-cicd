@@ -271,7 +271,7 @@ class RandomVideoChatHandler(
             val builder = UriComponentsBuilder.fromUri(uri)
             val accessToken: String? = builder.build().queryParams.getFirst("accessToken")
             if (accessToken != null) {
-                userId = tokenProvider.getUserId(accessToken)!! // 여기 강민님 돌아오면 수정해야함 241030
+                userId = tokenProvider.getUserId(accessToken)!!
                 session.attributes["userId"] = userId
             }
         }
