@@ -42,13 +42,30 @@ class ArticleApiController(
     }
 
     // 게시글 수정 API (PUT)
-    @PutMapping(value = ["/{id}"],consumes = [MediaType.MULTIPART_FORM_DATA_VALUE])
-    fun updateArticle(@PathVariable("id") id: Long,
-                      @RequestPart("request") request: UpdateArticleRequest,
-                      @RequestPart(value = "files", required = false)files:MutableList<MultipartFile> ): ResponseEntity<Article> {
-        val updatedArticle=articleService.update(id, request,files)
+    @PutMapping(value = ["/{id}"], consumes = [MediaType.MULTIPART_FORM_DATA_VALUE])
+    fun updateArticle(
+        @PathVariable("id") id: Long,
+        @RequestPart("request") request: UpdateArticleRequest,
+        @RequestPart(value = "files", required = false) files: MutableList<MultipartFile>?): ResponseEntity<Article> {
+        val updatedArticle = articleService.update(id, request, files) // `files`가 null이더라도 `update` 호출
         return ResponseEntity.ok().body(updatedArticle)
     }
+//---------------
+    // 글 수정 완료 시 임시 파일 반영 API
+    @PutMapping("/{id}/finalize-edit")
+    fun finalizeEdit(@PathVariable("id") id: Long): ResponseEntity<Void> {
+        articleService.finalizeEdit(id)
+        return ResponseEntity.ok().build()
+    }
+
+    // 글 수정 취소 시 임시 파일 삭제 API
+    @PutMapping("/{id}/cancel-edit")
+    fun cancelEdit(@PathVariable("id") id: Long): ResponseEntity<Void> {
+        articleService.cancelEdit(id)
+        return ResponseEntity.ok().build()
+    }
+//----------------
+
 
     // 게시글 삭제 API (DELETE)
     @DeleteMapping(value = ["/{id}"],produces = [MediaType.APPLICATION_JSON_VALUE])

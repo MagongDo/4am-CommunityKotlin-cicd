@@ -2,6 +2,7 @@ package com.example.community_4am_kotlin.domain.article
 
 import com.example.community_4am_kotlin.domain.article.Article
 import com.fasterxml.jackson.annotation.JsonIgnore
+import com.fasterxml.jackson.annotation.JsonProperty
 import jakarta.persistence.*
 
 @Entity
@@ -26,7 +27,10 @@ data class InsertedFile(
     @ManyToOne
     @JoinColumn(name = "article_id", nullable = false)
     @JsonIgnore
-    var article: Article
+    var article: Article,
+
+    @Column(nullable = false)
+    var isTemporary:Boolean = true
 ) {
 
     fun changeArticle(article: Article) { this.article = article }
@@ -35,4 +39,8 @@ data class InsertedFile(
     fun changeFileData(fileData: ByteArray) { this.fileData = fileData }
 
     fun getOriginalFileNames(): String? { return originalFileName }
+
+    override fun toString(): String {
+        return "InsertedFile(id=$id, uuidFileName='$uuidFileName', originalFileName='$originalFileName', fileType='$fileType')"
+    }
 }

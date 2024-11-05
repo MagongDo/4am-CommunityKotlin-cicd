@@ -20,32 +20,25 @@ document.addEventListener('DOMContentLoaded', () => {
     const addCustomAlarmBtn = document.getElementById('add-custom-alarm-btn');
     const body = document.querySelector('body');
     const currentUserId = body.getAttribute('data-user-id');
-    const friendIcon = document.getElementById('friend-icon');
-    const friendListPopup = document.getElementById('friend-list-popup');
-    const friendList = document.getElementById('friend-list');
-    const friendRequestCount = document.getElementById('friend-request-count');
-    const closeFriendListBtn = document.getElementById('close-friend-list-btn');
-    const searchFriendBtn = document.getElementById('search-friend-btn');
-    const friendSearchPopup = document.getElementById('friend-search-popup');
-    const closeFriendSearchBtn = document.getElementById('close-friend-search-btn');
-    const friendSearchInput = document.getElementById('friend-search-input');
-    const friendSearchResult = document.getElementById('friend-search-result');
-    const searchFriendSubmit = document.getElementById('search-friend-submit');
 
+    const friendNotificationCount = document.getElementById('friend-notification-count');
+    const friendIcon = document.getElementById('friend-icon');
+    const friendPopup = document.getElementById('friend-popup');
+    const searchPopup = document.getElementById('search-popup');
+    const searchBtn = document.getElementById('search-btn');
+    const performSearchBtn = document.getElementById('perform-search-btn'); // 검색 버튼
+    const searchInput = document.getElementById('search-input');
+
+    const closeFriendPopupBtn = document.getElementById('close-friend-popup');
+    const closeSearchPopupBtn = document.getElementById('close-search-popup');
+    const searchResults = document.getElementById('search-results'); // 검색 결과 영역
+
+    // 읽지 않은 일반 알림과 친구 알림의 카운트를 저장하는 변수
+    let unreadGeneralCount = 0;
+    let unreadFriendCount = 0;
 
     // WebSocket 연결
     const socket = new WebSocket('wss://localhost:8443/ws/notifications');
-    socket.onmessage = function (event) {
-        const data = JSON.parse(event.data);
-        console.log("Received WebSocket data:", data);
-        if (data.type === 'NEW_NOTIFICATION') {
-            fetchUnreadNotificationCount();  // 새 알림이 올 때마다 읽지 않은 알림 수 갱신
-        }
-    };
-    friendIcon.addEventListener('click', () => {
-        friendListPopup.classList.toggle('d-none');
-        loadFriendList();
-    });
 
     socket.onopen = function () {
         console.log('WebSocket 연결이 열렸습니다.');
@@ -59,12 +52,36 @@ document.addEventListener('DOMContentLoaded', () => {
         console.error('WebSocket 오류:', error);
     };
 
+    // 웹소켓으로부터 알림 수신
+    socket.onmessage = function (event) {
+        const data = JSON.parse(event.data);
+        console.log("Received WebSocket data:", data);
+        if (data.type === 'NEW_NOTIFICATION') {
+            fetchUnreadNotificationCount();  // 새 알림이 올 때마다 읽지 않은 알림 수 갱신
+        } else if (data.type === 'NEW_FRIEND_NOTIFICATION') {
+            fetchUnreadFriendNotificationCount();  // 친구 알림 수 갱신
+        } else {
+            console.warn(`알 수 없는 알림 타입입니다: ${data.type}`);
+        }
+    };
+
+    // 알림 카운트를 업데이트하는 함수
+    function updateNotificationCounts() {
+        notificationCount.textContent = unreadGeneralCount;
+        notificationCount.classList.toggle('hidden', unreadGeneralCount === 0);
+
+        friendNotificationCount.textContent = unreadFriendCount;
+        friendNotificationCount.classList.toggle('hidden', unreadFriendCount === 0);
+    }
+
     // 일반 알림 리스트 토글
     notificationIcon.addEventListener('click', () => {
         notificationListPopup.classList.toggle('d-none');
         customAlarmListPopup.classList.add('d-none');
         customAlarmPopup.classList.add('d-none');
         editCustomAlarmPopup.classList.add('d-none'); // 수정 팝업도 닫기
+        friendPopup.classList.add('d-none'); // 친구 팝업 닫기
+        searchPopup.classList.add('d-none'); // 검색 팝업 닫기
         loadGeneralNotifications(); // 일반 알림 리스트 로드
     });
 
@@ -74,9 +91,13 @@ document.addEventListener('DOMContentLoaded', () => {
         notificationListPopup.classList.add('d-none');
         customAlarmPopup.classList.add('d-none');
         editCustomAlarmPopup.classList.add('d-none'); // 수정 팝업도 닫기
+        friendPopup.classList.add('d-none'); // 친구 팝업 닫기
+        searchPopup.classList.add('d-none'); // 검색 팝업 닫기
         loadCustomAlarms(); // 커스텀 알람 리스트 로드
     });
-
+    closeFriendPopupBtn.addEventListener('click', () => {
+        friendPopup.classList.add('d-none');
+    });
     // 일반 알림 리스트 팝업 닫기
     closeNotificationBtn.addEventListener('click', () => {
         notificationListPopup.classList.add('d-none');
@@ -97,6 +118,33 @@ document.addEventListener('DOMContentLoaded', () => {
         editCustomAlarmPopup.classList.add('d-none');
     });
 
+    // 친구 팝업 토글
+    friendIcon.addEventListener('click', () => {
+        friendPopup.classList.toggle('d-none');
+        notificationListPopup.classList.add('d-none');
+        customAlarmListPopup.classList.add('d-none');
+        customAlarmPopup.classList.add('d-none');
+        editCustomAlarmPopup.classList.add('d-none');
+        searchPopup.classList.add('d-none'); // 검색 팝업 닫기
+        loadFriendList(); // 친구 목록 로드
+        loadFriendNotifications(); // 친구 요청 알림 로드
+    });
+
+    // 검색 팝업 열기
+    searchBtn.addEventListener('click', () => {
+        searchPopup.classList.remove('d-none');
+        friendPopup.classList.add('d-none'); // 친구 팝업 닫기
+        notificationListPopup.classList.add('d-none');
+        customAlarmListPopup.classList.add('d-none');
+        customAlarmPopup.classList.add('d-none');
+        editCustomAlarmPopup.classList.add('d-none');
+    });
+
+    // 검색 팝업 닫기
+    closeSearchPopupBtn.addEventListener('click', () => {
+        searchPopup.classList.add('d-none');
+    });
+
     // 알림 추가 버튼 클릭 시 커스텀 알람 설정 팝업 열기
     addCustomAlarmBtn.addEventListener('click', () => {
         customAlarmPopup.classList.remove('d-none');
@@ -105,26 +153,8 @@ document.addEventListener('DOMContentLoaded', () => {
         setAlarmBtn.textContent = '알람 설정';
         setAlarmBtn.onclick = createCustomAlarm; // 알람 설정 모드로 변경
     });
-    friendIcon.addEventListener('click', () => {
-        friendListPopup.classList.toggle('d-none');
-        loadFriendList();
-    });
 
-    // 친구 목록 닫기 버튼
-    closeFriendListBtn.addEventListener('click', () => {
-        friendListPopup.classList.add('d-none');
-    });
-
-    // 돋보기 아이콘 클릭 시 친구 찾기 팝업 열기
-    searchFriendBtn.addEventListener('click', () => {
-        friendSearchPopup.classList.toggle('d-none');
-    });
-
-    // 친구 찾기 팝업 닫기 버튼
-    closeFriendSearchBtn.addEventListener('click', () => {
-        friendSearchPopup.classList.add('d-none');
-    });
-
+    // 일반 알림 읽지 않은 수 가져오기
     function fetchUnreadNotificationCount() {
         if (!currentUserId) {
             console.error('User ID is null or undefined.');
@@ -144,19 +174,50 @@ document.addEventListener('DOMContentLoaded', () => {
             })
             .then(data => {
                 console.log("Fetched unread count data:", data);
-                const unreadCount = data.unreadCount || 0;
-                notificationCount.textContent = unreadCount;
-                notificationCount.classList.toggle('hidden', unreadCount === 0);
+                unreadGeneralCount = data.unreadCount || 0;
+                updateNotificationCounts();
             })
             .catch(error => {
                 console.error('Error fetching unread notification count:', error);
-                notificationCount.textContent = '0'; // 오류 발생 시 0으로 설정
-                notificationCount.classList.add('hidden'); // 알림 배지 숨김
+                unreadGeneralCount = 0;
+                updateNotificationCounts();
+            });
+    }
+
+    // 친구 알림 읽지 않은 수 가져오기
+    function fetchUnreadFriendNotificationCount() {
+        if (!currentUserId) {
+            console.error('User ID is null or undefined.');
+            return;
+        }
+
+        console.log("Fetching unread friend notification count...");
+        fetch('/api/notifications/unread-count/friend', {
+            method: 'GET',
+            credentials: 'include' // 인증 정보를 포함하여 요청
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`Error fetching unread friend notification count: ${response.statusText}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log("Fetched unread friend notification count data:", data);
+                unreadFriendCount = data.unreadCount || 0;
+                updateNotificationCounts();
+            })
+            .catch(error => {
+                console.error('Error fetching unread friend notification count:', error);
+                unreadFriendCount = 0;
+                updateNotificationCounts();
             });
     }
 
     // 페이지 로드 시마다 알림 수 갱신
     fetchUnreadNotificationCount();
+    fetchUnreadFriendNotificationCount();
+
     // 알람 설정 버튼 클릭 핸들러
     function createCustomAlarm() {
         const message = document.getElementById('message').value;
@@ -174,7 +235,7 @@ document.addEventListener('DOMContentLoaded', () => {
             notificationDays: selectedDays,
             reserveAt: selectedTime,
             status: isActive,
-            alarmType: "COUSTOM"
+            alarmType: "CUSTOM" // "CUSTOM"으로 수정
         };
 
         if (socket.readyState === WebSocket.OPEN) {
@@ -230,7 +291,7 @@ document.addEventListener('DOMContentLoaded', () => {
             notificationDays: selectedDays,
             reserveAt: selectedTime,
             status: isActive,
-            alarmType: "COUSTOM"
+            alarmType: "CUSTOM" // "CUSTOM"으로 수정
         };
 
         console.log("Updated Alarm Data:", updatedAlarm); // 전송할 데이터 확인
@@ -239,7 +300,8 @@ document.addEventListener('DOMContentLoaded', () => {
         fetch(`/api/notifications/custom/${alarmId}`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(updatedAlarm)
+            body: JSON.stringify(updatedAlarm),
+            credentials: 'include' // 인증 정보를 포함하여 요청
         })
             .then(response => {
                 if (response.ok) {
@@ -265,7 +327,9 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        fetch(`/api/notifications`)
+        fetch(`/api/notifications`, {
+            credentials: 'include' // 인증 정보를 포함하여 요청
+        })
             .then(response => response.json())
             .then(data => {
                 console.log('Fetched notifications:', data); // 서버에서 가져온 데이터 출력
@@ -281,7 +345,9 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        fetch(`/api/notifications/custom`)
+        fetch(`/api/notifications/custom`, {
+            credentials: 'include' // 인증 정보를 포함하여 요청
+        })
             .then(response => response.json())
             .then(customData => {
                 console.log('Fetched custom alarms:', customData);
@@ -296,7 +362,9 @@ document.addEventListener('DOMContentLoaded', () => {
         commentLikeList.innerHTML = ''; // 댓글 및 좋아요 알림 초기화
 
         const customAlarms = notifications.filter(n => n.alarmType === 'COUSTOM');
-        const otherAlarms = notifications.filter(n => n.alarmType !== 'COUSTOM');
+        const otherAlarms = notifications.filter(n =>
+            n.alarmType === 'COMMENT' || n.alarmType === 'RECOMMENT' || n.alarmType === 'LIKE'
+        );
 
         // 사용자 지정 알람 표시
         if (customAlarms.length > 0) {
@@ -326,7 +394,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 li.addEventListener('click', () => markAsRead(notification.id, li));
                 li.addEventListener('click', () => {
                     const targetId = notification.targetId; // targetId가 게시물의 ID라고 가정
-                    if (targetId) {
+                    if (targetId != null) {
                         window.location.href = `/articles/${targetId}`; // 게시물 페이지로 이동
                     } else {
                         console.warn('targetId가 없습니다.');
@@ -338,10 +406,11 @@ document.addEventListener('DOMContentLoaded', () => {
             commentLikeSection.classList.add('d-none'); // 섹션 숨기기
         }
 
-        // 읽지 않은 알림 수 업데이트
-        const unreadCount = notifications.filter(n => !n.isRead).length;
-        notificationCount.textContent = unreadCount;
-        notificationCount.classList.toggle('hidden', unreadCount === 0);
+        // 읽지 않은 일반 알림 수 업데이트
+        const unreadCustomAlarmsCount = customAlarms.filter(n => !n.isRead).length;
+        const unreadOtherAlarmsCount = otherAlarms.filter(n => !n.isRead).length;
+        unreadGeneralCount = unreadCustomAlarmsCount + unreadOtherAlarmsCount;
+        updateNotificationCounts();
     }
 
     // 커스텀 알람 목록 렌더링
@@ -399,6 +468,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function deleteCustomAlarm(alarmId) {
         fetch(`/api/notifications/custom/${alarmId}`, {
             method: 'DELETE',
+            credentials: 'include' // 인증 정보를 포함하여 요청
         })
             .then(response => {
                 if (response.ok) {
@@ -414,30 +484,7 @@ document.addEventListener('DOMContentLoaded', () => {
             });
     }
 
-    // 알람 상태 토글 함수
-    function toggleAlarmStatus(alarmId, newStatus, buttonElement) {
-        fetch(`/api/notifications/custom/${alarmId}/status`, {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(newStatus)
-        })
-            .then(response => {
-                if (response.ok) {
-                    buttonElement.textContent = newStatus ? '활성화' : '비활성화';
-                    buttonElement.classList.toggle('btn-success', newStatus);
-                    buttonElement.classList.toggle('btn-secondary', !newStatus);
-                    alert('알람 상태가 업데이트되었습니다.');
-                } else {
-                    alert('알람 상태 업데이트에 실패했습니다.');
-                }
-            })
-            .catch(error => {
-                console.error('Error updating alarm status:', error);
-                alert('알람 상태 업데이트 중 오류가 발생했습니다.');
-            });
-    }
-
-    // 알림을 읽음으로 표시하는 함수
+    // 일반 알림을 읽음으로 표시하는 함수
     function markAsRead(notificationId, liElement) {
         fetch(`/api/notifications/read/${notificationId}`, {
             method: 'PUT',
@@ -446,148 +493,278 @@ document.addEventListener('DOMContentLoaded', () => {
             .then(response => {
                 if (response.ok) {
                     liElement.style.fontWeight = 'normal';
-                    let currentCount = parseInt(notificationCount.textContent) || 0;
-                    currentCount = currentCount > 0 ? currentCount - 1 : 0;
-                    notificationCount.textContent = currentCount;
-                    if (currentCount === 0) {
-                        notificationCount.classList.add('hidden');
-                    }
+                    unreadGeneralCount = unreadGeneralCount > 0 ? unreadGeneralCount - 1 : 0;
+                    updateNotificationCounts();
                 }
             })
             .catch(error => console.error('Error marking notification as read:', error));
-
     }
 
-    // 웹소켓으로부터 알림 수신
-    socket.onmessage = function (event) {
-        const data = JSON.parse(event.data); // 수신한 JSON 데이터를 파싱
-        console.log('새로운 알림:', data);
+    // 친구 관련 js
 
-        let currentCount = parseInt(notificationCount.textContent) || 0;
-        currentCount += 1;
-        notificationCount.textContent = currentCount;
-        notificationCount.classList.remove('hidden');
-        switch (data.dataType) {
-            case 'Notification':
-                handleNotification(data);
-                break;
-            case 'CoustomAlarm':
-                handleCustomAlarm(data);
-                break;
-            default:
-                console.warn(`알 수 없는 알림 타입입니다: ${data.dataType}`);
-        }
-        fetchUnreadNotificationCount();
-    };
-
-    // 일반 알림 처리
-    function handleNotification(notification) {
-        if (!notificationListPopup.classList.contains('d-none')) {
-            const li = document.createElement('li');
-            li.textContent = `댓글 및 좋아요 알람: ${notification.message}`;
-            commentLikeList.appendChild(li);
-            li.style.fontWeight = 'bold';
+    // 친구 목록 불러오기
+    async function loadFriendList() {
+        try {
+            const response = await fetch("/api/friends/list", {
+                credentials: 'include' // 인증 정보를 포함하여 요청
+            });
+            if (response.ok) {
+                const friends = await response.json();
+                displayFriendList(friends);
+            } else {
+                console.error("친구 목록 불러오기 실패:", response.statusText);
+            }
+        } catch (error) {
+            console.error("친구 목록 불러오기 실패:", error);
         }
     }
 
-    // 사용자 지정 알람 처리
-    function handleCustomAlarm(alarm) {
-        if (!customAlarmListPopup.classList.contains('d-none')) {
-            const li = document.createElement('li');
-            li.textContent = `사용자 지정 알람: ${alarm.message}`;
-            li.dataset.id = alarm.id;
+    function displayFriendList(friends) {
+        const friendListDiv = document.getElementById("friend-list");
+        friendListDiv.innerHTML = "";
 
-            const toggleBtn = document.createElement('button');
-            toggleBtn.classList.add('btn', 'btn-sm', alarm.status ? 'btn-success' : 'btn-secondary', 'ml-2');
-            toggleBtn.textContent = alarm.status ? '활성화' : '비활성화';
-            toggleBtn.addEventListener('click', (event) => {
-                event.stopPropagation();
-                toggleAlarmStatus(alarm.id, !alarm.status, toggleBtn);
+        // 온라인 상태에 따라 정렬: 온라인이 먼저 오도록
+        friends.sort((a, b) => {
+            if (a.status === "ONLINE" && b.status !== "ONLINE") return -1;
+            if (a.status !== "ONLINE" && b.status === "ONLINE") return 1;
+            return 0;
+        });
+
+        friends.forEach(friend => {
+            const friendItem = document.createElement("div");
+            friendItem.className = "friend-item";
+
+            // 상태를 나타내는 점 추가
+            const statusDot = document.createElement("span");
+            statusDot.className = friend.status === "ONLINE" ? "status-dot online" : "status-dot offline";
+            statusDot.title = friend.status === "ONLINE" ? "온라인" : "오프라인"; // 툴팁 추가
+
+            // 친구 이름 추가
+            const friendName = document.createElement("span");
+            friendName.className = "friend-name";
+            friendName.textContent = friend.name;
+
+            // 상태 점과 친구 이름을 친구 아이템에 추가
+            friendItem.appendChild(statusDot);
+            friendItem.appendChild(friendName);
+
+            friendListDiv.appendChild(friendItem);
+        });
+    }
+
+
+
+    // 친구 요청 알림 불러오기
+    async function loadFriendNotifications() {
+        try {
+            const response = await fetch("/api/friends/requests", {
+                credentials: 'include' // 인증 정보를 포함하여 요청
+            });
+            if (response.ok) {
+                const notifications = await response.json();
+                displayFriendNotifications(notifications);
+
+                // 읽지 않은 친구 알림 수 업데이트
+                unreadFriendCount = notifications.filter(n => !n.isRead).length;
+                updateNotificationCounts();
+            } else {
+                console.error("친구 신청 알림 불러오기 실패:", response.statusText);
+            }
+        } catch (error) {
+            console.error("친구 신청 알림 불러오기 실패:", error);
+        }
+    }
+
+    // 친구 요청 알림 렌더링
+    function displayFriendNotifications(notifications) {
+        const notificationListDiv = document.getElementById("friend-notification-list");
+        notificationListDiv.innerHTML = "";
+
+        notifications.forEach(notification => {
+            const notificationItem = document.createElement("div");
+            notificationItem.className = "notification-item d-flex justify-content-between align-items-center p-2 border-bottom";
+            notificationItem.innerHTML = `
+                <span>${notification.fromUserEmail} 님의 친구 신청</span>
+                <div>
+                    <button class="accept-btn btn btn-success btn-sm mr-2" data-id="${notification.id}">수락</button>
+                    <button class="reject-btn btn btn-danger btn-sm" data-id="${notification.id}">거절</button>
+                </div>
+            `;
+            notificationListDiv.appendChild(notificationItem);
+        });
+
+        // 수락 버튼에 이벤트 리스너 추가
+        document.querySelectorAll('.accept-btn').forEach(button => {
+            button.addEventListener('click', () => {
+                const notificationId = button.getAttribute('data-id');
+                acceptFriend(notificationId, button.closest('.notification-item'));
+            });
+        });
+
+        // 거절 버튼에 이벤트 리스너 추가
+        document.querySelectorAll('.reject-btn').forEach(button => {
+            button.addEventListener('click', () => {
+                const notificationId = button.getAttribute('data-id');
+                rejectFriend(notificationId, button.closest('.notification-item'));
+            });
+        });
+    }
+
+    async function acceptFriend(notificationId, notificationElement) {
+        try {
+            const response = await fetch(`/api/friends/requests/${notificationId}/accept`, {
+                method: "PUT",
+                credentials: 'include' // 인증 정보를 포함하여 요청
+            });
+            if (response.ok) {
+                alert("친구 요청이 수락되었습니다.");
+                notificationElement.remove(); // 알림 항목 제거
+
+                // 읽지 않은 친구 알림 수 감소
+                unreadFriendCount = unreadFriendCount > 0 ? unreadFriendCount - 1 : 0;
+                updateNotificationCounts();
+
+                loadFriendList();
+            } else {
+                alert('친구 요청 수락에 실패했습니다.');
+            }
+        } catch (error) {
+            console.error("친구 요청 수락 실패:", error);
+        }
+    }
+
+    async function rejectFriend(notificationId, notificationElement) {
+        try {
+            const response = await fetch(`/api/friends/requests/${notificationId}/reject`, {
+                method: "PUT",
+                credentials: 'include' // 인증 정보를 포함하여 요청
+            });
+            if (response.ok) {
+                alert("친구 요청이 거절되었습니다.");
+                notificationElement.remove(); // 알림 항목 제거
+
+                // 읽지 않은 친구 알림 수 감소
+                unreadFriendCount = unreadFriendCount > 0 ? unreadFriendCount - 1 : 0;
+                updateNotificationCounts();
+            } else {
+                alert('친구 요청 거절에 실패했습니다.');
+            }
+        } catch (error) {
+            console.error("친구 요청 거절 실패:", error);
+        }
+    }
+
+    async function sendFriendRequest(email, buttonElement) {
+        if (!email) {
+            alert('이메일이 필요합니다.');
+            return;
+        }
+
+        try {
+            const response = await fetch(`/api/friends/request?friendEmail=${encodeURIComponent(email)}`, {
+                method: "POST",
+                credentials: 'include' // 인증 정보를 포함하여 요청
             });
 
-            li.appendChild(toggleBtn);
-
-            if (!alarm.isRead) li.style.fontWeight = 'bold';
-            customAlarmList.appendChild(li);
+            if (response.ok) {
+                alert("친구 신청이 전송되었습니다.");
+                buttonElement.disabled = true; // 버튼 비활성화
+                buttonElement.textContent = "신청 완료"; // 버튼 텍스트 변경
+            } else if (response.status === 401) {
+                const errorText = await response.text();
+                alert(`친구 신청 실패: ${errorText || '로그인이 필요합니다.'}`);
+            } else {
+                const errorText = await response.text();
+                alert(`친구 신청 실패: ${errorText || '오류가 발생했습니다.'}`);
+            }
+        } catch (error) {
+            console.error("친구 신청 실패:", error);
+            alert("친구 신청 중 오류가 발생했습니다.");
         }
     }
-    function loadFriendList() {
-        fetch('/api/friends/list')
-            .then(response => response.json())
-            .then(data => {
-                friendList.innerHTML = ''; // 기존 목록 초기화
-                data.forEach(friend => {
-                    const li = document.createElement('li');
-                    li.classList.add('friend-item');
-                    li.textContent = `${friend.name} - ${friend.status === 'ONLINE' ? '🟢' : '🔴'}`;
-                    friendList.appendChild(li);
-                });
-            })
-            .catch(error => console.error('Error loading friend list:', error));
-    }
-    searchFriendSubmit.addEventListener('click', () => {
-        const email = friendSearchInput.value;
-        if (email) {
-            fetch(`/api/friends/search?email=${encodeURIComponent(email)}`)
-                .then(response => response.json())
-                .then(data => {
-                    friendSearchResult.innerHTML = ''; // 기존 검색 결과 초기화
-                    data.forEach(user => {
-                        const li = document.createElement('li');
-                        li.textContent = user.name;
-                        friendSearchResult.appendChild(li);
-                    });
-                })
-                .catch(error => console.error('Error searching friends:', error));
-        } });
-    // 친구 요청 수락/거절 처리 함수
-    function handleFriendRequest(notificationId, isAccepted) {
-        const action = isAccepted ? 'accept' : 'reject';
-        fetch(`/api/friends/requests/${notificationId}/${action}`, {
-            method: 'PUT',
-            credentials: 'include',
+
+
+    // ----- 검색 기능 추가 -----
+
+    // 검색 버튼 클릭 시 검색 수행
+    performSearchBtn.addEventListener('click', () => {
+        const query = searchInput.value.trim();
+        if (query === '') {
+            alert('검색어를 입력하세요.');
+            return;
+        }
+        searchUsersByEmail(query);
+    });
+
+    // 엔터 키로 검색 수행
+    searchInput.addEventListener('keyup', (event) => {
+        if (event.key === 'Enter') {
+            performSearchBtn.click();
+        }
+    });
+
+    // 사용자 검색 함수
+    function searchUsersByEmail(emailPrefix) {
+        console.log(`Searching users with email starting with: ${emailPrefix}`);
+        fetch(`/api/friends/search?email=${encodeURIComponent(emailPrefix)}`, {
+            method: 'GET',
+            credentials: 'include' // 인증 정보를 포함하여 요청
         })
             .then(response => {
                 if (response.ok) {
-                    alert(isAccepted ? '친구 요청을 수락했습니다.' : '친구 요청을 거절했습니다.');
-                    loadFriendRequests();
+                    return response.json();
+                } else if (response.status === 404) {
+                    return [];
                 } else {
-                    alert('친구 요청 처리에 실패했습니다.');
+                    throw new Error(`Error searching users: ${response.statusText}`);
                 }
             })
-            .catch(error => console.error('Error handling friend request:', error));
-    }
-
-    // 친구 요청 알림 처리
-    function loadFriendRequests() {
-        fetch('/api/notifications?type=FRIEND')
-            .then(response => response.json())
             .then(data => {
-                friendRequestCount.textContent = data.length;
-                friendList.innerHTML = '';  // 초기화
-
-                data.forEach(notification => {
-                    const li = document.createElement('li');
-                    li.textContent = notification.message;
-
-                    const acceptBtn = document.createElement('button');
-                    acceptBtn.textContent = '수락';
-                    acceptBtn.classList.add('btn', 'btn-success', 'btn-sm');
-                    acceptBtn.onclick = () => handleFriendRequest(notification.id, true);
-
-                    const rejectBtn = document.createElement('button');
-                    rejectBtn.textContent = '거절';
-                    rejectBtn.classList.add('btn', 'btn-danger', 'btn-sm');
-                    rejectBtn.onclick = () => handleFriendRequest(notification.id, false);
-
-                    li.appendChild(acceptBtn);
-                    li.appendChild(rejectBtn);
-                    friendList.appendChild(li);
-                });
+                console.log('Search results:', data);
+                renderSearchResults(data);
             })
-            .catch(error => console.error('Error loading friend requests:', error));
+            .catch(error => {
+                console.error('Error searching users:', error);
+                alert('사용자 검색 중 오류가 발생했습니다.');
+            });
     }
 
-    // 페이지 로드 시 친구 요청 목록 로드
-    loadFriendRequests();
+    // 검색 결과 렌더링
+    function renderSearchResults(users) {
+        const searchResults = document.getElementById("search-results");
+        searchResults.innerHTML = ''; // 기존 검색 결과 초기화
+
+        if (users.length === 0) {
+            searchResults.innerHTML = '<p>검색 결과가 없습니다.</p>';
+            return;
+        }
+
+        users.forEach(user => {
+            const userItem = document.createElement("div");
+            userItem.className = "friend-item";
+
+            // 사용자 이름 추가 (name 필드 사용)
+            const userName = document.createElement("span");
+            userName.className = "friend-name";
+            userName.textContent = user.name; // 여기에 이메일이 표시되고 있는 것 같음
+
+            userItem.appendChild(userName);
+
+            // 친구 신청 버튼 추가
+            const addFriendBtn = document.createElement("button");
+            addFriendBtn.className = "btn btn-sm btn-primary";
+            addFriendBtn.textContent = "친구 신청";
+
+            // 이벤트 리스너 등록: 클릭 시 해당 사용자의 이메일을 user.name으로 전달
+            addFriendBtn.addEventListener('click', () => sendFriendRequest(user.name, addFriendBtn));
+
+            userItem.appendChild(addFriendBtn);
+            searchResults.appendChild(userItem);
+        });
+    }
+    // sendRequestBtn.addEventListener('click', sendFriendRequest);
+
+// 페이지 로드 시 친구 목록 및 알림 로드
+    loadFriendList();
+    loadFriendNotifications();
 });

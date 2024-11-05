@@ -5,6 +5,7 @@
     <title>게시판</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
     <link rel="stylesheet" href="/css/article.css">
+    <!-- Font Awesome 최신 버전 한 번만 포함 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="..." crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="stylesheet" href="/css/notification.css">
 
@@ -12,7 +13,7 @@
 <body data-user-id="${#authentication.name}">
 <div class="p-5 mb-5 bg-light header-section">
     <div class="text-center">
-        <a  href="/" style="color: rgb(33, 37, 41);text-decoration: none">
+        <a href="/" style="color: rgb(33, 37, 41);text-decoration: none">
             <h1 class="mb-3">경로당, 함께하소</h1>
         </a>
         <h4 class="mb-3">작은 화면 속 우리들의 소통공간</h4>
@@ -27,13 +28,13 @@
             <span class="badge badge-danger" id="notification-count">0</span>
         </div>
 
+        <!-- 사람 모양 아이콘 (추가된 위치) -->
         <div class="friend-icon position-relative" id="friend-icon">
             <i class="fas fa-user icon"></i>
-            <span class="badge badge-danger" id="friend-request-count">0</span>
+            <span id="friend-notification-count" class="badge badge-danger">0</span>
         </div>
-
         <!-- 알람 설정 아이콘 -->
-        <div class="custom-alarm-icon" id="custom-alarm-icon">
+        <div class="custom-alarm-icon position-relative" id="custom-alarm-icon">
             <i class="fas fa-clock icon"></i>
         </div>
         <button type="button" class="btn btn-secondary my-page-btn" id="my-page-btn"
@@ -42,7 +43,53 @@
     </div>
 </div>
 
+
 <div class="wrapper">
+    <!-- 친구 목록 팝업 -->
+    <div id="friend-popup" class="friend-list-popup d-none">
+        <div class="friend-list-header">
+            <h5>친구 알림 및 목록</h5>
+            <button type="button" id="close-friend-popup" class="close-notification-btn">&times;</button>
+            <!-- 돋보기 아이콘 추가 -->
+            <button type="button" id="search-btn" class="btn btn-light">
+                <i class="fas fa-search"></i>
+            </button>
+        </div>
+
+        <!-- 친구 신청 알림 섹션 -->
+        <div id="friend-notification-section" class="mt-3">
+            <h6>친구 신청 알림</h6>
+            <div id="friend-notification-list" class="notification-list">
+                <!-- 친구 신청 알림 항목이 동적으로 추가됩니다. -->
+            </div>
+        </div>
+
+        <!-- 친구 목록 섹션 -->
+        <div id="friend-list-section" class="mt-3">
+            <h6>친구 목록</h6>
+            <div id="friend-list" class="friend-list">
+                <!-- 친구 목록 항목이 동적으로 추가됩니다. -->
+            </div>
+        </div>
+    </div>
+    <!-- 사용자 검색 팝업 -->
+    <div id="search-popup" class="friend-list-popup d-none">
+        <div class="friend-list-header">
+            <h5>사용자 검색</h5>
+            <button type="button" id="close-search-popup" class="close-notification-btn">&times;</button>
+        </div>
+        <div class="input-group mt-3">
+            <input type="text" id="search-input" placeholder="이메일로 사용자 검색" class="form-control">
+            <div class="input-group-append">
+                <button type="button" id="perform-search-btn" class="btn btn-primary">검색</button>
+            </div>
+        </div>
+        <!-- 검색 결과 표시 -->
+        <div id="search-results" class="mt-3">
+            <!-- 검색 결과 항목이 동적으로 추가됩니다. -->
+        </div>
+    </div>
+
     <div id="notification-list-popup" class="notification-list-popup d-none">
         <div class="notification-list-header">
             <h5>알림 리스트</h5>
@@ -60,33 +107,6 @@
             <!-- 댓글 및 좋아요 알림 항목이 동적으로 추가됩니다. -->
         </ul>
     </div>
-    <!-- 친구 목록 팝업 -->
-    <div id="friend-list-popup" class="friend-list-popup d-none">
-        <div class="friend-list-header">
-            <h5>친구 목록</h5>
-            <button type="button" id="search-friend-btn" class="btn btn-light">
-                <i class="fas fa-search"></i> <!-- 돋보기 아이콘 -->
-            </button>
-            <button type="button" id="close-friend-list-btn">&times;</button>
-        </div>
-        <ul id="friend-list" class="notification-list">
-            <!-- 친구 목록이 동적으로 추가됩니다. -->
-        </ul>
-    </div>
-
-    <!-- 친구 찾기 팝업 -->
-    <div id="friend-search-popup" class="friend-search-popup d-none">
-        <div class="friend-search-header">
-            <h5>친구 찾기</h5>
-            <button type="button" id="close-friend-search-btn" class="close-friend-search-btn">&times;</button>
-        </div>
-        <input type="text" id="friend-search-input" class="form-control" placeholder="이메일로 친구 검색">
-        <button type="button" id="search-friend-submit" class="btn btn-primary mt-2">검색</button>
-        <ul id="friend-search-result" class="search-result-list">
-            <!-- 검색 결과가 동적으로 추가됩니다. -->
-        </ul>
-    </div>
-
     <!-- 커스텀 알람 리스트 팝업 -->
     <div id="custom-alarm-list-popup" class="custom-alarm-list-popup d-none">
         <div class="custom-alarm-list-header">
@@ -167,85 +187,84 @@
         </div>
     </div>
 </div>
-    <div class="content">
-        <div class="container mt-5">
-            <div class="row mb-4">
-                <!-- 좌측에 수정, 삭제 버튼 -->
-                <div class="col-lg-6 text-left">
-                    <button type="button" id="modify-btn"
-                            th:onclick="|location.href='@{/new-article?id={articleId}(articleId=${article.id})}'|"
-                            class="btn btn-primary btn-sm" th:if="${isArticleOwner}">수정</button>
-                    <button type="button" id="delete-btn" class="btn btn-secondary btn-sm" th:if="${isArticleOwner}">삭제</button>
-                </div>
-
-                <!-- 우측에 목록으로 돌아가기 버튼 -->
-                <div class="col-lg-6 text-right">
-                    <button type="button" id="return-btn"
-                            th:onclick="|location.href='@{/articles}'; |"
-                            class="btn btn-return btn-sm">목록으로 돌아가기</button>
-                </div>
+<div class="content">
+    <div class="container mt-5">
+        <div class="row mb-4">
+            <!-- 좌측에 수정, 삭제 버튼 -->
+            <div class="col-lg-6 text-left">
+                <button type="button" id="modify-btn"
+                        th:onclick="|location.href='@{/new-article?id={articleId}(articleId=${article.id})}'|"
+                        class="btn btn-primary btn-sm" th:if="${isArticleOwner}">수정</button>
+                <button type="button" id="delete-btn" class="btn btn-secondary btn-sm" th:if="${isArticleOwner}">삭제</button>
             </div>
 
-            <div class="row">
-                <div class="col-lg-12">
-                    <article>
-                        <input type="hidden" id="article-id"  th:value="${article.id}">
-                        <header class="mb-4">
-                            <h3 class="fw-bolder mb-1" style="font-family:'나눔고딕'" th:text="${article.title}"></h3>
-                            <div class="text-muted fst-italic mb-2 d-flex align-items-center">
-                                <img th:src="${profileImage != null ? profileImage : '/img/default.jpeg'}" alt="Profile Image" class="profile-image" style="margin: 0px" />
-                                <span th:text="${article.author}"style="margin-left: 10px"></span>
-                                <span th:text="${#temporals.format(article.createdAt, 'yyyy-MM-dd HH:mm')}"style="margin-left: 10px" ></span>
-                                | 조회수: <span th:text="${article.viewCount}"style="margin-left: 10px"></span>
-                            </div>
+            <!-- 우측에 목록으로 돌아가기 버튼 -->
+            <div class="col-lg-6 text-right">
+                <button type="button" id="return-btn"
+                        th:onclick="|location.href='@{/articles}'; |"
+                        class="btn btn-return btn-sm">목록으로 돌아가기</button>
+            </div>
+        </div>
 
-                        </header>
-
-                        <section class="mb-5">
-                            <div class="fs-5 mb-4" th:utext="${article.content}"></div>
-                        </section>
-
-                        <div class="likeAndCommentCountSvg">
-
-                            <button id="like-button" class="like-button" th:value="${article.id}" th:attr="article-id=${article.id}"
-                                    th:disabled="${article.author == '탈퇴한 사용자입니다.' || #lists.contains(comments, '탈퇴한 사용자입니다.') ? true : false}">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" class="bi bi-heart not-liked" viewBox="0 0 16 16" id="like-icon">
-                                    <path d="m8 2.748-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.92 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143q.09.083.176.171a3 3 0 0 1 .176-.17C12.72-3.042 23.333 4.867 8 15"/>
-                                </svg>
-                            </button>
-                            <p>좋아요 <span id="like-count" th:text="${likeCount}">0</span></p>
-                            <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" fill="currentColor" class="bi bi-chat-dots-fill" viewBox="0 0 16 16" style="transform: scaleX(-1);">
-                                <path d="M16 8c0 3.866-3.582 7-8 7a9 9 0 0 1-2.347-.306c-.584.296-1.925.864-4.181 1.234-.2.032-.352-.176-.273-.362.354-.836.674-1.95.77-2.966C.744 11.37 0 9.76 0 8c0-3.866 3.582-7 8-7s8 3.134 8 7M5 8a1 1 0 1 0-2 0 1 1 0 0 0 2 0m4 0a1 1 0 1 0-2 0 1 1 0 0 0 2 0m3 1a1 1 0 1 0 0-2 1 1 0 0 0 0 2"/>
-                            </svg>
-                            <p>댓글  <span id="comment-count" th:text="${commentCount}">0</span></p>
+        <div class="row">
+            <div class="col-lg-12">
+                <article>
+                    <input type="hidden" id="article-id"  th:value="${article.id}">
+                    <header class="mb-4">
+                        <h3 class="fw-bolder mb-1" style="font-family:'나눔고딕'" th:text="${article.title}"></h3>
+                        <div class="text-muted fst-italic mb-2 d-flex align-items-center">
+                            <img th:src="${profileImage != null ? profileImage : '/img/default.jpeg'}" alt="Profile Image" class="profile-image" style="margin: 0px" />
+                            <span th:text="${article.author}"style="margin-left: 10px"></span>
+                            <span th:text="${#temporals.format(article.createdAt, 'yyyy-MM-dd HH:mm')}"style="margin-left: 10px" ></span>
+                            | 조회수: <span th:text="${article.viewCount}"style="margin-left: 10px"></span>
                         </div>
-                    </article>
+
+                    </header>
+
+                    <section class="mb-5">
+                        <div class="fs-5 mb-4" th:utext="${article.content}"></div>
+                    </section>
+
+                    <div class="likeAndCommentCountSvg">
+
+                        <button id="like-button" class="like-button" th:value="${article.id}" th:attr="article-id=${article.id}"
+                                th:disabled="${article.author == '탈퇴한 사용자입니다.' || #lists.contains(comments, '탈퇴한 사용자입니다.') ? true : false}">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" class="bi bi-heart not-liked" viewBox="0 0 16 16" id="like-icon">
+                                <path d="m8 2.748-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.92 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143q.09.083.176.171a3 3 0 0 1 .176-.17C12.72-3.042 23.333 4.867 8 15"/>
+                            </svg>
+                        </button>
+                        <p>좋아요 <span id="like-count" th:text="${likeCount}">0</span></p>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" fill="currentColor" class="bi bi-chat-dots-fill" viewBox="0 0 16 16" style="transform: scaleX(-1);">
+                            <path d="M16 8c0 3.866-3.582 7-8 7a9 9 0 0 1-2.347-.306c-.584.296-1.925.864-4.181 1.234-.2.032-.352-.176-.273-.362.354-.836.674-1.95.77-2.966C.744 11.37 0 9.76 0 8c0-3.866 3.582-7 8-7s8 3.134 8 7M5 8a1 1 0 1 0-2 0 1 1 0 0 0 2 0m4 0a1 1 0 1 0-2 0 1 1 0 0 0 2 0m3 1a1 1 0 1 0 0-2 1 1 0 0 0 0 2"/>
+                        </svg>
+                        <p>댓글  <span id="comment-count" th:text="${commentCount}">0</span></p>
+                    </div>
+                </article>
 
 
-                    <div id="comments">
+                <div id="comments">
 
-                        <!-- 댓글 목록 섹션 -->
-                        <div id="comments-section" class="mt-4">
-                            <h5>댓글 목록</h5>
-                            <div th:each="comment : ${comments}">
-                                <div class="card mb-3" th:style="${comment.parentCommentId != null} ? 'margin-left: 20px;' : ''">
-                                    <div class="card-body">
-                                        <h6 class="card-subtitle mb-2 text-muted" th:text="${comment.commentAuthor}"></h6>
-                                        <p class="card-text" th:text="${comment.commentContent}"></p>
-                                        <p class="text-muted" th:text="${#temporals.format(comment.commentCreatedAt, 'yyyy-MM-dd HH:mm')}"></p>
-                                        <button class="btn btn-link reply-btn" th:data-comment-id="${comment.commentId}">Reply</button>
-                                        <!-- comment1.js에 html 코드가 작성되어있음 -->
-                                    </div>
+                    <!-- 댓글 목록 섹션 -->
+                    <div id="comments-section" class="mt-4">
+                        <h5>댓글 목록</h5>
+                        <div th:each="comment : ${comments}">
+                            <div class="card mb-3" th:style="${comment.parentCommentId != null} ? 'margin-left: 20px;' : ''">
+                                <div class="card-body">
+                                    <h6 class="card-subtitle mb-2 text-muted" th:text="${comment.commentAuthor}"></h6>
+                                    <p class="card-text" th:text="${comment.commentContent}"></p>
+                                    <p class="text-muted" th:text="${#temporals.format(comment.commentCreatedAt, 'yyyy-MM-dd HH:mm')}"></p>
+                                    <button class="btn btn-link reply-btn" th:data-comment-id="${comment.commentId}">Reply</button>
+                                    <!-- comment1.js에 html 코드가 작성되어있음 -->
                                 </div>
                             </div>
                         </div>
-
+                    </div>
 
                         <!-- 댓글 작성 폼 -->
                         <div id="comment-form-section" class="mt-4" th:if="${article.author != '탈퇴한 사용자입니다.' && !#lists.contains(comments, '탈퇴한 사용자입니다.')}">
                             <h6>댓글 작성</h6>
                             <div class="d-flex align-items-center mb-2">
-                                <img th:src="${currrentUserImage}" alt="Profile Image" class="profile-image" style="margin: 0px" />
+                                <img th:src="${currentUserImage}" alt="Profile Image" class="profile-image" style="margin: 0px" />
                                 <h6 class="text-muted ml-2" th:text="${currentUserName}"></h6>
                             </div>
 
@@ -258,21 +277,21 @@
                                     <button type="submit" id="comment-btn" class="btn btn-primary btn-sm">댓글 등록</button>
                                 </div>
                             </form>
-                        </div>
 
                     </div>
 
                 </div>
+
             </div>
         </div>
     </div>
-
-    <footer>
-        © 2024 경로당:
-        <a class="text-dark" href="/">경로당 홈페이지</a>
-    </footer>
-
 </div>
+
+<footer>
+    © 2024 경로당:
+    <a class="text-dark" href="/">경로당 홈페이지</a>
+</footer>
+
 <script>
     const currentUserName = '[[${currentUserName}]]';   // 기본값 'anonymous'로 설정
     console.log(currentUserName);
@@ -282,7 +301,6 @@
 <script src="/js/like.js"></script>
 <script src="/js/token.js"></script>
 <script src="/js/notification.js"></script>
-
 
 </body>
 </html>

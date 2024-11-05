@@ -58,7 +58,7 @@ function submitComment(articleId, content, parentCommentId = null) {
             }
         },
         (response) => {  // 실패 시 처리
-            console.error('댓글 작성 실패, 상태 코드:', response.status || '응답 없음');
+            console.error("댓글 작성 실패, 상태 코드:", response.status, "응답 메시지:", response.statusText);
             alert('댓글 작성에 실패했습니다. 다시 시도해주세요.');
         });
 

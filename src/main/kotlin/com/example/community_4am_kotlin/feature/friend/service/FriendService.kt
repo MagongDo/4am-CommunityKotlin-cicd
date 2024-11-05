@@ -1,9 +1,12 @@
 package com.example.community_4am_kotlin.feature.friend.service
 
+import com.example.community_4am_kotlin.domain.friend.Friend
 import com.example.community_4am_kotlin.domain.friend.FriendStatus
 import com.example.community_4am_kotlin.domain.user.User
 import com.example.community_4am_kotlin.domain.user.enums.UserStatus
+import com.example.community_4am_kotlin.feature.friend.dto.FriendRequestDTO
 import com.example.community_4am_kotlin.feature.friend.repository.FriendRepository
+import com.example.community_4am_kotlin.feature.notification.AlarmType
 import com.example.community_4am_kotlin.feature.notification.repository.NotificationRepository
 import com.example.community_4am_kotlin.feature.user.repository.UserRepository
 import jakarta.transaction.Transactional
@@ -25,10 +28,22 @@ class FriendService (
         notificationRepository.save(notification)
 
         friendRepository.updateFriendStatus(
-            userId = notification.user?.id, // sender의 ID를 사용하여 상태 업데이트
-            friendId = notification.targetId, // recipient의 ID를 사용하여 상태 업데이트
+            userId = notification.targetId,    // 요청자의 ID
+            friendId = notification.user?.id,  // 수신자의 ID
             status = FriendStatus.ACCEPTED
         )
+        val recipiendtUser= userRepository.findByEmail(notification.user?.email).orElseThrow { IllegalArgumentException("유저를찾지 못헀습니다.") }
+        val sendUser= notification.targetId?.let { userRepository.findById(it) }?.orElseThrow { IllegalArgumentException("유저를찾지 못헀습니다.") }
+        var friendEach= sendUser?.let {
+            Friend(
+                user= recipiendtUser,
+                friend=it,
+                status = FriendStatus.ACCEPTED
+            )
+        }
+        if (friendEach != null) {
+            friendRepository.save(friendEach)
+        }
     }
 
     // 친구 요청 거절 및 삭제 처리
@@ -42,15 +57,19 @@ class FriendService (
 
         // 친구 관계 삭제
         friendRepository.deleteFriend(
-            userId = notification.user?.id, // sender의 ID 사용
-            friendId = notification.targetId // recipient의 ID 사용
+            userId = notification.targetId, // sender의 ID 사용4
+            friendId = notification.user?.id // recipient의 ID 사용2
         )
     }
-
-    // 정렬된 친구 목록 가져오기 (온라인 상태인 친구가 우선)
     fun getSortedFriendList(userId: Long?): List<User> {
-        return friendRepository.findFriendsByUserId(userId)
+        val friends = friendRepository.findFriendsByUserId(userId)
+        return friends.sortedByDescending { it.status == UserStatus.ONLINE }
     }
+    fun getFriendEmail(userId:Long?):List<Friend>
+    {
+        return friendRepository.findByUserId(userId)
+    }
+
  fun deleteFriend(userId:String,friendId: Long){
 
          val recipientUser = userRepository.findByEmail(userId)
@@ -69,4 +88,18 @@ class FriendService (
     fun getAcceptedFriendEmails(user: User): List<String> {
         return friendRepository.findAcceptedFriendEmailsByUser(user)
     }
+
+    fun getFriendRequests(user: User): List<FriendRequestDTO> {
+        val notifications = notificationRepository.findByUserAndAlarmTypeAndIsReadFalse(user, AlarmType.FRIEND)
+
+        return notifications.map { notification ->
+            FriendRequestDTO(
+                id = notification.id,
+                fromUserEmail = notification.makeId,
+                message = notification.message
+                // 필요한 경우 추가 필드
+            )
+        }
+    }
+
 }
