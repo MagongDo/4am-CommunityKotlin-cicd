@@ -18,6 +18,7 @@ import java.net.URI
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.CopyOnWriteArrayList
+import kotlin.math.log
 
 @Component
 class RandomVideoChatHandler(
@@ -73,8 +74,8 @@ class RandomVideoChatHandler(
                         val currentUserId = session.attributes["userId"] as? Long
                         log.info("currentUserId : {}", currentUserId)
                         log.info("otherUserId : {}", otherUserId)
-                        if (roomId.toLongOrNull() != null && currentUserId != null && otherUserId != null && chatMessage != null) {
-                            redisService.saveVideoChatMessageLog(roomId.toLong().toString(), currentUserId, otherUserId, chatMessage)
+                        if (currentUserId != null && otherUserId != null && chatMessage != null) {
+                            redisService.saveVideoChatMessageLog(roomId, currentUserId, otherUserId, chatMessage)
                         }
                     }
                 }
