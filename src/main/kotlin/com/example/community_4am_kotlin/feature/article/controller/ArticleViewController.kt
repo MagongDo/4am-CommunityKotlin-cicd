@@ -1,9 +1,11 @@
 package com.example.community_4am_kotlin.feature.article.controller
 
+import com.example.community_4am_kotlin.domain.article.Comment
 import com.example.community_4am_kotlin.feature.article.dto.ArticleViewResponse
 import com.example.community_4am_kotlin.feature.article.dto.PageRequestDTO
 import com.example.community_4am_kotlin.feature.article.service.ArticleService
 import com.example.community_4am_kotlin.feature.comment.dto.CommentPageRequestDTO
+import com.example.community_4am_kotlin.feature.comment.dto.CommentWithProfile
 import com.example.community_4am_kotlin.feature.comment.service.CommentService
 import com.example.community_4am_kotlin.feature.like.service.LikeService
 import com.example.community_4am_kotlin.feature.user.service.UserService
@@ -42,8 +44,6 @@ class ArticleViewController(
         val article=articleService.findById(id)
         articleService.getIncreaseViewCount(id) //변경된 조회수를 저장
 
-        val commentListPage=commentService.getComments(id,commentPageRequestDTO)
-
         val likeCount=likeService.getLikeCount(id)//좋아요
         val commentCount=commentService.getCommentCount(id)//조회수
 
@@ -54,14 +54,20 @@ class ArticleViewController(
 
         val articleUser=userService.findByEmail(article.author)
         val currentUserImage=userService.findByEmail(currentUserName).getProfileImageAsBase64()
+        // 댓글 페이지 조회
+        val commentListPage = commentService.getComments(id, commentPageRequestDTO)
+        ///---------------
 
+        // 댓글에 작성자 프로필 이미지 추가
+
+        //----
         model.addAttribute("article",article)
         model.addAttribute("profileImage",articleUser.getProfileImageAsBase64())
         model.addAttribute("isArticleOwner", isArticleOwner)
         model.addAttribute("currentUserName", currentUserName)
         model.addAttribute("currentUserImage", currentUserImage)
         model.addAttribute("comments", commentListPage.content)
-        model.addAttribute("page", commentListPage)
+        //model.addAttribute("page", commentListPage)
         model.addAttribute("likeCount", likeCount)
         model.addAttribute("commentCount", commentCount)
 

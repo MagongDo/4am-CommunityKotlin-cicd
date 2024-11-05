@@ -3,7 +3,6 @@ package com.example.community_4am_kotlin.feature.article.service
 import com.example.community_4am_kotlin.domain.article.Article
 import com.example.community_4am_kotlin.feature.article.dto.*
 import com.example.community_4am_kotlin.feature.article.repository.ArticleRepository
-import com.example.community_4am_kotlin.feature.comment.repository.CommentRepository
 import com.example.community_4am_kotlin.feature.file.service.FileUploadService
 import com.example.community_4am_kotlin.feature.like.service.LikeService
 import com.example.community_4am_kotlin.feature.user.dto.UserArticlesList
@@ -20,7 +19,6 @@ import org.springframework.web.multipart.MultipartFile
 @Transactional
 class ArticleService (
     private val articleRepository: ArticleRepository,
-    private val commentRepository: CommentRepository,
     private val fileUploadService: FileUploadService,
     private val likeService: LikeService,
 ){
@@ -162,7 +160,7 @@ class ArticleService (
         } }!! }
     }
 
-    //content에서 사용 중인 파일명 추출g
+    //content에서 사용 중인 파일명 추출
     fun extractUuidFileNames(content: String): List<String> {
         val regex = Regex("uuidFileName=([\\w-]+)")  // uuidFileName에 해당하는 값을 추출하는 정규식
         return regex.findAll(content)

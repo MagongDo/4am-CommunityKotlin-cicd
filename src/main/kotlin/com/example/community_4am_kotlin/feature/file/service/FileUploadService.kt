@@ -45,6 +45,7 @@ class FileUploadService(
 
     }
 
+    //삽입된 이미지 파일 삭제
     @Transactional
     fun deleteFiles(files: List<InsertedFile>){
         files.forEach { fileRepository.delete(it) }
