@@ -57,8 +57,8 @@ class FriendService (
 
         // 친구 관계 삭제
         friendRepository.deleteFriend(
-            userId = notification.user?.id, // sender의 ID 사용
-            friendId = notification.targetId // recipient의 ID 사용
+            userId = notification.targetId, // sender의 ID 사용4
+            friendId = notification.user?.id // recipient의 ID 사용2
         )
     }
     fun getSortedFriendList(userId: Long?): List<User> {
