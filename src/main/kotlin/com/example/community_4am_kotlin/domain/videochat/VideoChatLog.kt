@@ -10,17 +10,20 @@ import java.time.LocalDateTime
 @Entity
 @EntityListeners(AuditingEntityListener::class)
 @Table(name="video_chat_log")
-@Transactional
 data class VideoChatLog (
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    var id: Long? = null,
+
     var videoChatId: String,
-    var userId:Long,
-    var otherUserId:Long,
+    var userId:Long? = null,
+    var otherUserId:Long?,
 
     @CreatedDate
-    var videoChatCreatedAt: LocalDateTime? = null,
+    var videoChatCreateAt: LocalDateTime? = null,
 
     var videoChatEndAt: LocalDateTime? = null,
     ){
+
 }
