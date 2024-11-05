@@ -336,6 +336,8 @@ if (createButton) {
     });
 }
 
+
+
 // 쿠키를 가져오는 함수
 function getCookie(key) {
     var result = null;

@@ -6,8 +6,6 @@ import com.example.community_4am_kotlin.feature.article.dto.ArticleResponse
 import com.example.community_4am_kotlin.feature.article.dto.UpdateArticleRequest
 import com.example.community_4am_kotlin.feature.article.service.ArticleService
 import com.example.community_4am_kotlin.feature.file.service.FileUploadService
-import com.example.community_4am_kotlin.feature.like.service.LikeService
-import org.apache.logging.log4j.LogManager
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
@@ -23,7 +21,6 @@ class ArticleApiController(
     private val articleService: ArticleService,
     private val fileUploadService: FileUploadService,
 ) {
-    private val logger = LogManager.getLogger(LikeService::class.java)
 
     // 게시글 등록 API (POST)
 //    @PostMapping(consumes = [MediaType.MULTIPART_FORM_DATA_VALUE])
@@ -95,25 +92,51 @@ class ArticleApiController(
         }
     }
 
-    //임시 게시글을 실제 게시글로 전환 API (PUT)
+    // 임시 게시글을 실제 게시글로 전환 API (PUT)
+//    @PutMapping("/finalize-edit/{id}")
+//    fun finalizeTemporaryArticle(
+//        @PathVariable("id") id: Long,
+//        @RequestBody request: AddArticleRequest,
+//        principal: Principal
+//    ): ResponseEntity<ArticleResponse> {
+//        return try {
+//            val userName = principal.name
+//            // 해당 ID의 임시 게시글을 조회
+//            val article = articleService.findById(id)
+//
+//            // 현재 사용자와 작성자가 일치하는지 확인
+//            if (article.author != userName) {
+//                return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null)
+//            }
+//
+//            // 글의 내용을 업데이트하고 isTemporary를 false로 변경
+//            articleService.updateArticleContentAndFinalize(article, request)
+//
+//            ResponseEntity.ok(ArticleResponse(article))
+//        } catch (e: Exception) {
+//            ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null)
+//        }
+//    }
+
     @PutMapping("/finalize-edit/{id}")
     fun finalizeTemporaryArticle(
         @PathVariable("id") id: Long,
         @RequestBody request: AddArticleRequest,
         principal: Principal
     ): ResponseEntity<ArticleResponse> {
+        val userName = principal.name
+
         return try {
-            val userName = principal.name
-            val article = articleService.finalizeTemporaryArticle(id, request)
-            if (article.author != userName) {
-                return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null)
-            }
+            val article = articleService.finalizeTemporaryArticle(id, request, userName)
             ResponseEntity.ok(ArticleResponse(article))
+        } catch (e: IllegalArgumentException) {
+            ResponseEntity.status(HttpStatus.NOT_FOUND).body(null)
+        } catch (e: IllegalAccessException) {
+            ResponseEntity.status(HttpStatus.FORBIDDEN).body(null)
         } catch (e: Exception) {
             ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null)
         }
     }
-
 
     // 특정 게시글 조회 API (GET)
     @GetMapping(value = ["/{id}"],produces = [MediaType.APPLICATION_JSON_VALUE])

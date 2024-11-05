@@ -30,7 +30,7 @@ class FileUploadService(
                     fileType = file.contentType ?: "unknown/type", // null 처리
                     fileData = fileData,
                     article = article,
-                    isTemporary = article.isTemporary
+                    isTemporary= true
                 )
                 uploadedFiles.add(fileRepository.save(insertedFile))
             } catch (e: IOException) {

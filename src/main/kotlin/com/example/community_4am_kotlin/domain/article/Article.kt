@@ -52,7 +52,7 @@ data class Article(
     var likeCount: Long = 0L,
 
     @Column(name = "is_temporary", nullable = false)
-    var isTemporary: Boolean = false // 임시 게시글 플래그
+    var isTemporary: Boolean = false// 임시 게시글 플래그
 
 ) {
 

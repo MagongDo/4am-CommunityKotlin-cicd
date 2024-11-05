@@ -63,6 +63,7 @@ class ArticleService (
     }
 
     //임시 게시글 저장
+    @Transactional
     fun saveTemporaryArticle(request: AddArticleRequest, userName: String, files: List<MultipartFile>?): Article {
         val tempArticle = Article(
             title = request.title,
@@ -88,6 +89,7 @@ class ArticleService (
     }
 
     //임시 게시글 삭제
+    @Transactional
     fun deleteTemporaryArticle(articleId: Long, userName: String) {
         val article = articleRepository.findById(articleId).orElseThrow { IllegalArgumentException("Article not found") }
         if (article.author != userName || !article.isTemporary) {
@@ -100,24 +102,29 @@ class ArticleService (
     }
 
     //임시 게시글을 실제 게시글로 전환
-    fun finalizeTemporaryArticle(articleId: Long, request: AddArticleRequest): Article {
-        val article = articleRepository.findById(articleId)
-            .orElseThrow { IllegalArgumentException("Temporary article not found") }
-
-        if (!article.isTemporary) {
-            throw IllegalArgumentException("Article is not temporary")
+    @Transactional
+    fun finalizeTemporaryArticle(id: Long, request: AddArticleRequest, userName: String): Article {
+        // 기존의 임시 글을 조회합니다.
+        val article = articleRepository.findById(id).orElseThrow {
+            throw IllegalArgumentException("Article not found")
         }
 
-        // 게시글 정보 업데이트
+        // 작성자 확인
+        if (article.author != userName) {
+            throw IllegalAccessException("Unauthorized user")
+        }
+
+        // 제목과 내용을 요청 값으로 업데이트하고, isTemporary를 false로 설정
         article.title = request.title
         article.content = request.content
         article.isTemporary = false
 
-        // 임시 파일을 영구 파일로 전환
-        fileUploadService.confirmTemporaryFiles(article)
-
+        deleteTemporaryArticle(article.id!!, userName) //임시 목록에서 삭제
+        // 기존 레코드를 수정하여 저장
         return articleRepository.save(article)
     }
+
+
 //------------------------------
 
     // 모든 게시글 조회

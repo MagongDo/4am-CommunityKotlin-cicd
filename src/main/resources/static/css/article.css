@@ -350,3 +350,13 @@ footer a:hover {
     right: -7px;
     font-size: 12px;
 }
+
+#temporary-articles-list a {
+    color: #373434; /* 원하는 색상으로 변경 */
+    text-decoration: none; /* 밑줄 제거 */
+}
+
+#temporary-articles-list a:hover {
+    color: #555; /* 마우스 오버 시 색상 변경 */
+    text-decoration: underline; /* 마우스 오버 시 밑줄 추가 (필요 시) */
+}
