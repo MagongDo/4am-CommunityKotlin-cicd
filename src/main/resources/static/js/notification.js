@@ -361,7 +361,7 @@ document.addEventListener('DOMContentLoaded', () => {
         customAlarmLists.innerHTML = ''; // 사용자 지정 알람 초기화
         commentLikeList.innerHTML = ''; // 댓글 및 좋아요 알림 초기화
 
-        const customAlarms = notifications.filter(n => n.alarmType === 'CUSTOM');
+        const customAlarms = notifications.filter(n => n.alarmType === 'COUSTOM');
         const otherAlarms = notifications.filter(n =>
             n.alarmType === 'COMMENT' || n.alarmType === 'RECOMMENT' || n.alarmType === 'LIKE'
         );
@@ -552,30 +552,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // 친구 신청 함수
-    async function sendFriendRequest(friendEmail, buttonElement) {
-        try {
-            const response = await fetch(`/api/friends/request?friendEmail=${encodeURIComponent(friendEmail)}`, {
-                method: "POST",
-                credentials: 'include' // 인증 정보를 포함하여 요청
-            });
 
-            if (response.ok) {
-                alert("친구 신청이 전송되었습니다.");
-                buttonElement.disabled = true;
-                buttonElement.textContent = "신청 완료";
-            } else if (response.status === 401) {
-                const errorText = await response.text();
-                alert(`친구 신청 실패: ${errorText || '로그인이 필요합니다.'}`);
-            } else {
-                const errorText = await response.text();
-                alert(`친구 신청 실패: ${errorText || '오류가 발생했습니다.'}`);
-            }
-        } catch (error) {
-            console.error("친구 신청 실패:", error);
-            alert("친구 신청 중 오류가 발생했습니다.");
-        }
-    }
 
     // 친구 요청 알림 불러오기
     async function loadFriendNotifications() {
