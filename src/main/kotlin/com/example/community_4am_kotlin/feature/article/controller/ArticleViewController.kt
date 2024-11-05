@@ -46,28 +46,29 @@ class ArticleViewController(
 
         val likeCount=likeService.getLikeCount(id)//좋아요
         val commentCount=commentService.getCommentCount(id)//조회수
-
+        val articleUser=userService.findByEmail(article.author)
+        val articleUserNickName=userService.findByUsername(article.author).nickname
         // 현재 사용자 정보 가져오기 (로그인한 사용자의 이름 또는 이메일)
         val currentUserName= SecurityContextHolder.getContext().authentication.name
+        //현재 사용자 닉네임
+        val currentUserNickName=userService.findByUsername(currentUserName).nickname
         // 현재 사용자가 게시글의 작성자인지 확인
         val isArticleOwner=article.author==currentUserName
 
-        val articleUser=userService.findByEmail(article.author)
         val currentUserImage=userService.findByEmail(currentUserName).getProfileImageAsBase64()
         // 댓글 페이지 조회
-        val commentListPage = commentService.getComments(id, commentPageRequestDTO)
-        ///---------------
+       // val commentListPage = commentService.getComments(id, commentPageRequestDTO)
+        val commentListPage = commentService.getComments(id)
 
-        // 댓글에 작성자 프로필 이미지 추가
 
-        //----
         model.addAttribute("article",article)
         model.addAttribute("profileImage",articleUser.getProfileImageAsBase64())
+        model.addAttribute("articleUserNickName",articleUserNickName)
         model.addAttribute("isArticleOwner", isArticleOwner)
         model.addAttribute("currentUserName", currentUserName)
+        model.addAttribute("currentUserNickName", currentUserNickName)
         model.addAttribute("currentUserImage", currentUserImage)
-        model.addAttribute("comments", commentListPage.content)
-        //model.addAttribute("page", commentListPage)
+        model.addAttribute("comments", commentListPage)
         model.addAttribute("likeCount", likeCount)
         model.addAttribute("commentCount", commentCount)
 

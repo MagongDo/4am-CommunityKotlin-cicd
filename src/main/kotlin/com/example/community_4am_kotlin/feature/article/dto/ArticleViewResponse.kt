@@ -10,14 +10,16 @@ data class ArticleViewResponse(
     val content: String = "",
     val author: String = "",
     val createdAt: LocalDateTime? = null,
-    val isOwner: Boolean = false
+    val isOwner: Boolean = false,
+    val isTemporary: Boolean = false
 ) {
     constructor(article: Article) : this(
         id = article.id,
         title = article.title,
         content = article.content,
         author = article.author,
-        createdAt = article.createdAt
+        createdAt = article.createdAt,
+        isTemporary = article.isTemporary
     )
 
     constructor(article: Article, currentUserName: String) : this(
@@ -26,6 +28,7 @@ data class ArticleViewResponse(
         content = article.content,
         author = article.author,
         createdAt = article.createdAt,
-        isOwner = currentUserName == article.author
+        isOwner = currentUserName == article.author,
+        isTemporary = article.isTemporary
     )
 }

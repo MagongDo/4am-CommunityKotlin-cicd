@@ -1,11 +1,13 @@
 package com.example.community_4am_kotlin.feature.comment.service
 
 import com.example.community_4am_kotlin.domain.article.Comment
+import com.example.community_4am_kotlin.domain.user.QUser.user
 import com.example.community_4am_kotlin.feature.article.repository.ArticleRepository
 import com.example.community_4am_kotlin.feature.comment.dto.*
 import com.example.community_4am_kotlin.feature.comment.repository.CommentRepository
 import com.example.community_4am_kotlin.feature.like.service.LikeService
 import com.example.community_4am_kotlin.feature.user.dto.UserCommentsList
+import com.example.community_4am_kotlin.feature.user.service.UserService
 import org.apache.logging.log4j.LogManager
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
@@ -19,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional
 class CommentService(
     private val commentRepository: CommentRepository,
     private val articleRepository: ArticleRepository,
+    private val userService: UserService
 ) {
 
     private val logger = LogManager.getLogger(LikeService::class.java)
@@ -47,11 +50,32 @@ class CommentService(
         }
     }
 
+
     //게시글에 달린 댓글 목록 조회
-    fun getComments(articleId:Long): List<CommentResponse>{
-        val comments=commentRepository.findByArticleIdOrderByCommentIdAsc(articleId)
-        return comments.map {CommentResponse(it)}
+//    fun getComments(articleId:Long): List<CommentResponse>{
+//        val comments=commentRepository.findByArticleIdOrderByCommentIdAsc(articleId)
+//        return comments.map {CommentResponse(it)}
+//    }
+
+    fun getComments(articleId: Long): List<CommentListViewResponse> {
+        val comments = commentRepository.findByArticleId(articleId)
+        return comments.map { comment ->
+            val user = comment.commentAuthor?.let { userService.findByUsername(it) }
+            val nickname = user?.nickname ?: "Unknown User"  // 닉네임이 null일 경우 기본값 설정
+            val profileImage = user?.getProfileImageAsBase64() ?: ""  // 프로필 이미지가 null일 경우 빈 문자열 설정
+
+            CommentListViewResponse(
+                commentId = comment.commentId,
+                nickname = nickname,
+                profileImage = profileImage,
+                commentContent = comment.commentContent,
+                commentCreatedAt = comment.createdAt,
+                articleId = comment.article.id!!,
+                parentCommentId = comment.parentComment?.commentId
+            )
+        }
     }
+
 
     //게시글에 맞는 한개 댓글과 대댓글 조회
     fun getReComments(articleId:Long,commentId:Long): List<CommentResponse>{

@@ -2,6 +2,7 @@ package com.example.community_4am_kotlin.feature.comment.controller
 
 import com.example.community_4am_kotlin.domain.article.Comment
 import com.example.community_4am_kotlin.feature.comment.dto.AddCommentRequest
+import com.example.community_4am_kotlin.feature.comment.dto.CommentListViewResponse
 import com.example.community_4am_kotlin.feature.comment.dto.CommentResponse
 import com.example.community_4am_kotlin.feature.comment.dto.UpdateCommentRequest
 import com.example.community_4am_kotlin.feature.comment.service.CommentService
@@ -42,7 +43,7 @@ class CommentApiController(
 
     //게시글에 달린 댓글 목록 조회 (시간순)
     @GetMapping(value =["/{articleId}"],produces = [MediaType.APPLICATION_JSON_VALUE])
-    fun findComments(@PathVariable("articleId") articleId: Long): ResponseEntity<List<CommentResponse>> {
+    fun findComments(@PathVariable("articleId") articleId: Long): ResponseEntity<List<CommentListViewResponse>> {
         val comments=commentService.getComments(articleId)
         return ResponseEntity.status(HttpStatus.OK).body(comments)
     }

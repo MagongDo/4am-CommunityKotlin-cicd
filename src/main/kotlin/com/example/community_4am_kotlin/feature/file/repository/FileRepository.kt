@@ -20,4 +20,6 @@ interface FileRepository: JpaRepository<InsertedFile, Long> {
     @Query("DELETE FROM InsertedFile f WHERE f.article = :article AND f.isTemporary = true")
     fun deleteByArticleAndIsTemporary(article: Article)
 
+    fun findByArticleId(articleId: Long): List<InsertedFile>
+
 }

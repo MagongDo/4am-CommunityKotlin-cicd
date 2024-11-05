@@ -206,7 +206,7 @@
                         <h3 class="fw-bolder mb-1" style="font-family:'나눔고딕'" th:text="${article.title}"></h3>
                         <div class="text-muted fst-italic mb-2 d-flex align-items-center">
                             <img th:src="${profileImage != null ? profileImage : '/img/default.jpeg'}" alt="Profile Image" class="profile-image" style="margin: 0px" />
-                            <span th:text="${article.author}"style="margin-left: 10px"></span>
+                            <span th:text="${articleUserNickName}"style="margin-left: 10px"></span>
                             <span th:text="${#temporals.format(article.createdAt, 'yyyy-MM-dd HH:mm')}"style="margin-left: 10px" ></span>
                             | 조회수: <span th:text="${article.viewCount}"style="margin-left: 10px"></span>
                         </div>
@@ -242,8 +242,9 @@
                         <div th:each="comment : ${comments}">
                             <div class="card mb-3" th:style="${comment.parentCommentId != null} ? 'margin-left: 20px;' : ''">
                                 <div class="card-body">
-<!--                                    <img th:src="${comment.}" alt="Profile Image" class="profile-image" style="margin: 0px" />-->
-                                    <h6 class="card-subtitle mb-2 text-muted" th:text="${comment.commentAuthor}"></h6>
+                                    <img th:src="${comment.profileImage}" alt="Profile Image" class="profile-image" style="margin: 0px" />
+<!--                                    <h6 class="card-subtitle mb-2 text-muted" th:text="${comment.commentAuthor}"></h6>-->
+                                    <h6 class="card-subtitle mb-2 text-muted" th:text="${comment.nickname}"></h6>
                                     <p class="card-text" th:text="${comment.commentContent}"></p>
                                     <p class="text-muted" th:text="${#temporals.format(comment.commentCreatedAt, 'yyyy-MM-dd HH:mm')}"></p>
                                     <button class="btn btn-link reply-btn" th:data-comment-id="${comment.commentId}">Reply</button>
@@ -260,7 +261,7 @@
                             <h6>댓글 작성</h6>
                             <div class="d-flex align-items-center mb-2">
                                 <img th:src="${currentUserImage}" alt="Profile Image" class="profile-image" style="margin: 0px" />
-                                <h6 class="text-muted ml-2" th:text="${currentUserName}"></h6>
+                                <h6 class="text-muted ml-2" th:text="${currentUserNickName}"></h6>
                             </div>
 
                             <form id="comment-form">
@@ -291,6 +292,9 @@
 <script>
     const currentUserName = '[[${currentUserName}]]';   // 기본값 'anonymous'로 설정
     console.log(currentUserName);
+
+    const comments = '[[${comments}]]';
+    console.log("댓글 목록:", comments);
 </script>
 <script src="/js/article.js"></script>
 <script src="/js/comment.js"></script>

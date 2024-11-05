@@ -21,25 +21,30 @@ class MyPageViewController(
     @GetMapping
     fun myPage(model: Model): String {
         val currentUserName= SecurityContextHolder.getContext().authentication.name
-        model.addAttribute("currentUserName", currentUserName)
+        val currentUserNickName=userService.findByUsername(currentUserName).nickname
+        model.addAttribute("currentUserNickName", currentUserNickName)
 
         return "mypage/mypageMain"
     }
 
     @GetMapping("/articles")
     fun myPageArticles(model: Model): String {
-        val currentuserName= SecurityContextHolder.getContext().authentication.name
-        model.addAttribute("currentUserName", currentuserName)
-        val userArticlesLists=articleService.getUserAllArticles(currentuserName)
+        val currentUserName= SecurityContextHolder.getContext().authentication.name
+        val currentUserNickName=userService.findByUsername(currentUserName).nickname
+        model.addAttribute("currentUserNickName", currentUserNickName)
+
+      //  model.addAttribute("currentUserName", currentuserName)
+        val userArticlesLists=articleService.getUserAllArticles(currentUserName)
         model.addAttribute("userArticlesLists", userArticlesLists)
+
 
         return "mypage/articles"
     }
-
     @GetMapping("/comments")
     fun myPageComments(model: Model): String {
         val currentUserName= SecurityContextHolder.getContext().authentication.name
-        model.addAttribute("currentUserName", currentUserName)
+        val currentUserNickName=userService.findByUsername(currentUserName).nickname
+        model.addAttribute("currentUserNickName", currentUserNickName)
         val userCommentsLists=commentService.getUserAllComments(currentUserName)
         model.addAttribute("userCommentsLists", userCommentsLists)
 
@@ -49,7 +54,8 @@ class MyPageViewController(
     @GetMapping("/likes")
     fun myPageLikes(model: Model): String {
         val currentUserName= SecurityContextHolder.getContext().authentication.name
-        model.addAttribute("currentUserName", currentUserName)
+        val currentUserNickName=userService.findByUsername(currentUserName).nickname
+        model.addAttribute("currentUserNickName", currentUserNickName)
         val userLikedArticlesLists=likeService.getUserAllArticlesAndLikes(currentUserName)
         model.addAttribute("userLikedArticlesLists", userLikedArticlesLists)
 

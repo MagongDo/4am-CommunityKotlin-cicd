@@ -17,5 +17,7 @@ interface ArticleRepository: JpaRepository<Article, Long>,ArticleSearch {
     @Query("UPDATE Article a SET a.author = '탈퇴한 사용자입니다.' WHERE a.author = :email")
     fun updateAuthorToDeleted(@Param("email")email:String)
 
+    fun findByAuthorAndIsTemporary(author: String, isTemporary: Boolean): List<Article>
+
 
 }

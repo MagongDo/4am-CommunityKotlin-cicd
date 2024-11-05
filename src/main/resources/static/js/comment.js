@@ -1,3 +1,4 @@
+
 // HTTP 요청을 보내는 함수
 function httpRequest(method, url, body, success, fail) {
     const headers = {
@@ -58,7 +59,7 @@ function submitComment(articleId, content, parentCommentId = null) {
             }
         },
         (response) => {  // 실패 시 처리
-            console.error("댓글 작성 실패, 상태 코드:", response.status, "응답 메시지:", response.statusText);
+            console.error('댓글 작성 실패, 상태 코드:', response.status || '응답 없음');
             alert('댓글 작성에 실패했습니다. 다시 시도해주세요.');
         });
 
@@ -184,7 +185,8 @@ function renderCommentWithReplies(comment, allComments, depth) {
 // 댓글 작성자와 현재 사용자 정보를 로그로 출력
     console.log("commentAuthor: ", comment.commentAuthor);
     console.log("currentUserName: ", currentUserName);
-
+    // console.log("프로필 이미지:", comment.profileImage);
+    // console.log("닉네임:", comment.nickname);
     // 댓글 삭제 여부에 따라 표시
     if (comment.commentIsDeleted) {
         commentCard.innerHTML = `
@@ -197,7 +199,10 @@ function renderCommentWithReplies(comment, allComments, depth) {
         commentCard.innerHTML = `
         <div class="card-body">
             <div class="d-flex justify-content-between align-items-center">
-                <h6 class="card-subtitle mb-2 text-muted" id="comment-Author" style="margin-top: 8px">${comment.commentAuthor}</h6>
+             <div class="d-flex align-items-center">
+                     <img src="${comment.profileImage}" alt="프로필 이미지" class="rounded-circle mr-2" width="40" height="40">
+                    <h6 class="card-subtitle mb-2 text-muted" id="comment-nickname" style="margin-top: 8px">${comment.nickname || "Unknown User"}</h6>
+                </div>
                 <div class="comment-button">
                         ${comment.commentAuthor === currentUserName ? `
                         <button type="button" id="comment-modify-btn-${comment.commentId}" class="btn btn-primary btn-sm">수정</button>

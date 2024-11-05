@@ -56,7 +56,6 @@ data class User(
 ) : UserDetails {
 
 
-
    /*     class Builder {
             private var id: Long? = null
             private var email: String? = null
@@ -87,7 +86,6 @@ data class User(
                 likes
             )
         }*/
-
 
 
         fun getProfileImageAsBase64(): String? {

@@ -50,4 +50,6 @@ interface CommentRepository: JpaRepository<Comment, Long> {
      @Transactional
      @Query("UPDATE Comment c SET c.commentAuthor = '탈퇴한 사용자입니다.' WHERE c.commentAuthor = :email")
      fun updateCommentAuthorToDeleted(@Param("email") email:String)
+
+    fun findByArticleId(articleId: Long): List<Comment>
 }
