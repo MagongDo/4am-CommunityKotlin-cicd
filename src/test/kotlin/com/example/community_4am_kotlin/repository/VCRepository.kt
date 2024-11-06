@@ -55,13 +55,13 @@ class VCRepository @Autowired constructor(
 
         val currentDateTime = LocalDateTime.now()
         val videoChatReports: VideoChatReport = VideoChatReport(
-            videoChatId = videoChatLog.videoChatId,
-            reporterId = "a",
-            reportedId = "b",
-            reportDetails = "나쁜사람",
-            reportTimestamp = currentDateTime,
-            reportVideoChatCreatAt = videoChatLog.videoChatCreateAt,
-            reportVideoChatEndAt = videoChatLog.videoChatEndAt
+//            videoChatId = videoChatLog.videoChatId,
+//            reporterId = "a",
+//            reportedId = "b",
+//            reportDetails = "나쁜사람",
+//            reportTimestamp = currentDateTime,
+//            reportVideoChatCreatAt = videoChatLog.videoChatCreateAt,
+//            reportVideoChatEndAt = videoChatLog.videoChatEndAt
         )
 
         println("save " + videoChatReportRepository.save(videoChatReports))
