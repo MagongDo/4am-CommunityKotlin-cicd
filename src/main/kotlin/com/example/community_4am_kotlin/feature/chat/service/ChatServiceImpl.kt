@@ -5,6 +5,7 @@ import com.example.community_4am_kotlin.feature.chat.common.WebSocketSessionMana
 import com.example.community_4am_kotlin.feature.user.service.UserService
 import com.example.community_4am_kotlin.log
 import com.nimbusds.jose.shaded.gson.Gson
+import com.nimbusds.jose.shaded.gson.JsonObject
 import org.springframework.stereotype.Service
 import org.springframework.web.socket.CloseStatus
 import org.springframework.web.socket.TextMessage
@@ -26,66 +27,87 @@ class ChatServiceImpl(
         accountId: String,
         roomSessions: ConcurrentHashMap<String, MutableMap<String, WebSocketSession>>
     ) {
-        // Redis 채널 구독 설정
+        // Redis 채널 구독 (방에 사용자들이 전송하는 메시지 관리)
+        log.info("Redis 채널 구독 시작: roomId=$roomId")
         messageBrokerService.subscribeToChannel(roomId)
+        log.info("Redis 채널 구독 완료: roomId=$roomId")
 
-        // 사용자 정보 조회
-        val user = userService.findByEmail(accountId)
-        val nickname = user.nickname
-        val sessionId = session.id
-        log.info("nickname : $nickname")
+        // Redis에서 기존 세션 ID 가져오기
+        log.info("Redis에서 기존 세션 ID 조회: accountId=$accountId, roomId=$roomId")
+        val existingSessionId = sessionManager.getSessionIfExists(accountId, roomId)
 
-        //중복 세션이 있는지 확인하기
-        val redisSession = sessionManager.getSessionIfExists(accountId,roomId)
-        if(redisSession != null) {
-            session.close(CloseStatus.NORMAL)
-            return
+        // Redis에서 사용자의 입장 상태 확인
+        val isAlreadyEntered = sessionManager.isAlreadyEntered(accountId, roomId)
+
+        if (existingSessionId != null) {
+            // 기존 세션이 존재할 때는 재사용하고 입장 메시지를 보내지 않음
+            log.info("기존 세션 발견: accountId=$accountId, 기존 sessionId=$existingSessionId. 세션 재사용 중")
+            roomSessions.computeIfAbsent(roomId) { ConcurrentHashMap() }[existingSessionId] = session
+            log.info("기존 세션 재사용 완료: accountId=$accountId, sessionId=$existingSessionId")
+        } else {
+            // 기존 세션이 없고 입장 메시지를 보내야 할 경우
+            if (!isAlreadyEntered) {
+                log.info("기존 세션 없음. 새로운 세션 생성 중: accountId=$accountId, 새로운 sessionId=${session.id}")
+                roomSessions.computeIfAbsent(roomId) { ConcurrentHashMap() }[session.id] = session
+                sessionManager.cacheSession(accountId, roomId, session.id)
+                sessionManager.setEntered(accountId, roomId)  // 입장 상태 플래그 설정
+                log.info("새로운 세션 저장 완료: accountId=$accountId, sessionId=${session.id}")
+
+                // 입장 메시지 생성 및 전송
+                val welcomeMessage = mapOf(
+                    "type" to "message",
+                    "roomId" to roomId,
+                    "message" to "${accountId}님이 입장했습니다.",
+                    "sender" to "시스템"
+                ).let { Gson().toJson(it) }
+                messageBrokerService.publishToChannel(roomId, welcomeMessage)
+                log.info("입장 메시지 전송 완료: roomId=$roomId, message=$welcomeMessage")
+            } else {
+                log.info("사용자가 이미 입장한 상태입니다: accountId=$accountId, roomId=$roomId")
+            }
         }
-        // 세션 정보 저장
-        roomSessions.computeIfAbsent(roomId) { ConcurrentHashMap() }[sessionId] = session
-        sessionManager.cacheSession(accountId,roomId,sessionId)
 
-        // 환영 메시지 전송
-        val welcomeMessage = "${nickname}님이 입장했습니다. 모두 환영해주세요"
-        messageBrokerService.publishToChannel(roomId, welcomeMessage)
+        // Redis 정보를 기반으로 멤버 목록 업데이트
+        memberListUpdated(roomId, roomSessions)
     }
 
-    override fun handleUserDisconnection(session: WebSocketSession, roomId: String, accountId: String) {
-        val nickname = userService.findByEmail(accountId).nickname ?: "사용자를 알 수 없음"
-
-        // 퇴장 메시지 생성
-        val messageJson = mapOf(
-            "sender" to nickname,
-            "chatMessage" to "$nickname 님이 퇴장하셨습니다."
-        ).let { Gson().toJson(it) } // JSON 변환
-
-        // 메시지 전송
-        messageBrokerService.publishToChannel(roomId, messageJson)
-
-        // 세션 정보 제거
+    override fun handleUserDisconnection(
+        session: WebSocketSession,
+        roomId: String,
+        accountId: String
+    ) {
+        // 메모리 및 Redis에서 세션 정보 삭제
         roomSessions[roomId]?.remove(session.id)
-        sessionManager.deleteSession(accountId,roomId)
+        sessionManager.deleteSession(accountId, roomId)
+        log.info("사용자 퇴장 처리: accountId=$accountId, sessionId=${session.id}")
 
+        // 퇴장 메시지 전송
+        val leaveMessage = mapOf(
+            "type" to "message",
+            "roomId" to roomId,
+            "message" to "${accountId}님이 퇴장하셨습니다.",
+            "sender" to "시스템"
+        ).let { Gson().toJson(it) }
+        messageBrokerService.publishToChannel(roomId, leaveMessage)
     }
-
     override fun memberListUpdated(
         roomId: String,
         roomSessions: ConcurrentHashMap<String, MutableMap<String, WebSocketSession>>
     ) {
 
-        // 해당 방의 세션 목록을 가져옵니다.
+        // 해당 방의 세션 목록을 가져와 멤버 리스트 생성
         roomSessions[roomId]?.let { sessionsInRoom ->
-
-            // 현재 방의 모든 사용자 이름 목록 생성
             val memberList = sessionsInRoom.values.mapNotNull { session ->
-                val username = session.attributes["accountId"] as String? // 키 이름 확인
+                val username = session.attributes["accountId"] as String?
                 username?.let { userService.findByEmail(it).nickname }
             }
 
-            // 멤버 목록을 JSON 형식으로 변환
-            val memberListJson = Gson().toJson(memberList)
+            // 멤버 목록 JSON 생성 및 전송
+            val memberListJson = mapOf(
+                "type" to "memberList",
+                "members" to memberList
+            ).let { Gson().toJson(it) }
 
-            // 각 세션에 멤버 목록을 전송
             sessionsInRoom.values.forEach { session ->
                 try {
                     session.sendMessage(TextMessage(memberListJson))
@@ -94,8 +116,8 @@ class ChatServiceImpl(
                 }
             }
         }
-        }
+    }
 
-
-    override fun getUserCount(roomId: String): Int = if (roomSessions.containsKey(roomId)) roomSessions[roomId]!!.size else 0;
+    override fun getUserCount(roomId: String): Int =
+        roomSessions[roomId]?.size ?: 0
 }
