@@ -37,6 +37,7 @@ data class Comment(
     @ManyToOne
     @JoinColumn(name = "parent_comment_id", nullable = true)  // 최상위 댓글을 위해 nullable=true로 설정
     @JsonIgnore
+
     var parentComment: Comment? = null,  // null 허용
 
     @OneToMany(mappedBy = "parentComment", cascade = [(CascadeType.MERGE)], orphanRemoval = true)
@@ -68,4 +69,7 @@ data class Comment(
         this.commentContent = commentContent
     }
 
+    override fun toString(): String {
+        return "Comment(id=$commentId, commentAuthor=$commentAuthor, commentContent=$commentContent)"
+    }
 }

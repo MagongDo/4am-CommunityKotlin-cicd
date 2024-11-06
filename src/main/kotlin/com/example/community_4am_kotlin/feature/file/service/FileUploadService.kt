@@ -29,7 +29,8 @@ class FileUploadService(
                     originalFileName = file.originalFilename ?: "unknown_filename", // null 처리
                     fileType = file.contentType ?: "unknown/type", // null 처리
                     fileData = fileData,
-                    article = article
+                    article = article,
+                    isTemporary= true
                 )
                 uploadedFiles.add(fileRepository.save(insertedFile))
             } catch (e: IOException) {
@@ -42,8 +43,14 @@ class FileUploadService(
     fun getFileByArticleIdAndUuidFileName(articleId:Long,uuidFileName:String): InsertedFile {
         return fileRepository.findByArticleIdAndUuidFileName(articleId,uuidFileName)
             ?:throw IllegalArgumentException("File not found")
-
     }
+
+    //삽입된 이미지 파일 삭제
+    @Transactional
+    fun deleteFiles(files: List<InsertedFile>){
+        files.forEach { fileRepository.delete(it) }
+    }
+
 
     //----------------------------
     //글 등록전 임시파일 생성

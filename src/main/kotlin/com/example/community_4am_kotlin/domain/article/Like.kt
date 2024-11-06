@@ -38,7 +38,7 @@ data class Like (
 
     ){
     fun changeLikedStatus(status: Boolean) {
-        likedStatus = !status
+        likedStatus = status
     }
 
     // Like 클래스에서도 필요하지 않은 필드 제거

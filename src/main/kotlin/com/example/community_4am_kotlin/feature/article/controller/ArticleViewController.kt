@@ -1,9 +1,11 @@
 package com.example.community_4am_kotlin.feature.article.controller
 
+import com.example.community_4am_kotlin.domain.article.Comment
 import com.example.community_4am_kotlin.feature.article.dto.ArticleViewResponse
 import com.example.community_4am_kotlin.feature.article.dto.PageRequestDTO
 import com.example.community_4am_kotlin.feature.article.service.ArticleService
 import com.example.community_4am_kotlin.feature.comment.dto.CommentPageRequestDTO
+import com.example.community_4am_kotlin.feature.comment.dto.CommentWithProfile
 import com.example.community_4am_kotlin.feature.comment.service.CommentService
 import com.example.community_4am_kotlin.feature.like.service.LikeService
 import com.example.community_4am_kotlin.feature.user.service.UserService
@@ -42,26 +44,31 @@ class ArticleViewController(
         val article=articleService.findById(id)
         articleService.getIncreaseViewCount(id) //변경된 조회수를 저장
 
-        val commentListPage=commentService.getComments(id,commentPageRequestDTO)
-
         val likeCount=likeService.getLikeCount(id)//좋아요
         val commentCount=commentService.getCommentCount(id)//조회수
-
+        val articleUser=userService.findByEmail(article.author)
+        val articleUserNickName=userService.findByUsername(article.author).nickname
         // 현재 사용자 정보 가져오기 (로그인한 사용자의 이름 또는 이메일)
         val currentUserName= SecurityContextHolder.getContext().authentication.name
+        //현재 사용자 닉네임
+        val currentUserNickName=userService.findByUsername(currentUserName).nickname
         // 현재 사용자가 게시글의 작성자인지 확인
         val isArticleOwner=article.author==currentUserName
 
-        val articleUser=userService.findByEmail(article.author)
         val currentUserImage=userService.findByEmail(currentUserName).getProfileImageAsBase64()
+        // 댓글 페이지 조회
+       // val commentListPage = commentService.getComments(id, commentPageRequestDTO)
+        val commentListPage = commentService.getComments(id)
+
 
         model.addAttribute("article",article)
         model.addAttribute("profileImage",articleUser.getProfileImageAsBase64())
+        model.addAttribute("articleUserNickName",articleUserNickName)
         model.addAttribute("isArticleOwner", isArticleOwner)
         model.addAttribute("currentUserName", currentUserName)
+        model.addAttribute("currentUserNickName", currentUserNickName)
         model.addAttribute("currentUserImage", currentUserImage)
-        model.addAttribute("comments", commentListPage.content)
-        model.addAttribute("page", commentListPage)
+        model.addAttribute("comments", commentListPage)
         model.addAttribute("likeCount", likeCount)
         model.addAttribute("commentCount", commentCount)
 

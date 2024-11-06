@@ -51,7 +51,7 @@ body {
 }
 
 .articleList-content{
-    width: 800px;
+    width: 900px;
     margin: 0 auto;
     padding: 20px;
     flex: 1; /* flex 속성 추가로 콘텐츠가 페이지에서 여유 공간을 채우도록 설정 */
@@ -249,10 +249,10 @@ footer a:hover {
 }
 
 .table-bordered thead{
-    font-size: 12px;
+    font-size: 14px;
 }
 .table-bordered tbody{
-    font-size: 13px;
+    font-size: 15px;
 }
 
 .table-bordered th, .table-bordered td {
@@ -349,4 +349,14 @@ footer a:hover {
     top: -5px;
     right: -7px;
     font-size: 12px;
+}
+
+#temporary-articles-list a {
+    color: #373434; /* 원하는 색상으로 변경 */
+    text-decoration: none; /* 밑줄 제거 */
+}
+
+#temporary-articles-list a:hover {
+    color: #555; /* 마우스 오버 시 색상 변경 */
+    text-decoration: underline; /* 마우스 오버 시 밑줄 추가 (필요 시) */
 }

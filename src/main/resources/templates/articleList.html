@@ -222,7 +222,7 @@
             <div style="text-align: right;">
                 <button type="button" id="create-btn"
                         th:onclick="|location.href='@{/new-article}'|"
-                        class="btn btn-secondary btn-sm mb-3">글 등록
+                        class="btn btn-secondary  mb-3">글 등록
                 </button>
             </div>
 
@@ -247,7 +247,7 @@
                     </td>
 
 
-                    <td style="color: #575757; " th:text="${item.author}"></td>
+                    <td style="color: #575757; " th:text="${item.nickname}"></td>
                     <td style="color: #575757; " th:text="${#temporals.format(item.createdAt, 'yyyy-MM-dd')}"></td>
                     <td style="color: #575757; " th:text="${item.viewCount}"></td>
                     <td style="color: #575757; " th:text="${item.likeCount}"></td>

@@ -9,16 +9,19 @@ data class ArticleListViewResponse(
     val id: Long?,
     val title: String,
     val content: String,
-    val author: String,
+    //val author: String,
+    val nickname: String,
     val createdAt: LocalDateTime?,
     val viewCount: Long,
-    val likeCount: Long
+    val likeCount: Long,
+
 ) {
-    constructor(article: Article) : this(
+    constructor(article: Article,nickname: String) : this(
         id = article.id,
         title = article.title,
         content = article.content,
-        author = article.author,
+        //author = article.author,
+        nickname=nickname,
         createdAt = article.createdAt,
         viewCount = article.viewCount,
         likeCount = article.likeCount

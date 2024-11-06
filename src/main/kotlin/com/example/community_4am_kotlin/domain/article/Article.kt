@@ -49,7 +49,11 @@ data class Article(
     var viewCount: Long = 0L,
 
     @Column(name = "like_count")
-    var likeCount: Long = 0L
+    var likeCount: Long = 0L,
+
+    @Column(name = "is_temporary", nullable = false)
+    var isTemporary: Boolean = false// 임시 게시글 플래그
+
 ) {
 
     fun addFiles(files: List<InsertedFile>?) {
