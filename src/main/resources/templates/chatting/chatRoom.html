@@ -200,6 +200,18 @@
       font-size: 12px;
       margin-bottom: 5px;
     }
+
+    .sent {
+      background-color: #dcf8c6; /* 보낸 메시지 배경색 */
+      margin-left: auto; /* 오른쪽 정렬 */
+      text-align: right; /* 오른쪽 정렬 */
+    }
+
+    .received {
+      background-color: #f1f0f0; /* 받은 메시지 배경색 */
+      margin-right: auto; /* 왼쪽 정렬 */
+      text-align: left; /* 왼쪽 정렬 */
+    }
   </style>
 
 </head>
@@ -238,137 +250,180 @@
 
 <!-- 채팅 메시지 처리 관련 JavaScript 코드 -->
 <script th:inline="javascript">
-  // 서버로부터 받은 채팅방 ID와 사용자 이름
   const roomId = /*[[${roomId}]]*/ '';
   const username = /*[[${username}]]*/ '';
+  const sessionKey = `wsConnected:${roomId}:${username}`;
+  let ws;
+  const reconnectDelay = 1000; // 3초 후 재연결 시도
 
-  // 웹소켓 객체 생성, 채팅 서버와 연결
-  const ws = new WebSocket('wss://localhost:8443/ws/chat/' + roomId);
-
-  // 채팅 로그 영역과 입력 필드 참조
-  const chatLog = document.getElementById('chatLog');
-  const chatInput = document.getElementById('chatInput');
-
-  ws.onmessage = function(event) {
-    let data;
-
-    try {
-      // JSON 형식으로 들어오는 데이터를 파싱
-      data = JSON.parse(event.data);
-    } catch (e) {
-      // JSON이 아닐 경우 그대로 처리
-      data = event.data;
-    }
-
-    // 추가 파싱: 만약 data가 문자열이면 다시 JSON으로 파싱
-    if (typeof data === 'string') {
-      try {
-        data = JSON.parse(data);
-      } catch (e) {
-        console.error("JSON 파싱 오류:", e);
-      }
-    }
-
-    console.log("Parsed data: ", data); // 파싱된 데이터 로그
-    console.log("Sender: ", data.sender); // 발신자 정보 확인
-    console.log("Current username: ", username); // 현재 클라이언트 유저명 확인
-
-    // 멤버 리스트 업데이트 처리 (데이터가 배열일 경우)
-    if (Array.isArray(data)) {
-      updateMemberList(data);
-    }
-    // JSON 객체 형식으로 발신자와 메시지를 모두 포함하고 있을 경우
-    else if (typeof data === 'object' && data.sender && data.chatMessage) {
-      // displayMessage 함수로 발신자(sender)와 메시지(chatMessage)를 분리하여 전달
-      displayMessage(data.sender, data.chatMessage);
-    }
-    // 발신자가 없는 경우 시스템 메시지로 간주
-    else {
-      displayMessage("시스템", data);  // 시스템 메시지로 처리
-    }
+  // 페이지 로드 시 채팅 기록 불러오기와 웹소켓 연결
+  window.onload = () => {
+    loadChatHistory();
+    connectWebSocket();
   };
+  // 윈도우가 닫히거나 새로고침될 때 `sessionStorage`에서 연결 상태 초기화
+  window.addEventListener("beforeunload", () => {
+    sessionStorage.removeItem(sessionKey);
+  });
+  function loadChatHistory() {
+    const chatLog = document.getElementById('chatLog');
+    chatLog.innerHTML = ''; // 기존 채팅 로그를 지웁니다.
 
-  // 멤버 리스트를 업데이트하는 함수
+    fetch(`/chat/history/${roomId}`)
+            .then(response => {
+              if (!response.ok) {
+                throw new Error("채팅 기록을 불러오는 중 오류 발생");
+              }
+              return response.json();
+            })
+            .then(history => {
+              history.forEach(item => displayMessage(item.sender, item.message));
+            })
+            .catch(error => console.error("채팅 기록을 불러오는 중 오류 발생:", error));
+  }
+
+  function connectWebSocket() {
+  /*  if (sessionStorage.getItem(sessionKey)) {
+      console.log("이미 연결되어 있는 유저입니다.");
+      return;
+    }
+    ws = new WebSocket('wss://localhost:8443/ws/chat/' + roomId);
+    ws.onopen = function () {
+      console.log("웹소켓 연결에 성공했습니다.");
+      sessionStorage.setItem(sessionKey, "connected");
+    };
+*/
+    // 연결이 이미 되어 있는지 확인
+    const connectionStatus = sessionStorage.getItem(sessionKey);
+    if (connectionStatus === "connected") {
+      console.log("이미 연결되어 있는 유저입니다.");
+      return;
+    }
+
+    // WebSocket 연결 시작
+    ws = new WebSocket(`wss://localhost:8443/ws/chat/${roomId}`);
+
+    ws.onopen = function () {
+      console.log("웹소켓 연결에 성공했습니다.");
+      sessionStorage.setItem(sessionKey, "connected"); // 연결된 상태 저장
+    };
+
+    ws.onclose = function (event) {
+      console.warn("웹소켓 연결이 끊어졌습니다. 재연결을 시도합니다.");
+      sessionStorage.removeItem(sessionKey);
+      setTimeout(connectWebSocket, reconnectDelay);
+    };
+    ws.onmessage = function (event) {
+      let data;
+      try {
+        // 첫 번째 파싱
+        data = JSON.parse(event.data);
+        console.log("수신된 데이터:", data); // 수신된 데이터 로그
+
+
+        // content가 JSON 형식 문자열인 경우 추가 파싱
+        if (typeof data === 'string' && data.startsWith('{')) {
+          data = JSON.parse(data);  // 중첩된 JSON 파싱
+        }
+
+        console.log("수신된 데이터:", data);
+      } catch (e) {
+        console.error("파싱 오류:", e, "원본 데이터:", event.data);
+        return;
+      }
+
+      // 메시지 유형에 따른 처리
+      if (data.type === "memberList" && Array.isArray(data.members)) {
+        console.log("멤버 리스트 업데이트:", data.members);
+        updateMemberList(data.members);
+      } else if (data.type === "message" && data.message && data.sender) {
+        console.log("올바른 메시지 형식입니다.");
+        displayMessage(data.sender, data.message);
+      } else {
+        console.warn("알 수 없는 메시지 형식입니다. 수신된 데이터:", data);
+        displayMessage("시스템", "알 수 없는 메시지 형식입니다.");
+      }
+    };
+
+    // 연결이 끊어졌을 때의 처리
+   /* ws.onclose = function () {
+      console.warn("웹소켓 연결이 끊어졌습니다. 재연결을 시도합니다.");
+      sessionStorage.removeItem(sessionKey); // 세션 키 삭제
+      setTimeout(connectWebSocket, reconnectDelay); // 일정 시간 후 재연결 시도
+    };*/
+
+  }
+
+  function displayMessage(sender, chatMessage) {
+    console.log(`메시지를 화면에 추가합니다: ${sender}: ${chatMessage}`); // 추가된 로그
+    const chatLog = document.getElementById('chatLog');
+    const messageContainer = document.createElement('div');
+    messageContainer.classList.add('openChatMessage-container');
+
+    const senderElem = document.createElement('div');
+    senderElem.classList.add('nickname');
+    senderElem.textContent = sender;
+
+    const chatMessageElem = document.createElement('div');
+    chatMessageElem.classList.add('chatMessage');
+    chatMessageElem.textContent = chatMessage;
+
+    // 보낸 메시지와 받은 메시지 구분
+    if (sender === username) { // 자신의 메시지
+      chatMessageElem.classList.add('sent'); // 보낸 메시지 스타일
+      messageContainer.style.textAlign = 'right'; // 오른쪽 정렬
+    } else { // 다른 사람의 메시지
+      chatMessageElem.classList.add('received'); // 받은 메시지 스타일
+      messageContainer.style.textAlign = 'left'; // 왼쪽 정렬
+    }
+
+    messageContainer.appendChild(senderElem);
+    messageContainer.appendChild(chatMessageElem);
+    chatLog.appendChild(messageContainer);
+    chatLog.scrollTop = chatLog.scrollHeight; // 자동 스크롤
+  }
+
   function updateMemberList(memberList) {
     const memberListContainer = document.querySelector('.member-list');
-    memberListContainer.innerHTML = ''; // 기존 멤버 리스트 초기화
-
+    memberListContainer.innerHTML = '';
     memberList.forEach(member => {
       const li = document.createElement('li');
-      li.textContent = member; // 멤버의 닉네임 추가
+      li.textContent = member;
       memberListContainer.appendChild(li);
     });
   }
 
-  // displayMessage 함수: 발신자와 메시지를 각각 화면에 표시
-  function displayMessage(sender, chatMessage) {
-    const messageContainer = document.createElement('div');
-    messageContainer.classList.add('openChatMessage-container');
 
-    // 발신자 정보를 위한 닉네임 엘리먼트
-    const senderElem = document.createElement('div');
-    senderElem.classList.add('nickname');
 
-    // 발신자 정보 표시
-    senderElem.textContent = sender;
-
-    if (sender === username) {
-      senderElem.classList.add('sent-nickname');
-    } else {
-      senderElem.classList.add('received-nickname');
-    }
-    messageContainer.appendChild(senderElem);  // 닉네임 추가
-
-    // 실제 채팅 메시지 엘리먼트
-    const chatMessageElem = document.createElement('div');
-    chatMessageElem.classList.add('chatMessage');
-
-    // 메시지 내용을 말풍선 안에 표시
-    chatMessageElem.textContent = chatMessage;
-
-    // 보낸 메시지와 받은 메시지 구분
-    if (sender === username) {
-      chatMessageElem.classList.add('sent');
-    } else {
-      chatMessageElem.classList.add('received');
-    }
-
-    // 말풍선 메시지 추가
-    messageContainer.appendChild(chatMessageElem);
-
-    // 채팅 로그에 메시지 추가
-    chatLog.appendChild(messageContainer);
-    chatLog.scrollTop = chatLog.scrollHeight;  // 스크롤을 가장 아래로 이동
-  }
   function sendMessage() {
-    const chatMessage = chatInput.value;
+    const chatInput = document.getElementById('chatInput');
+    const chatMessage = chatInput.value.trim();
 
-    // 입력된 메시지가 비어있는 경우 전송하지 않음
-    if (!chatMessage.trim()) {
+    if (!chatMessage) {
       console.log("메시지를 입력하세요.");
-      return;
+      return; // 입력이 없으면 종료
     }
 
     const messageData = {
-      chatMessage: chatMessage,
-      sender: username
+      type: "message",
+      content: {
+        message: chatMessage
+      }
     };
 
-    // 웹소켓이 열려 있는지 확인
-    if (ws.readyState === WebSocket.OPEN) {
-      ws.send(JSON.stringify(messageData));  // 웹소켓으로 메시지 전송
+    if (ws && ws.readyState === WebSocket.OPEN) {
+      ws.send(JSON.stringify(messageData)); // 메시지 전송
       chatInput.value = ''; // 입력 필드 초기화
     } else {
       console.error("WebSocket 연결이 닫혀 있습니다.");
     }
   }
 
-  // 채팅방을 나갈 때 실행되는 함수
   function leaveChatRoom() {
     const confirmLeave = confirm("채팅방을 나가시겠습니까? 내용이 모두 삭제됩니다.");
     if (confirmLeave && ws) {
-      // 웹소켓 연결을 종료하고 채팅방 리스트 페이지로 이동
       ws.close();
+      sessionStorage.removeItem(sessionKey);
       window.location.href = "/chat/list";
     }
   }

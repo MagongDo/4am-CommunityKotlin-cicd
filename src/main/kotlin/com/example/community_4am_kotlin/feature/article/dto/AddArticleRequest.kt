@@ -1,10 +1,10 @@
-package com.example.Community_4am_Kotlin.feature.article.dto
+package com.example.community_4am_kotlin.feature.article.dto
 
-import com.example.Community_4am_Kotlin.domain.article.Article
+import com.example.community_4am_kotlin.domain.article.Article
 
 data class AddArticleRequest(
-    val title: String = "",
-    val content: String = ""
+    val title: String ,
+    val content: String
 ) {
     fun toEntity(author: String): Article {
         return Article(

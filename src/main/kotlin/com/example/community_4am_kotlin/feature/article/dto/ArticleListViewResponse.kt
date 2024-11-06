@@ -1,6 +1,6 @@
-package com.example.Community_4am_Kotlin.feature.article.dto
+package com.example.community_4am_kotlin.feature.article.dto
 
-import com.example.Community_4am_Kotlin.domain.article.Article
+import com.example.community_4am_kotlin.domain.article.Article
 
 import java.time.LocalDateTime
 
@@ -9,17 +9,20 @@ data class ArticleListViewResponse(
     val id: Long?,
     val title: String,
     val content: String,
-    val author: String,
-    val createdAt: LocalDateTime,
+    //val author: String,
+    val nickname: String,
+    val createdAt: LocalDateTime?,
     val viewCount: Long,
-    val likeCount: Long
+    val likeCount: Long,
+
 ) {
-    constructor(article: Article) : this(
+    constructor(article: Article,nickname: String) : this(
         id = article.id,
         title = article.title,
         content = article.content,
-        author = article.author,
-        createdAt = article.createdDate,
+        //author = article.author,
+        nickname=nickname,
+        createdAt = article.createdAt,
         viewCount = article.viewCount,
         likeCount = article.likeCount
     )

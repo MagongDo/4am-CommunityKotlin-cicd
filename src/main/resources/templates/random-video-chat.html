@@ -8,6 +8,7 @@
 </head>
 <body>
 <div>
+
     <div class="video-container">
         <div class="video-inner-container">
             <video id="localVideo" autoplay playsinline></video>
@@ -125,9 +126,42 @@
                         </svg>
                         <div id="findAnother">다른 상대 찾기</div>
                     </div>
+                    <div id="reportUserBox">
+                        <svg id="reportUserIcon" width="50" height="50" viewBox="0 0 160 160" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M140 150H20V140C20 131.715 26.715 125 35 125H125C133.285 125 140 131.715 140 140V150ZM80 30C77.235 30 75 27.76 75 25V15C75 12.24 77.235 10 80 10C82.765 10 85 12.24 85 15V25C85 27.76 82.765 30 80 30ZM41.11 46.11C39.83 46.11 38.55 45.62 37.575 44.645L30.505 37.575C28.55 35.62 28.55 32.46 30.505 30.505C32.46 28.55 35.62 28.55 37.575 30.505L44.645 37.575C46.6 39.53 46.6 42.69 44.645 44.645C43.665 45.62 42.39 46.11 41.11 46.11ZM118.89 46.11C117.61 46.11 116.33 45.62 115.355 44.645C113.4 42.69 113.4 39.53 115.355 37.575L122.425 30.505C124.38 28.55 127.54 28.55 129.495 30.505C131.45 32.46 131.45 35.62 129.495 37.575L122.425 44.645C121.45 45.62 120.17 46.11 118.89 46.11ZM25 85H15C12.235 85 10 82.76 10 80C10 77.24 12.235 75 15 75H25C27.765 75 30 77.24 30 80C30 82.76 27.765 85 25 85ZM145 85H135C132.235 85 130 82.76 130 80C130 77.24 132.235 75 135 75H145C147.765 75 150 77.24 150 80C150 82.76 147.765 85 145 85ZM120 115V80C120 57.945 102.055 40 80 40C57.945 40 40 57.945 40 80V115H120ZM80.17 59.38C80.86 56.705 83.59 55.11 86.26 55.79C95.055 58.065 101.935 64.945 104.21 73.745C104.905 76.42 103.295 79.145 100.625 79.84C100.205 79.95 99.78 80 99.365 80C97.145 80 95.11 78.505 94.53 76.25C93.165 70.965 89.03 66.84 83.76 65.475C81.085 64.785 79.48 62.055 80.17 59.38Z" fill="#FF3A3A"/>
+                        </svg>
+                    </div>
                 </div>
             </div>
+        </div>
 
+        <!-- 모달 오버레이 -->
+        <div class="modal-overlay" id="modalOverlay">
+            <!-- 모달 창 -->
+            <div class="modal">
+                <div class="modal-header">신고하기</div>
+                <form id="reportForm">
+                    <!-- 신고 유형 -->
+                    <label for="reportType">신고 유형</label>
+                    <select id="reportType" name="reportType" required>
+                        <option value="">선택하세요</option>
+                        <option value="spam">스팸</option>
+                        <option value="harassment">괴롭힘</option>
+                        <option value="inappropriate">부적절한 내용</option>
+                        <option value="other">기타</option>
+                    </select>
+
+                    <!-- 상세 신고 내용 -->
+                    <label for="reportDetails">상세 신고 내용</label>
+                    <textarea id="reportDetails" name="reportDetails" rows="5" placeholder="신고 내용을 자세히 적어주세요." required></textarea>
+
+                    <!-- 버튼 그룹 -->
+                    <div class="modal-buttons">
+                        <button type="button" class="close-button" id="closeModalBtn">취소</button>
+                        <button type="submit" class="submit-button">제출</button>
+                    </div>
+                </form>
+            </div>
         </div>
 
         <div class="chat-container">
@@ -147,8 +181,9 @@
         let remoteStream;
         let peerConnection;
         let pendingCandidates = [];
-        let offerQueue = [];  // Offer를 대기시키는 큐
         let role = null;
+        let roomId;
+        let otherUserId;
 
         const config = {
             iceServers: [
@@ -163,6 +198,7 @@
             const startRandomChatButton = document.getElementById('startRandomChat');
             const loadingMessage = document.getElementById('loadingMessage');
             const vcUserProfiles = document.getElementsByClassName('vc-user-profile');
+
 
             // video-controls-wrapper 요소
             const videoControlsWrapper = document.querySelector('.video-controls-wrapper');
@@ -347,6 +383,8 @@
                     switch (data.type) {
                         case 'match':
                             setTimeout(() => {
+                                roomId = data.roomId
+                                otherUserId = data.otherUserId;
                                 alert(data.message);
                                 loadingMessage.style.display = 'none';
                                 chatControlBox.style.display = 'flex';
@@ -501,7 +539,6 @@
                     });
             }
 
-
             function addTracksToPeerConnection(stream) {
                 if (!peerConnection) {
                     console.error("PeerConnection이 초기화되지 않았습니다.");
@@ -541,7 +578,6 @@
                     .catch(error => console.error("Offer 처리 중 오류: ", error));
             }
 
-
             function handleAnswer(answer) {
                 console.log("Answer 수신: ", answer);
                 if (peerConnection.signalingState !== "have-local-offer") {
@@ -577,7 +613,6 @@
                     });
             }
 
-
             function cleanupVideoChat() {
                 if (peerConnection) {
                     peerConnection.close();
@@ -597,8 +632,80 @@
                 role = null;
             }
 
+            /////////////////////////////////////////////////////////////////
 
+            const reportUserBox = document.getElementById('reportUserBox');
+            const modalOverlay = document.getElementById('modalOverlay');
+            const closeModalBtn = document.getElementById('closeModalBtn');
+            const reportForm = document.getElementById('reportForm');
+
+            // 모달 열기 함수
+            function openModal() {
+                modalOverlay.classList.add('show');
+            }
+
+            // 모달 닫기 함수
+            function closeModal() {
+                modalOverlay.classList.remove('show');
+            }
+
+            // 외부 클릭 시 모달 닫기
+            modalOverlay.addEventListener('click', function(e) {
+                if (e.target === modalOverlay) {
+                    closeModal();
+                }
+            });
+
+            // 버튼에 이벤트 리스너 추가
+            reportUserBox.addEventListener('click', openModal);
+            closeModalBtn.addEventListener('click', closeModal);
+
+            // 폼 제출 처리
+            reportForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                const reportType = document.getElementById('reportType').value;
+                const reportDetails = document.getElementById('reportDetails').value;
+                // 입력값 검증 (선택 사항)
+                if (!reportType || !reportDetails) {
+                    alert("신고 유형과 상세 내용을 모두 입력해주세요.");
+                    return;
+                }
+                // 신고 데이터 객체 생성
+                const reportData = {
+                    reportType: reportType,
+                    reportDetails: reportDetails,
+                    videoChatId: roomId,
+                    reportedId: otherUserId
+                };
+                const apiUrl = '/api/video-chat-reports/report';
+
+                // POST 요청 보내기
+                fetch(apiUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${accessToken}`// JWT 토큰을 헤더에 포함
+                    },
+                    body: JSON.stringify(reportData)
+                })
+                    .then(response => {
+                        if (!response.ok) {
+                            return response.json().then(err => { throw err; });
+                        }
+                        return response.text();
+                    })
+                    .then(data => {
+                        alert(`신고가 접수되었습니다.\n유형: ${reportType}\n내용: ${reportDetails}`);
+                        closeModal();
+                        reportForm.reset();
+                    })
+                    .catch(error => {
+                        console.error("신고 전송 오류:", error);
+                        alert("신고 전송 중 오류가 발생했습니다. 다시 시도해주세요.");
+                    });
+            });
         });
+
     </script>
 </body>
 </html>

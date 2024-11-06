@@ -1,9 +1,10 @@
-package com.example.Community_4am_Kotlin.feature.user.controller
+package com.example.community_4am_kotlin.feature.user.controller
 
-import com.example.Community_4am_Kotlin.domain.user.User
-import com.example.Community_4am_Kotlin.feature.user.dto.Id
-import com.example.Community_4am_Kotlin.feature.user.dto.Pw
-import com.example.Community_4am_Kotlin.feature.user.service.FindUserDataService
+
+import com.example.community_4am_kotlin.domain.user.User
+import com.example.community_4am_kotlin.feature.user.dto.Id
+import com.example.community_4am_kotlin.feature.user.dto.Pw
+import com.example.community_4am_kotlin.feature.user.service.FindUserDataService
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Controller
@@ -19,33 +20,38 @@ class FindUserDataController(
     private val log: Logger = LoggerFactory.getLogger(FindUserDataService::class.java)
 
     @GetMapping("/find-username")
-    fun findUserId(model: Model): String {return "find-username"}
+    fun findUserId(model: Model): String = "find-username"
 
     @GetMapping("/find-password")
-    fun findUserPassword(model: Model): String{return "find-password"}
+    fun findUserPassword(model: Model): String = "find-password"
 
     @PostMapping("/find-email")
-    fun findEmail(dto: Id,model:Model):String{
-        var user: User=userService.findEmailByNickname(dto.nickname)
-        if(user.email!=null){
-            model.addAttribute("resultMessage","해당 닉네임으로 가임된 이메일은"+user.email+"입니다.")
+    fun findEmail(dto: Id, model:Model):String{
+        val user = userService.findEmailByNickname(dto.nickname)
+
+        val resultMessage = if (user.email != null) {
+            "해당 닉네임으로 가입된 이메일은 ${user.email}입니다."
+        } else {
+            "해당 닉네임으로 가입된 이메일이 없습니다."
         }
-        else{
-            model.addAttribute("resultMessage","해당 닉네임으로 가입된 이메일이 없습니다.")
-        }
+
+        model.addAttribute("resultMessage", resultMessage)
         return "find-username"
     }
 
     @PostMapping("/find-password")
-    fun findPassword(dto: Pw,model:Model):String{
-        var user: User= userService.findPasswordByEmailAndNickname(dto.email,dto.nickname)
+    fun findPassword(dto: Pw, model:Model):String{
+        val user: User = userService.findPasswordByEmailAndNickname(dto.email,dto.nickname)
         userService.updatePasswordByEmailAndNickname(dto.email,dto.nickname,dto.password)
-        if(user.password!=null){
-            model.addAttribute("resultMessage","해당 이메일과 닉네임으로 새롭게 가입된 비밀번호는:"+dto.password+"입니다.")
+
+        val resultMessage = if (user.password != null) {
+            userService.updatePasswordByEmailAndNickname(dto.email, dto.nickname, dto.password)
+            "해당 이메일과 닉네임으로 새롭게 설정된 비밀번호는 ${dto.password}입니다."
+        } else {
+            "이메일 또는 닉네임이 올바르지 않습니다."
         }
-        else{
-            model.addAttribute("resultMessage","이메일 또는 닉네임이 올바르지 않습니다.")
-        }
+
+        model.addAttribute("resultMessage", resultMessage)
         return "find-password"
     }
 }
