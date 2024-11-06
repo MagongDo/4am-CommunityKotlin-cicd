@@ -23,7 +23,7 @@ class MessageBrokerService(
 
     fun publishToChannel(roomId: String, message: String) {
         val topic = ChannelTopic(roomId)
-        redisTemplate.convertAndSend(topic.topic,message)
+        redisTemplate.convertAndSend(topic.topic, message)
     }
 
 }

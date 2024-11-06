@@ -30,12 +30,13 @@ class ChatHandlerImpl(
             log.info("Received payload: $payload") // payload 전체 확인
 
             val roomId = wsSession.uri?.toString()?.split("/ws/chat/")?.getOrNull(1) ?: return
-            val sender = wsSession.principal?.name ?: "unknown"
-            log.info("Sender: $sender")
+            val senderName = wsSession.principal?.name ?: "unknown"
+            log.info("Sender: $senderName")
 
             // payload에서 content와 message 필드를 직접 추출
             val messageContent = try {
-                // Gson 대신 JsonParser를 사용하여 직접 추출
+
+                // 아래의 경우는 또 다른 JSON 객체
                 val jsonObject = JsonParser.parseString(payload).asJsonObject
                 val contentObject = jsonObject["content"]?.asJsonObject
                 contentObject?.get("message")?.asString ?: ""
@@ -50,11 +51,12 @@ class ChatHandlerImpl(
                     "type" to "message",
                     "roomId" to roomId,
                     "message" to messageContent,
-                    "sender" to sender
+                    "sender" to senderName
                 ).let { gson.toJson(it) }
-
+                // 정규 표현식으로 이중 이스케이프를 모두 제거
+              val cleanedMessage = messageJson.replace("""\\""".toRegex(), "")
                 // 메시지 전송
-                messageBrokerService.publishToChannel(roomId, messageJson)
+                messageBrokerService.publishToChannel(roomId, cleanedMessage)
             } else {
                 log.warn("Message content is empty.")
             }
