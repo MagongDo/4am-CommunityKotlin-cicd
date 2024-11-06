@@ -1,5 +1,6 @@
 package com.example.community_4am_kotlin.domain.article
 
+import com.example.community_4am_kotlin.domain.article.Article
 import com.example.community_4am_kotlin.domain.user.User
 import com.fasterxml.jackson.annotation.JsonIgnore
 import jakarta.persistence.*

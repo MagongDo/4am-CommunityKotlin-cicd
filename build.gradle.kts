@@ -37,8 +37,8 @@ dependencies {
     implementation("org.springframework.session:spring-session-data-redis:3.3.2")
 
     // Database
-    runtimeOnly("com.h2database:h2")
-    runtimeOnly("mysql:mysql-connector-java:8.0.33")
+    implementation("mysql:mysql-connector-java:8.0.33")
+    testImplementation("mysql:mysql-connector-java:8.0.33")
 
     // 개발 및 JWT 관련 라이브러리
     developmentOnly("org.springframework.boot:spring-boot-devtools")

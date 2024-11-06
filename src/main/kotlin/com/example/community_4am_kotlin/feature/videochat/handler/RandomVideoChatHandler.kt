@@ -1,9 +1,10 @@
 package com.example.community_4am_kotlin.feature.videochat.handler
 
+import com.example.community_4am_kotlin.config.jwt.TokenProvider
 import com.example.community_4am_kotlin.domain.videochat.VideoChatLog
 import com.example.community_4am_kotlin.feature.videochat.dto.VideoChatLogDTO
 import com.example.community_4am_kotlin.feature.videochat.service.RedisService
-import com.example.community_4am_kotlin.feature.videochat.service.VideoChatLogService
+import com.example.community_4am_kotlin.feature.videochat.service.VideoChatService
 import com.example.community_4am_kotlin.log
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.springframework.stereotype.Component
@@ -17,12 +18,13 @@ import java.net.URI
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.CopyOnWriteArrayList
+import kotlin.math.log
 
 @Component
 class RandomVideoChatHandler(
     private val redisService: RedisService,
-    private val videoChatLogService: VideoChatLogService,
-//    private val tokenProvider: TokenProvider
+    private val videoChatService: VideoChatService,
+    private val tokenProvider: TokenProvider
 ) : TextWebSocketHandler() {
 
     companion object {
@@ -72,8 +74,8 @@ class RandomVideoChatHandler(
                         val currentUserId = session.attributes["userId"] as? Long
                         log.info("currentUserId : {}", currentUserId)
                         log.info("otherUserId : {}", otherUserId)
-                        if (roomId.toLongOrNull() != null && currentUserId != null && otherUserId != null && chatMessage != null) {
-                            redisService.saveVideoChatMessageLog(roomId.toLong().toString(), currentUserId, otherUserId, chatMessage)
+                        if (currentUserId != null && otherUserId != null && chatMessage != null) {
+                            redisService.saveVideoChatMessageLog(roomId, currentUserId, otherUserId, chatMessage)
                         }
                     }
                 }
@@ -131,7 +133,7 @@ class RandomVideoChatHandler(
         }
     }
 
-    // 메시지 전송 메서드
+    // 백엔드에서 프론트로 데이터 전송 메서드
     private fun sendMessage(session: WebSocketSession, message: TextMessage) {
         synchronized(session) {
             if (session.isOpen) {
@@ -173,12 +175,24 @@ class RandomVideoChatHandler(
             // 디버깅 코드: 유저 둘이 같은 방에 들어가 있는지 확인
             verifyUsersInSameRoom(roomId, user1, user2)
 
-            videoChatLogService.videoChatStartTimeLog(
+            // user1에 대한 로그 생성
+            videoChatService.videoChatStartTimeLog(
                 VideoChatLogDTO(
                     VideoChatLog(
                         videoChatId = roomId,
                         userId = user1Id,
                         otherUserId = user2Id
+                    )
+                )
+            )
+
+            // user2에 대한 로그 생성
+            videoChatService.videoChatStartTimeLog(
+                VideoChatLogDTO(
+                    VideoChatLog(
+                        videoChatId = roomId,
+                        userId = user2Id,
+                        otherUserId = user1Id
                     )
                 )
             )
@@ -189,14 +203,16 @@ class RandomVideoChatHandler(
 
     // 매칭된 사용자들에게 매칭 메시지 전송
     private fun notifyUsersOfMatch(user1: WebSocketSession, user2: WebSocketSession, roomId: String) {
+        val user1Id = user1.attributes["userId"] as Long
+        val user2Id = user2.attributes["userId"] as Long
         // user1은 offerer, user2는 answerer 역할 할당
         sendMessage(
             user1,
-            TextMessage("""{"type": "match", "roomId": "$roomId", "role": "offerer", "message": "상대방과 연결되었습니다."}""")
+            TextMessage("""{"type": "match", "roomId": "$roomId", "role": "offerer", "otherUserId": "$user2Id", "message": "상대방과 연결되었습니다."}""")
         )
         sendMessage(
             user2,
-            TextMessage("""{"type": "match", "roomId": "$roomId", "role": "answerer", "message": "상대방과 연결되었습니다."}""")
+            TextMessage("""{"type": "match", "roomId": "$roomId", "role": "answerer", "otherUserId": "$user1Id", "message": "상대방과 연결되었습니다."}""")
         )
 
         // 역할 정보를 세션에 저장
@@ -258,7 +274,7 @@ class RandomVideoChatHandler(
             val builder = UriComponentsBuilder.fromUri(uri)
             val accessToken: String? = builder.build().queryParams.getFirst("accessToken")
             if (accessToken != null) {
-//                userId = tokenProvider.getUserId(accessToken) // 여기 강민님 돌아오면 수정해야함 241030
+                userId = tokenProvider.getUserId(accessToken)!!
                 session.attributes["userId"] = userId
             }
         }
@@ -292,7 +308,7 @@ class RandomVideoChatHandler(
             }
 
             // 종료시간 업데이트
-            videoChatLogService.videoChatEndTimeLog(roomId)
+            videoChatService.videoChatEndTimeLog(roomId)
 
             // 비디오 및 텍스트 채팅 세션에서 해당 사용자를 제거
             videoChatSessions[roomId]?.remove(session.id)

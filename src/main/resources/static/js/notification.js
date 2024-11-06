@@ -26,10 +26,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const friendPopup = document.getElementById('friend-popup');
     const searchPopup = document.getElementById('search-popup');
     const searchBtn = document.getElementById('search-btn');
+    const performSearchBtn = document.getElementById('perform-search-btn'); // 검색 버튼
     const searchInput = document.getElementById('search-input');
-    const sendRequestBtn = document.getElementById('send-request-btn');
+
     const closeFriendPopupBtn = document.getElementById('close-friend-popup');
     const closeSearchPopupBtn = document.getElementById('close-search-popup');
+    const searchResults = document.getElementById('search-results'); // 검색 결과 영역
 
     // 읽지 않은 일반 알림과 친구 알림의 카운트를 저장하는 변수
     let unreadGeneralCount = 0;
@@ -93,7 +95,9 @@ document.addEventListener('DOMContentLoaded', () => {
         searchPopup.classList.add('d-none'); // 검색 팝업 닫기
         loadCustomAlarms(); // 커스텀 알람 리스트 로드
     });
-
+    closeFriendPopupBtn.addEventListener('click', () => {
+        friendPopup.classList.add('d-none');
+    });
     // 일반 알림 리스트 팝업 닫기
     closeNotificationBtn.addEventListener('click', () => {
         notificationListPopup.classList.add('d-none');
@@ -114,6 +118,7 @@ document.addEventListener('DOMContentLoaded', () => {
         editCustomAlarmPopup.classList.add('d-none');
     });
 
+    // 친구 팝업 토글
     friendIcon.addEventListener('click', () => {
         friendPopup.classList.toggle('d-none');
         notificationListPopup.classList.add('d-none');
@@ -125,6 +130,7 @@ document.addEventListener('DOMContentLoaded', () => {
         loadFriendNotifications(); // 친구 요청 알림 로드
     });
 
+    // 검색 팝업 열기
     searchBtn.addEventListener('click', () => {
         searchPopup.classList.remove('d-none');
         friendPopup.classList.add('d-none'); // 친구 팝업 닫기
@@ -134,10 +140,7 @@ document.addEventListener('DOMContentLoaded', () => {
         editCustomAlarmPopup.classList.add('d-none');
     });
 
-    closeFriendPopupBtn.addEventListener('click', () => {
-        friendPopup.classList.add('d-none');
-    });
-
+    // 검색 팝업 닫기
     closeSearchPopupBtn.addEventListener('click', () => {
         searchPopup.classList.add('d-none');
     });
@@ -232,7 +235,7 @@ document.addEventListener('DOMContentLoaded', () => {
             notificationDays: selectedDays,
             reserveAt: selectedTime,
             status: isActive,
-            alarmType: "COUSTOM"
+            alarmType: "CUSTOM" // "CUSTOM"으로 수정
         };
 
         if (socket.readyState === WebSocket.OPEN) {
@@ -288,7 +291,7 @@ document.addEventListener('DOMContentLoaded', () => {
             notificationDays: selectedDays,
             reserveAt: selectedTime,
             status: isActive,
-            alarmType: "COUSTOM"
+            alarmType: "CUSTOM" // "CUSTOM"으로 수정
         };
 
         console.log("Updated Alarm Data:", updatedAlarm); // 전송할 데이터 확인
@@ -520,17 +523,36 @@ document.addEventListener('DOMContentLoaded', () => {
         const friendListDiv = document.getElementById("friend-list");
         friendListDiv.innerHTML = "";
 
-        friends.sort((a, b) => b.online - a.online); // 온라인 상태에 따라 정렬
+        // 온라인 상태에 따라 정렬: 온라인이 먼저 오도록
+        friends.sort((a, b) => {
+            if (a.status === "ONLINE" && b.status !== "ONLINE") return -1;
+            if (a.status !== "ONLINE" && b.status === "ONLINE") return 1;
+            return 0;
+        });
 
         friends.forEach(friend => {
             const friendItem = document.createElement("div");
             friendItem.className = "friend-item";
-            friendItem.innerHTML = `
-                <span>${friend.name} ${friend.online ? "(온라인)" : "(오프라인)"}</span>
-            `;
+
+            // 상태를 나타내는 점 추가
+            const statusDot = document.createElement("span");
+            statusDot.className = friend.status === "ONLINE" ? "status-dot online" : "status-dot offline";
+            statusDot.title = friend.status === "ONLINE" ? "온라인" : "오프라인"; // 툴팁 추가
+
+            // 친구 이름 추가
+            const friendName = document.createElement("span");
+            friendName.className = "friend-name";
+            friendName.textContent = friend.name;
+
+            // 상태 점과 친구 이름을 친구 아이템에 추가
+            friendItem.appendChild(statusDot);
+            friendItem.appendChild(friendName);
+
             friendListDiv.appendChild(friendItem);
         });
     }
+
+
 
     // 친구 요청 알림 불러오기
     async function loadFriendNotifications() {
@@ -553,33 +575,37 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    // 친구 요청 알림 렌더링
     function displayFriendNotifications(notifications) {
         const notificationListDiv = document.getElementById("friend-notification-list");
         notificationListDiv.innerHTML = "";
 
         notifications.forEach(notification => {
             const notificationItem = document.createElement("div");
-            notificationItem.className = "notification-item";
+            notificationItem.className = "notification-item d-flex justify-content-between align-items-center p-2 border-bottom";
             notificationItem.innerHTML = `
                 <span>${notification.fromUserEmail} 님의 친구 신청</span>
-                <button class="accept-btn btn btn-success btn-sm" data-id="${notification.id}">수락</button>
-                <button class="reject-btn btn btn-danger btn-sm" data-id="${notification.id}">거절</button>
+                <div>
+                    <button class="accept-btn btn btn-success btn-sm mr-2" data-id="${notification.id}">수락</button>
+                    <button class="reject-btn btn btn-danger btn-sm" data-id="${notification.id}">거절</button>
+                </div>
             `;
             notificationListDiv.appendChild(notificationItem);
         });
 
-        // 수락 및 거절 버튼에 이벤트 리스너 추가
+        // 수락 버튼에 이벤트 리스너 추가
         document.querySelectorAll('.accept-btn').forEach(button => {
             button.addEventListener('click', () => {
                 const notificationId = button.getAttribute('data-id');
-                acceptFriend(notificationId, button.parentElement);
+                acceptFriend(notificationId, button.closest('.notification-item'));
             });
         });
 
+        // 거절 버튼에 이벤트 리스너 추가
         document.querySelectorAll('.reject-btn').forEach(button => {
             button.addEventListener('click', () => {
                 const notificationId = button.getAttribute('data-id');
-                rejectFriend(notificationId, button.parentElement);
+                rejectFriend(notificationId, button.closest('.notification-item'));
             });
         });
     }
@@ -628,10 +654,9 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    async function sendFriendRequest() {
-        const email = searchInput.value.trim();
+    async function sendFriendRequest(email, buttonElement) {
         if (!email) {
-            alert('이메일을 입력하세요.');
+            alert('이메일이 필요합니다.');
             return;
         }
 
@@ -643,7 +668,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (response.ok) {
                 alert("친구 신청이 전송되었습니다.");
-                // 추가적인 로직이 필요하다면 여기에 작성
+                buttonElement.disabled = true; // 버튼 비활성화
+                buttonElement.textContent = "신청 완료"; // 버튼 텍스트 변경
             } else if (response.status === 401) {
                 const errorText = await response.text();
                 alert(`친구 신청 실패: ${errorText || '로그인이 필요합니다.'}`);
@@ -657,9 +683,88 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    sendRequestBtn.addEventListener('click', sendFriendRequest);
 
-    // 페이지 로드 시 친구 목록 및 알림 로드
+    // ----- 검색 기능 추가 -----
+
+    // 검색 버튼 클릭 시 검색 수행
+    performSearchBtn.addEventListener('click', () => {
+        const query = searchInput.value.trim();
+        if (query === '') {
+            alert('검색어를 입력하세요.');
+            return;
+        }
+        searchUsersByEmail(query);
+    });
+
+    // 엔터 키로 검색 수행
+    searchInput.addEventListener('keyup', (event) => {
+        if (event.key === 'Enter') {
+            performSearchBtn.click();
+        }
+    });
+
+    // 사용자 검색 함수
+    function searchUsersByEmail(emailPrefix) {
+        console.log(`Searching users with email starting with: ${emailPrefix}`);
+        fetch(`/api/friends/search?email=${encodeURIComponent(emailPrefix)}`, {
+            method: 'GET',
+            credentials: 'include' // 인증 정보를 포함하여 요청
+        })
+            .then(response => {
+                if (response.ok) {
+                    return response.json();
+                } else if (response.status === 404) {
+                    return [];
+                } else {
+                    throw new Error(`Error searching users: ${response.statusText}`);
+                }
+            })
+            .then(data => {
+                console.log('Search results:', data);
+                renderSearchResults(data);
+            })
+            .catch(error => {
+                console.error('Error searching users:', error);
+                alert('사용자 검색 중 오류가 발생했습니다.');
+            });
+    }
+
+    // 검색 결과 렌더링
+    function renderSearchResults(users) {
+        const searchResults = document.getElementById("search-results");
+        searchResults.innerHTML = ''; // 기존 검색 결과 초기화
+
+        if (users.length === 0) {
+            searchResults.innerHTML = '<p>검색 결과가 없습니다.</p>';
+            return;
+        }
+
+        users.forEach(user => {
+            const userItem = document.createElement("div");
+            userItem.className = "friend-item";
+
+            // 사용자 이름 추가 (name 필드 사용)
+            const userName = document.createElement("span");
+            userName.className = "friend-name";
+            userName.textContent = user.name; // 여기에 이메일이 표시되고 있는 것 같음
+
+            userItem.appendChild(userName);
+
+            // 친구 신청 버튼 추가
+            const addFriendBtn = document.createElement("button");
+            addFriendBtn.className = "btn btn-sm btn-primary";
+            addFriendBtn.textContent = "친구 신청";
+
+            // 이벤트 리스너 등록: 클릭 시 해당 사용자의 이메일을 user.name으로 전달
+            addFriendBtn.addEventListener('click', () => sendFriendRequest(user.name, addFriendBtn));
+
+            userItem.appendChild(addFriendBtn);
+            searchResults.appendChild(userItem);
+        });
+    }
+    // sendRequestBtn.addEventListener('click', sendFriendRequest);
+
+// 페이지 로드 시 친구 목록 및 알림 로드
     loadFriendList();
     loadFriendNotifications();
 });

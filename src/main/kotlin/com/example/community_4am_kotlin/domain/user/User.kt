@@ -1,4 +1,5 @@
 package com.example.community_4am_kotlin.domain.user
+
 import com.example.community_4am_kotlin.domain.friend.Friend
 import com.example.community_4am_kotlin.domain.user.enums.UserStatus
 import com.example.community_4am_kotlin.domain.article.Like
@@ -45,6 +46,7 @@ data class User(
 
     @OneToMany(mappedBy = "user", cascade = [CascadeType.ALL], orphanRemoval = true)
     val friends: MutableList<Friend> = mutableListOf(),
+
     var lastActiveTime: LocalDateTime,
 
     @Enumerated(EnumType.STRING)

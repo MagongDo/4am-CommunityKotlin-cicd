@@ -8,6 +8,7 @@ import com.example.community_4am_kotlin.feature.article.repository.ArticleReposi
 import com.example.community_4am_kotlin.feature.comment.repository.CommentRepository
 import com.example.community_4am_kotlin.feature.user.repository.UserRepository
 import org.hibernate.query.sqm.tree.SqmNode.log
+import org.springframework.scheduling.annotation.Async
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -115,7 +116,8 @@ class UserService(
     fun searchUsersByEmailStartingWith(email: String): List<User> {
         return userRepository.findByEmailStartingWith(email)
     }
-
+    @Async
+    @Transactional
     fun updateLastActiveTime(userId: String?) {
         val user = userId?.let { userRepository.findByEmail(it).orElseThrow { IllegalArgumentException("사용자를 찾을 수 없습니다.") } }
         user?.lastActiveTime = LocalDateTime.now()
@@ -129,3 +131,5 @@ class UserService(
         return user.id
     }
 }
+
+

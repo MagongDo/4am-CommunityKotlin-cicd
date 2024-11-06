@@ -5,6 +5,8 @@ import com.example.community_4am_kotlin.feature.chat.service.ChatService
 import com.example.community_4am_kotlin.feature.chat.service.MessageBrokerService
 import com.example.community_4am_kotlin.log
 import com.nimbusds.jose.shaded.gson.Gson
+import com.nimbusds.jose.shaded.gson.JsonObject
+import com.nimbusds.jose.shaded.gson.JsonParser
 import org.springframework.stereotype.Component
 import org.springframework.web.socket.CloseStatus
 import org.springframework.web.socket.TextMessage
@@ -14,36 +16,53 @@ import java.util.concurrent.ConcurrentHashMap
 
 @Component
 class ChatHandlerImpl(
-    private val chatService : ChatService,
-    private val messageBrokerService : MessageBrokerService,
-    private val roomSessions : ConcurrentHashMap<String, MutableMap<String, WebSocketSession>>,
-    private val messageRepository : MessageRepository
+    private val chatService: ChatService,
+    private val messageBrokerService: MessageBrokerService,
+    private val roomSessions: ConcurrentHashMap<String, MutableMap<String, WebSocketSession>>,
+    private val messageRepository: MessageRepository,
+    private val gson: com.google.gson.Gson
 ) : TextWebSocketHandler() ,ChatHandler {
+
     override fun handleTextMessage(session: WebSocketSession, message: TextMessage) {
-        // session과 message가 null이 아닐 때만 실행
-        session?.let { wsSession ->
-            message?.payload?.let { payload ->
-                // 방 ID 가져오기
-                val roomId = wsSession.uri?.toString()?.split("/ws/chat/")?.getOrNull(1) ?: return
+        //content 를 또 객체로 담아서? 중첩 직렬화가 진행된걸까?
+        session.let { wsSession ->
+            val payload = message.payload
+            log.info("Received payload: $payload") // payload 전체 확인
 
-                // JSON 파싱 및 타입 명확화
-                val type = object : com.google.gson.reflect.TypeToken<MutableMap<String, Any>>() {}.type
-                val messageData: MutableMap<String, Any> = Gson().fromJson(payload, type)
+            val roomId = wsSession.uri?.toString()?.split("/ws/chat/")?.getOrNull(1) ?: return
+            val senderName = wsSession.principal?.name ?: "unknown"
+            log.info("Sender: $senderName")
 
-                // WebSocketSession에서 사용자 정보 가져오기
-                val sender = wsSession.principal?.name ?: "unknown"
-                log.info("sender", sender)
-                // 메시지에 sender 정보 추가
-                messageData["sender"] = sender
+            // payload에서 content와 message 필드를 직접 추출
+            val messageContent = try {
 
-                // 메시지 재구성 (sender 포함)
-                val formattedMessage = Gson().toJson(messageData)
+                // 아래의 경우는 또 다른 JSON 객체
+                val jsonObject = JsonParser.parseString(payload).asJsonObject
+                val contentObject = jsonObject["content"]?.asJsonObject
+                contentObject?.get("message")?.asString ?: ""
+            } catch (e: Exception) {
+                log.error("Failed to parse JSON payload: $payload", e)
+                ""
+            }
 
-                // 메시지를 Redis로 발행
-                messageBrokerService.publishToChannel(roomId, formattedMessage)
+            if (messageContent.isNotEmpty()) {
+                // messageContent만 포함하는 JSON 생성
+                val messageJson = mapOf(
+                    "type" to "message",
+                    "roomId" to roomId,
+                    "message" to messageContent,
+                    "sender" to senderName
+                ).let { gson.toJson(it) }
+                // 정규 표현식으로 이중 이스케이프를 모두 제거
+              val cleanedMessage = messageJson.replace("""\\""".toRegex(), "")
+                // 메시지 전송
+                messageBrokerService.publishToChannel(roomId, cleanedMessage)
+            } else {
+                log.warn("Message content is empty.")
             }
         }
-    }
+        }
+
 
     override fun afterConnectionEstablished(session: WebSocketSession) {
         val roomId = session.uri.toString().split("/ws/chat/".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()[1]

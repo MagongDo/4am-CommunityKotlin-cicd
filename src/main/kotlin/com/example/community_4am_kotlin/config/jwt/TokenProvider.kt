@@ -66,7 +66,9 @@ class TokenProvider(
     // 토큰 기반으로 유저 ID를 가져오는 메서드
     fun getUserId(token: String): Long? {
         val claims = getClaims(token)
-        return claims["id", Long::class.java]
+//        return claims["id", Long::class.java]
+        val idClaim = claims["id"] as? Number
+        return idClaim?.toLong()
     }
 
     // JWT 토큰에서 클레임 정보를 가져오는 메서드
