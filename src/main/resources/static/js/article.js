@@ -336,6 +336,43 @@ if (createButton) {
     });
 }
 
+// 등록 버튼 (임시저장된 글을 실제 게시글로 전환)
+// 등록 버튼 (새 글 작성 또는 임시저장 글 수정 시 표시)
+// const createButton = document.getElementById('create-btn');
+//
+// if (createButton) {
+//     createButton.addEventListener('click', event => {
+//         const body = new FormData();
+//         body.append('request', JSON.stringify({
+//             title: document.getElementById('title').value,
+//             content: editorInstance.getData()
+//         }));
+//
+//         fetch('/api/article', {
+//             method: 'POST',
+//             headers: {
+//                 'Authorization': 'Bearer ' + localStorage.getItem('access_token')
+//             },
+//             body: body
+//         })
+//             .then(response => {
+//                 if (response.ok) {
+//                     return response.json();
+//                 }
+//                 return response.json().then(data => { throw new Error(data.message || 'Failed to create article') });
+//             })
+//             .then(data => {
+//                 alert('등록 완료되었습니다.');
+//                 location.replace('/articles');
+//             })
+//             .catch(error => {
+//                 console.error('Error creating article:', error);
+//                 alert('등록 실패했습니다. 로그인 후 이용해주세요!');
+//                 location.replace('/articles');
+//             });
+//     });
+// }
+
 
 
 // 쿠키를 가져오는 함수
