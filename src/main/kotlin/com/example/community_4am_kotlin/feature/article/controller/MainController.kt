@@ -4,7 +4,7 @@ import org.springframework.stereotype.Controller
 import org.springframework.web.bind.annotation.GetMapping
 
 @Controller
-class mainController {
+class MainController {
     @GetMapping("/")
     fun index():String{return "/main/mainPage1"}
 }
