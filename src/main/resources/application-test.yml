@@ -9,32 +9,14 @@ spring:
     hibernate:
       ddl-auto: create-drop
     properties:
-      hibernate:
-        dialect: org.hibernate.dialect.H2Dialect
-        format_sql: true
-      hibernate.hbm2ddl.auto: create-drop
+      hibernate.dialect: org.hibernate.dialect.H2Dialect
     show-sql: true
     defer-datasource-initialization: true
-
-  sql:
-    init:
-      mode: always
 
   h2:
     console:
       enabled: true
 
-  security:
-    oauth2:
-      client:
-        registration:
-          google:
-            client-id: ${OAUTH2_CLIENT_ID}
-            client-secret: ${OAUTH2_CLIENT_SECRET}
-            scope:
-              - email
-              - profile
-
-jwt:
-  issuer: lpok2401@gmail.com
-  secret_key: ${JWT_SECRET_KEY:default-secret-key}
+  sql:
+    init:
+      mode: always
