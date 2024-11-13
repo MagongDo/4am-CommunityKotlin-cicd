@@ -22,7 +22,6 @@ repositories {
 dependencies {
 
     implementation("com.h2database:h2:2.2.224")
-    // Kotlin, Spring Boot 및 JPA 관련 의존성
     implementation(kotlin("stdlib"))
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.modelmapper:modelmapper:3.1.1")

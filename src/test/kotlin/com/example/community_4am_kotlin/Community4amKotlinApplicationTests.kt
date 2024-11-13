@@ -6,6 +6,7 @@ import org.springframework.test.context.TestPropertySource
 
 @SpringBootTest
 @TestPropertySource(locations = ["classpath:/application-test.yml"])
+
 class Community4amKotlinApplicationTests {
 
     @Test
