@@ -51,6 +51,7 @@ dependencies {
     kapt("com.querydsl:querydsl-apt:5.1.0:jakarta")
 
     // 기타 유틸리티 및 테스트 관련 의존성
+    testImplementation("com.h2database:h2")
     implementation("com.google.code.gson:gson:2.8.9")
     implementation("com.zaxxer:HikariCP:5.1.0")
     implementation("io.swagger.core.v3:swagger-annotations:2.2.23")
