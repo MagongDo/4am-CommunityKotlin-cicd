@@ -1,21 +1,23 @@
-# 워크플로우의 이름 지정
-name: CI
-#워크플로가 시작될 조건 지정
-on:
+name: CI                     # - 1
+
+on:                          # - 2
   push:
     branches: [ main ]
+
 jobs:
   build:
-# 실행 환경 지정
-    runs-on: ubuntu-latest
-# 실행 스텝 지정
-    steps:
-     - uses: actions/checkout@v3
-     - uses: actions/setup-java@v3
-       with:
-        distribution: 'zulu'
-        java-version: '17'
-     - name: Grant execute permission for gradlew
-       run: chmod +x gradlew
-     - name: Build with Gradle
-       run: ./gradlew clean build
+    runs-on: ubuntu-latest   # - 3 
+
+    steps:                   # - 4
+      - uses: actions/checkout@v3
+
+      - uses: actions/setup-java@v3
+        with:
+          distribution: 'corretto'
+          java-version: '17'
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
+      - name: Build with Gradle
+        run: ./gradlew clean build
