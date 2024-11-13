@@ -78,6 +78,8 @@ sourceSets {
 kapt {
     arguments {
         arg("querydsl.entityAccessors", "true")
+        arg("kapt.kotlin.generated", "$buildDir/generated/source/kaptKotlin/main")
+        arg("querydsl.kotlin.generated", "$buildDir/generated/source/kaptKotlin/main")
     }
 }
 
