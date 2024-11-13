@@ -17,7 +17,6 @@ import org.springframework.data.redis.serializer.StringRedisSerializer
 import org.springframework.session.data.redis.config.annotation.web.http.EnableRedisHttpSession
 
 @Configuration
-@ConditionalOnProperty(name = ["spring.redis.enabled"], havingValue = "true", matchIfMissing = true)
 class RedisConfig {
 
     /**
