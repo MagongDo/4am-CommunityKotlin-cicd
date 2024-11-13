@@ -25,5 +25,13 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
+      - name: Wait for Redis to be ready
+        run: |
+          for i in {1..10}; do
+            (echo -n > /dev/tcp/localhost/6379) >/dev/null 2>&1 && break
+            echo "Waiting for Redis to be ready..."
+            sleep 1
+          done
+
       - name: Build with Gradle
         run: ./gradlew clean build
