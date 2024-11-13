@@ -2,6 +2,7 @@ package com.example.community_4am_kotlin.config
 
 import com.example.community_4am_kotlin.feature.chat.service.RedisSubscriber
 import org.springframework.beans.factory.annotation.Qualifier
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
 import org.springframework.cache.annotation.EnableCaching
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -16,6 +17,7 @@ import org.springframework.data.redis.serializer.StringRedisSerializer
 import org.springframework.session.data.redis.config.annotation.web.http.EnableRedisHttpSession
 
 @Configuration
+@ConditionalOnProperty(name = ["spring.redis.enabled"], havingValue = "true", matchIfMissing = true)
 class RedisConfig {
 
     /**
